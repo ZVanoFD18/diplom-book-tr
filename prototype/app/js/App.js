@@ -1,6 +1,9 @@
 'use strict';
 
 class App {
+    static debugText = 'В траве сидел кузнечик. He has green color!'.repeat(10);
+    static alphabette = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\'';
+    // static alphabette = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890\'';
     /**
      * private {Object} book
      */
@@ -45,7 +48,7 @@ class App {
     }
 
     static DisplayBook() {
-        let words = this.ExtractWords('В траве сидел кузнечик.И тогда!   Что было...'.repeat(10));
+        let words = this.ExtractWords(this.debugText);
         console.log('words', words);
         let elText = document.getElementById('text');
         elText.innerHTML = '';
@@ -65,12 +68,9 @@ class App {
         let words = [];
         let word = '';
         let separators = ' ,';
-        let alphabette;
-        alphabette = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\'';
-        alphabette = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890\'';
         let punctuation = '?!.';
         for (let i = 0, len = str.length; i < len; i++) {
-            if (alphabette.indexOf(str[i]) >= 0) {
+            if (this.alphabette.indexOf(str[i]) >= 0) {
                 word += str[i];
                 continue;
             }
@@ -100,22 +100,29 @@ class App {
             return;
         }
         elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
+        elDialog.querySelector('.wa-translate').innerHTML = '...';
         elDialog.classList.remove('wa-hidden');
+        this.getTranslate({
+            word: e.target.innerHTML,
+            success() {
+                alert('success');
+            }
+        });
     }
 
     static OnWordActionClick(e) {
         let word = undefined,
             elWord = undefined;
         if (e.target.classList.contains('wa-btn-studied')) {
-            elWord =
-            word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
             document.getElementById('winWordActions').classList.add('wa-hidden');
-            this.WordStudyAdd(word);
-            this.WordsMark(word, this.WORD_STATE.WORD_STATE_STUDY);
-        } else if (e.target.classList.contains('wa-btn-study')) {
             word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
             this.WordStudyedAdd(word);
             this.WordsMark(word, this.WORD_STATE.WORD_STATE_STUDYED);
+        } else if (e.target.classList.contains('wa-btn-study')) {
+            document.getElementById('winWordActions').classList.add('wa-hidden');
+            word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
+            this.WordStudyAdd(word);
+            this.WordsMark(word, this.WORD_STATE.WORD_STATE_STUDY);
         }
     }
 
@@ -164,5 +171,60 @@ class App {
     static getWordHash(word) {
         let result = Helper.hashCode(word);
         return result;
+    }
+
+    static getTranslate(options) {
+        if (typeof(options) !== 'object') {
+            throw new Error('options - не объект');
+        }
+        let xhr = new XMLHttpRequest();
+        // single?client=gtx&sl=auto&dt=t&dt=bd&dj=1&text={{some%20tex}}t&tl=ru
+        let formData = new FormData();
+        formData.append('client', 'gtx');
+        formData.append('sl', 'auto');
+        formData.append('dt', 't');
+        formData.append('dt', 'bd');
+        formData.append('dj', '1');
+        formData.append('tl', 'ru');
+        formData.append('text', options.word);
+        let url = 'https://translate.googleapis.com/translate_a/single';
+        let urlGet = url + '?';
+        for (var pair of formData.entries()) {
+            //console.log(pair[0]+ ', '+ pair[1]);
+            urlGet += ((urlGet.substr(-1, 1) === '?' ? '' : '&') + encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]));
+        }
+        xhr.open('GET', urlGet);
+        //xhr.responseType = 'arraybuffer';
+        xhr.withCredentials = true;
+        xhr.setRequestHeader('Destination', url);
+        xhr.setRequestHeader("Access-Control-Allow-Headers", "*");
+        // xhr.setRequestHeader("Origin", "http://localhost");
+        //xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        xhr.send(formData);
+        xhr.upload.onload = ()=>{
+            alert('aaa')
+        };
+        xhr.addEventListener('readystatechange', function() {
+            if (xhr.readyState !== 4) {
+                return;
+            }
+            console.log('readystatechange4 arguments',arguments);
+            var header = xhr.getResponseHeader('Content-Disposition');
+            let type = xhr.getResponseHeader('Content-Type');
+            // debugger;
+            alert('@TODO: Как читать ответ, который приходит в заголовке <content-disposition: attachment; filename="f.txt">')
+            xhr.upload.onload = ()=>{
+                alert('aaa')
+            };
+            //let json = JSON.parse(xhr.responseText);
+            //console.log('google result', json);
+        });
+        // xhr.onload = function () {
+        //     var header = xhr.getResponseHeader('Content-Disposition');
+        //     var startIndex = header.indexOf("filename=") + 10; // Adjust '+ 10' if filename is not the right one.
+        //     var endIndex = contentDisposition.length - 1; //Check if '- 1' is necessary
+        //     var filename = contentDisposition.substring(startIndex, endIndex);
+        //     console.log("filename: " + filename)
+        // }
     }
 }

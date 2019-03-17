@@ -1,9 +1,16 @@
 Дипломный "Перевод книг".
 --------------------------------------------------------------------------------
-Словари:
+Словари, перевод:
 
 Goole позволяет получить перевод фразы вызывав следующий запрос.
 https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&dt=t&dt=bd&dj=1&text={{some%20tex}}t&tl=ru
+
+Библиотеки, позволяеющие бесплатно использовать Google Translate API.
+>для JavaScript
+@TODO: найти для JavaScript библиотеки Google Translate API
+>для PHP:
+https://github.com/dejurin/php-google-translate-for-free
+https://github.com/Stichoza/google-translate-php
 --------------------------------------------------------------------------------
 Чтение fb2
 https://github.com/chitalka/reader
