@@ -1,0 +1,15 @@
+Дипломный "Перевод книг".
+--------------------------------------------------------------------------------
+Словари:
+
+Goole позволяет получить перевод фразы вызывав следующий запрос.
+https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&dt=t&dt=bd&dj=1&text={{some%20tex}}t&tl=ru
+--------------------------------------------------------------------------------
+Чтение fb2
+https://github.com/chitalka/reader
+http://chitalka.github.io/demo/
+
+https://www.npmjs.com/package/viva-parser-fb2
+--------------------------------------------------------------------------------
+Локализация:
+https://www.npmjs.com/package/po2json

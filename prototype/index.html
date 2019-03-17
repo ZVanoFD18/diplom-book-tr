@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Book Reader</title>
+    <link rel="stylesheet" href="app/css/main.css">
+    <link rel="stylesheet" href="app/css/panel-text.css">
+    <link rel="stylesheet" href="app/css/win-word-actions.css">
+    <script src="vendor/xml2json/xml2json.min.js"></script>
+    <script src="app/js/Helper.js"></script>
+    <script src="app/js/App.js"></script>
+</head>
+<body>
+<form action="">
+    <input name="inpFile" type="file">
+</form>
+<div class="inpFilePath"></div>
+<pre class="fb2">fb2</pre>
+<button class="convert">FB2 to JSON</button>
+<pre class="json">json</pre>
+<button id="btnJsonToConsole">JSON to console</button>
+<button id="btnDisplayBook">btnDisplayBook</button>
+<div id="statistic">
+    <span>Слов на изучение:</span><span class="stat-words-study">statWords2Study</span>
+    <span>Слов изучено:</span><span class="stat-words-studied">statWordsStudied</span>
+</div>
+<div id="text" class="text">text</div>
+<div id="winWordActions" class="wa-hidden">
+    <p class="wa-word">Слово</p>
+    <p class="wa-translate">Перевод</p>
+    <div class="wa-buttons">
+        <button class="wa-btn-studied">Знаю</button>
+        <button class="wa-btn-study">Изучить</button>
+    </div>
+</div>
+</body>
+<script>
+    App.run();
+</script>
+</html>

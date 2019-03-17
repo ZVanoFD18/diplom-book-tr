@@ -1,0 +1,29 @@
+#text{
+    border: 3px double gray;
+    display: inline-block;
+    width: 100%;
+}
+
+.word{
+    --margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    border-radius: 0.3rem;
+}
+.word:hover{
+    border-bottom: 1px dashed coral;
+    cursor: pointer;
+}
+.word-eol{
+    margin-right: unset;
+}
+.word-unknown{
+    background-color: bisque;
+}
+.word-study{
+    background-color: yellow;
+}
+.word-studied{
+    background-color: white;
+}

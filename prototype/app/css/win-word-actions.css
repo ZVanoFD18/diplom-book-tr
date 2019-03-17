@@ -1,0 +1,30 @@
+#winWordActions{
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    display: inline-block;
+    width:15rem;
+    border: 1px solid gray;
+    padding: 1rem;
+    background-color: white;
+    z-index: 1000;
+    border-radius: 1rem;
+}
+.wa-hidden{
+    visibility: hidden;
+}
+.wa-word{
+    text-align: center;
+}
+.wa-translate{
+    text-align: center;
+}
+.wa-buttons{
+    text-align: center;
+}
+.wa-btn-studied{
+    margin-right: 20%;
+}
+.wa-btn-study{
+    margin-left: 20%;
+}

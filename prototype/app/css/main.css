@@ -1,0 +1,11 @@
+.fb2{
+    height: 100px;
+    border: 1px solid red;
+    overflow: auto;
+}
+.json{
+    height: 100px;
+    border: 1px solid blue;
+    overflow: auto;
+}
+
