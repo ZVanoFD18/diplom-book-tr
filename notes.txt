@@ -2,6 +2,9 @@
 --------------------------------------------------------------------------------
 Словари, перевод:
 
+Google Translate API for Free
+https://athened.tk/google-translate-api/
+
 Goole позволяет получить перевод фразы вызывав следующий запрос.
 https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&dt=t&dt=bd&dj=1&text={{some%20tex}}t&tl=ru
 
@@ -17,6 +20,11 @@ https://github.com/chitalka/reader
 http://chitalka.github.io/demo/
 
 https://www.npmjs.com/package/viva-parser-fb2
+
+Оказалось, что книги FB2 отличаются по структуре. @TODO: попробовать XSLT преобразования.
+XSLT - On the Client = https://www.w3schools.com/xml/xsl_client.asp
+XSLT на стороне клиента = https://msiter.ru/tutorials/xslt/xsl-client
+Using the Mozilla JavaScript interface to XSL Transformations = https://developer.mozilla.org/en-US/docs/Web/XSLT/Using_the_Mozilla_JavaScript_interface_to_XSL_Transformations
 --------------------------------------------------------------------------------
 Локализация:
 https://www.npmjs.com/package/po2json

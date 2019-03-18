@@ -26,11 +26,7 @@ class App {
             reader.readAsText(files[0]);
         });
         document.querySelector('button.convert').addEventListener('click', (event) => {
-            let x2js = new X2JS();
-            let json = x2js.xml_str2json(document.querySelector('pre.fb2').innerText);
-            console.log('json', json);
-            this.book = json;
-            document.querySelector('pre.json').innerText = JSON.stringify(json);
+            this.readFb2();
         });
         document.getElementById('btnJsonToConsole').addEventListener('click', (event) => {
             this.JsonToConsole();
@@ -41,6 +37,25 @@ class App {
         document.getElementById('text').addEventListener('click', this.OnTextClick.bind(this));
         document.getElementById('winWordActions').addEventListener('click', this.OnWordActionClick.bind(this));
         this.DisplayStat();
+    }
+    static readFb2(){
+        // let x2js = new X2JS();
+        // let json = x2js.xml_str2json(document.querySelector('pre.fb2').innerText);
+        // console.log('json', json);
+        // document.querySelector('pre.json').innerText = JSON.stringify(json);
+
+
+        let xml = Helper.Xml.getXMLFromString(document.querySelector('pre.fb2').innerText);
+        console.log(xml);
+
+        // this.book = json;
+        // json.FictionBook.body.section.forEach((sectionItem)=>{
+        //     let paragraph = '';
+        //     // for(let key in sectionItem){
+        //     //     if ()
+        //     // }
+        // });
+
     }
 
     static JsonToConsole() {
@@ -102,11 +117,9 @@ class App {
         elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
         elDialog.querySelector('.wa-translate').innerHTML = '...';
         elDialog.classList.remove('wa-hidden');
-        this.getTranslate({
-            word: e.target.innerHTML,
-            success() {
-                alert('success');
-            }
+        Helper.Google.translate('ru', e.target.innerHTML).then(function (result) {
+            console.log(result);
+            elDialog.querySelector('.wa-translate').innerHTML = result.word;
         });
     }
 
@@ -171,60 +184,5 @@ class App {
     static getWordHash(word) {
         let result = Helper.hashCode(word);
         return result;
-    }
-
-    static getTranslate(options) {
-        if (typeof(options) !== 'object') {
-            throw new Error('options - не объект');
-        }
-        let xhr = new XMLHttpRequest();
-        // single?client=gtx&sl=auto&dt=t&dt=bd&dj=1&text={{some%20tex}}t&tl=ru
-        let formData = new FormData();
-        formData.append('client', 'gtx');
-        formData.append('sl', 'auto');
-        formData.append('dt', 't');
-        formData.append('dt', 'bd');
-        formData.append('dj', '1');
-        formData.append('tl', 'ru');
-        formData.append('text', options.word);
-        let url = 'https://translate.googleapis.com/translate_a/single';
-        let urlGet = url + '?';
-        for (var pair of formData.entries()) {
-            //console.log(pair[0]+ ', '+ pair[1]);
-            urlGet += ((urlGet.substr(-1, 1) === '?' ? '' : '&') + encodeURIComponent(pair[0]) + '=' + encodeURIComponent(pair[1]));
-        }
-        xhr.open('GET', urlGet);
-        //xhr.responseType = 'arraybuffer';
-        xhr.withCredentials = true;
-        xhr.setRequestHeader('Destination', url);
-        xhr.setRequestHeader("Access-Control-Allow-Headers", "*");
-        // xhr.setRequestHeader("Origin", "http://localhost");
-        //xhr.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        xhr.send(formData);
-        xhr.upload.onload = ()=>{
-            alert('aaa')
-        };
-        xhr.addEventListener('readystatechange', function() {
-            if (xhr.readyState !== 4) {
-                return;
-            }
-            console.log('readystatechange4 arguments',arguments);
-            var header = xhr.getResponseHeader('Content-Disposition');
-            let type = xhr.getResponseHeader('Content-Type');
-            // debugger;
-            alert('@TODO: Как читать ответ, который приходит в заголовке <content-disposition: attachment; filename="f.txt">')
-            xhr.upload.onload = ()=>{
-                alert('aaa')
-            };
-            //let json = JSON.parse(xhr.responseText);
-            //console.log('google result', json);
-        });
-        // xhr.onload = function () {
-        //     var header = xhr.getResponseHeader('Content-Disposition');
-        //     var startIndex = header.indexOf("filename=") + 10; // Adjust '+ 10' if filename is not the right one.
-        //     var endIndex = contentDisposition.length - 1; //Check if '- 1' is necessary
-        //     var filename = contentDisposition.substring(startIndex, endIndex);
-        //     console.log("filename: " + filename)
-        // }
     }
 }
