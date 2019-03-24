@@ -151,3 +151,16 @@ Helper.Xml.getXMLFromString = function (s) {
         return null;
     }
 };
+
+Helper.IO = {};
+Helper.IO.loadTextFromInputFile = function (elFile, callback) {
+    let files = elFile.files;
+    var reader = new FileReader();
+    reader.onload = (e) => {
+        callback(true, e.target.result);
+    };
+    reader.onerror = () => {
+        callback(false);
+    };
+    reader.readAsText(files[0]);
+};

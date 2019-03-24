@@ -1,11 +1,6 @@
-.fb2{
-    height: 100px;
-    border: 1px solid red;
-    overflow: auto;
+.hidden{
+    visibility: hidden;
+    display: none;
 }
-.json{
-    height: 100px;
-    border: 1px solid blue;
-    overflow: auto;
-}
+
 

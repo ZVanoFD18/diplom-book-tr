@@ -17,37 +17,60 @@ class App {
     };
 
     static run() {
-        document.querySelector('input[name="inpFile"]').addEventListener('change', (event) => {
-            let files = event.srcElement.files;
-            var reader = new FileReader();
-            reader.onload = (e) => {
-                document.querySelector('pre.fb2').innerText = e.target.result;
-            };
-            reader.readAsText(files[0]);
-        });
-        document.querySelector('button.convert').addEventListener('click', (event) => {
-            this.readFb2(document.querySelector('pre.fb2').innerText);
-        });
-        document.getElementById('btnJsonToConsole').addEventListener('click', (event) => {
-            this.JsonToConsole();
-        });
-        document.getElementById('btnDisplayBook').addEventListener('click', (event) => {
-            this.DisplayBook();
-        });
+        document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
+        document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
         document.getElementById('text').addEventListener('click', this.OnTextClick.bind(this));
         document.getElementById('winWordActions').addEventListener('click', this.OnWordActionClick.bind(this));
+
         this.DisplayStat();
+        this.go2section('study');
+
+        setTimeout(() => {
+            Loadmask.hide();
+        }, 1500);
+    }
+    static onNavClick(event){
+        event.preventDefault();
+        let href = event.target.getAttribute('href');
+        if (href === null ){
+            return;
+        }
+        this.go2section(href.substr(1))
+    }
+    static onInputFileChange(event){
+        Loadmask.show('Загрузка файла...');
+        Helper.IO.loadTextFromInputFile(event.srcElement, (isSuccess, text)=>{
+            event.srcElement.value = '';
+            if (!isSuccess){
+                Loadmask.hide();
+                return;
+            }
+
+            Loadmask.show('Конвертация книги...');
+            let book = Fb2.getBookFromText(text);
+
+            Loadmask.show('Формирование области чтения...');
+            this.DisplayBook(book);
+
+
+            this.go2section('read');
+            Loadmask.hide();
+        });
     }
 
-    static readFb2(text) {
-        this.book = Fb2.getBookFromText(text);
+    static go2section(sectionId) {
+        Loadmask.show('Навигация...');
+        setTimeout(() => {
+            document.getElementById('content').querySelectorAll('section').forEach((elSection) => {
+                elSection.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById(sectionId).scrollIntoView();
+            Loadmask.hide();
+        }, 50);
     }
 
-    static JsonToConsole() {
-        console.log('book', this.book);
-    }
-
-    static DisplayBook() {
+    static DisplayBook(book) {
         let elText = document.getElementById('text');
         elText.innerHTML = '';
         /*
@@ -64,7 +87,7 @@ class App {
                     elText.appendChild(newElWord);
                 });
         */
-        this.book.sections.forEach((section) => {
+        book.sections.forEach((section) => {
             let containerTitle = document.createElement('h2');
             section.title.forEach((titleLine) => {
                 let elLine = document.createElement('p');
@@ -105,27 +128,55 @@ class App {
         });
     }
 
-    static ParseNode(node) {
-
-    }
-
     static ExtractWords(str) {
         let words = [];
         let word = '';
-        let separators = ' ,';
+        let separatorsInclude = ',-';
+        let separatorsExclude = ' ';
         let punctuation = '?!.';
+        let isPrevAlphabette = true;
         for (let i = 0, len = str.length; i < len; i++) {
-            if (this.alphabette.indexOf(str[i]) >= 0) {
-                word += str[i];
+            let currChar = str[i];
+            if (this.alphabette.indexOf(currChar) >= 0) {
+                if(!isPrevAlphabette){
+                    words.push(word);
+                    word = '';
+                    isPrevAlphabette = true;
+                }
+                word += currChar;
                 continue;
             }
             if (word !== '') {
-                words.push(word);
-                word = '';
+                if (isPrevAlphabette){
+                    words.push(word);
+                    word = '';
+                }
             }
-            if (punctuation.indexOf(str[i]) >= 0) {
-                words.push(str[i]);
+            if (punctuation.indexOf(currChar) >= 0) {
+                if (word !== '') {
+                    words.push(word);
+                    word = '';
+                }
+                words.push(currChar);
+                continue;
             }
+            if (separatorsInclude.indexOf(currChar) >= 0) {
+                if (word !== '') {
+                    words.push(word);
+                    word = '';
+                }
+                words.push(currChar);
+                continue;
+            }
+            if (separatorsExclude.indexOf(currChar) >= 0) {
+                if (word !== '') {
+                    words.push(word);
+                    word = '';
+                }
+                continue;
+            }
+            word += currChar;
+            isPrevAlphabette = false;
         }
         if (word !== '') {
             words.push(word);
@@ -147,8 +198,10 @@ class App {
         elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
         elDialog.querySelector('.wa-translate').innerHTML = '...';
         elDialog.classList.remove('wa-hidden');
+        Loadmask.show('Загрузка перевода...');
         Helper.Google.translate('ru', e.target.innerHTML).then(function (result) {
-            console.log(result);
+            Loadmask.hide();
+            console.log(e.target.innerHTML, result);
             elDialog.querySelector('.wa-translate').innerHTML = result.word;
         });
     }

@@ -1,0 +1,25 @@
+.nav{
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding-right: 1rem;
+    z-index: 110;
+    opacity: 0.2;
+    background-color: lightgray;
+    border-radius: 0.3rem;
+    transition-property: opacity;
+    transition-duration: 1s;
+}
+.nav:hover{
+    opacity:1;
+}
+
+.nav ul{
+    list-style-type: none;
+}
+.nav a{
+    text-decoration: none;
+}
+.nav a:hover{
+    color: coral;
+}
