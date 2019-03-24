@@ -5,14 +5,21 @@
 }
 
 .word{
+    display: inline-block;
     --margin-left: 0.2rem;
-    margin-right: 0.2rem;
-    margin-top: 0.4rem;
-    margin-bottom: 0.4rem;
-    border-radius: 0.3rem;
+    --margin-right: 0.1rem;
+    --margin-top: 0.2rem;
+    --margin-bottom: 0.2rem;
+    --border-radius: 0.2rem;
+    --padding: 0 0.05rem;
+    --border-style: groove;
+    border: 2px solid rgba(0, 0, 0, 0);
+    box-sizing: border-box;
 }
 .word:hover{
-    border-bottom: 1px dashed coral;
+    border-color: coral;
+    border-style: outset;
+    border-radius: 0.2rem;
     cursor: pointer;
 }
 .word-eol{
@@ -26,4 +33,13 @@
 }
 .word-studied{
     background-color: white;
+}
+/*Заголовок раздела*/
+.text-title{
+    text-align: center;
+}
+/*Первое слово предложения*/
+.text-line span:first-child{
+    margin-left: 2rem;
+    font-weight: bold;
 }

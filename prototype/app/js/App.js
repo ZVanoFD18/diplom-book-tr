@@ -26,7 +26,7 @@ class App {
             reader.readAsText(files[0]);
         });
         document.querySelector('button.convert').addEventListener('click', (event) => {
-            this.readFb2();
+            this.readFb2(document.querySelector('pre.fb2').innerText);
         });
         document.getElementById('btnJsonToConsole').addEventListener('click', (event) => {
             this.JsonToConsole();
@@ -38,24 +38,9 @@ class App {
         document.getElementById('winWordActions').addEventListener('click', this.OnWordActionClick.bind(this));
         this.DisplayStat();
     }
-    static readFb2(){
-        // let x2js = new X2JS();
-        // let json = x2js.xml_str2json(document.querySelector('pre.fb2').innerText);
-        // console.log('json', json);
-        // document.querySelector('pre.json').innerText = JSON.stringify(json);
 
-
-        let xml = Helper.Xml.getXMLFromString(document.querySelector('pre.fb2').innerText);
-        console.log(xml);
-
-        // this.book = json;
-        // json.FictionBook.body.section.forEach((sectionItem)=>{
-        //     let paragraph = '';
-        //     // for(let key in sectionItem){
-        //     //     if ()
-        //     // }
-        // });
-
+    static readFb2(text) {
+        this.book = Fb2.getBookFromText(text);
     }
 
     static JsonToConsole() {
@@ -63,20 +48,65 @@ class App {
     }
 
     static DisplayBook() {
-        let words = this.ExtractWords(this.debugText);
-        console.log('words', words);
         let elText = document.getElementById('text');
         elText.innerHTML = '';
-        words.forEach((word) => {
-            let newElWord = document.createElement('span');
-            newElWord.innerHTML = word;
-            let hash = this.getWordHash(word);
-            newElWord.classList.add('word');
-            newElWord.classList.add('word-hash-' + hash);
-            this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+        /*
+               let words = this.ExtractWords(this.debugText);
+                console.log('words', words);
+                words.forEach((word) => {
+                    let newElWord = document.createElement('span');
+                    newElWord.innerHTML = word;
+                    let hash = this.getWordHash(word);
+                    newElWord.classList.add('word');
+                    newElWord.classList.add('word-hash-' + hash);
+                    this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
 
-            elText.appendChild(newElWord);
+                    elText.appendChild(newElWord);
+                });
+        */
+        this.book.sections.forEach((section) => {
+            let containerTitle = document.createElement('h2');
+            section.title.forEach((titleLine) => {
+                let elLine = document.createElement('p');
+                elLine.classList.add('text-title');
+                let words = this.ExtractWords(titleLine);
+                words.forEach((word) => {
+                    let newElWord = document.createElement('span');
+                    newElWord.innerHTML = word;
+                    let hash = this.getWordHash(word);
+                    newElWord.classList.add('word');
+                    newElWord.classList.add('word-hash-' + hash);
+                    this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+
+                    elLine.appendChild(newElWord);
+                });
+                containerTitle.appendChild(elLine);
+            });
+            elText.appendChild(containerTitle);
+
+            let containerSubtext = document.createElement('p');
+            section.p.forEach((textLine) => {
+                let elLine = document.createElement('p');
+                elLine.classList.add('text-line');
+                let words = this.ExtractWords(textLine);
+                words.forEach((word) => {
+                    let newElWord = document.createElement('span');
+                    newElWord.innerHTML = word;
+                    let hash = this.getWordHash(word);
+                    newElWord.classList.add('word');
+                    newElWord.classList.add('word-hash-' + hash);
+                    this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+
+                    elLine.appendChild(newElWord);
+                });
+                containerSubtext.appendChild(elLine);
+            });
+            elText.appendChild(containerSubtext);
         });
+    }
+
+    static ParseNode(node) {
+
     }
 
     static ExtractWords(str) {
@@ -182,7 +212,7 @@ class App {
     }
 
     static getWordHash(word) {
-        let result = Helper.hashCode(word);
+        let result = Helper.hashCode(word.toLowerCase());
         return result;
     }
 }
