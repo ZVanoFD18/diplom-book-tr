@@ -34,13 +34,32 @@
     </section>
 
 
-
     <section id="read" class="hidden">
         <div id="text" class="text">text</div>
     </section>
 
     <section id="study" class="hidden">
         изучение слов
+        <div class="words-to-study">
+            <div class="tpl-word-row">
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>№пп</th>
+                    <th>Слово</th>
+                    <th>Перевод</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="template">
+                    <td class="cell-word-index">1</td>
+                    <td class="cell-word">2</td>
+                    <td class="cell-translate">3</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
 </div>
@@ -61,6 +80,7 @@
         <p class="wa-translate">Перевод</p>
         <div class="wa-buttons">
             <button class="wa-btn-studied">Знаю</button>
+            <div class="wa-btn-separator"></div>
             <button class="wa-btn-study">Изучить</button>
         </div>
     </div>
@@ -68,7 +88,7 @@
     <!--Виджет "Карточка слова".
     @TODO: Доделать карточку слова.
     -->
-    <div id="winWordCard">
+    <div id="winWordCard" class="hidden">
         <span class="wwc-text">...</span>
         <div class="wwc-buttons">
             <button class="wwc-btn-memorized">Знаю</button>
@@ -78,12 +98,27 @@
 </div>
 </body>
 
-<script src="vendor/xml2json/xml2json.min.js"></script>
+<!--<script src="vendor/xml2json/xml2json.min.js"></script>-->
 <script src="app/js/Helper.js"></script>
-<script src="app/js/app/Loadmask.js"></script>
-<script src="app/js/Fb2.js"></script>
+<script src="app/js/Helper/Google.js"></script>
+<script src="app/js/Helper/Hash.js"></script>
+<script src="app/js/Helper/Io.js"></script>
+<script src="app/js/Helper/Xml.js"></script>
 <script src="app/js/App.js"></script>
-<script>
-    App.run();
+<script src="app/js/App/Fb2.js"></script>
+<script src="app/js/App/Struct.js"></script>
+<script src="app/js/App/Struct/Session.js"></script>
+<script src="app/js/App/Idb.js"></script>
+<script src="app/js/App/Idb/Books.js"></script>
+<script src="app/js/App/Idb/LastSession.js"></script>
+<script src="app/js/App/Loadmask.js"></script>
+
+
+<script defer>
+    'use struct';
+    document.addEventListener('DOMContentLoaded', () => {
+		console.log('Document loaded')
+		App.run();
+	});
 </script>
 </html>

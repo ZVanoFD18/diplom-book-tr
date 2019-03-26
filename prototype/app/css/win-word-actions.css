@@ -19,12 +19,20 @@
 .wa-translate{
     text-align: center;
 }
+
 .wa-buttons{
     text-align: center;
 }
 .wa-btn-studied{
-    margin-right: 20%;
+    --margin-right: 20%;
 }
 .wa-btn-study{
-    margin-left: 20%;
+    --margin-left: 20%;
+}
+/*
+@TODO: Заменить разделитель на flexbox.
+ */
+.wa-btn-separator{
+    display: inline-block;
+    width: 20%;
 }

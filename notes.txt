@@ -28,3 +28,9 @@ Using the Mozilla JavaScript interface to XSL Transformations = https://develope
 --------------------------------------------------------------------------------
 Локализация:
 https://www.npmjs.com/package/po2json
+--------------------------------------------------------------------------------
+indexedDb
+http://mdn.github.io/to-do-notifications/
+https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put
+
+Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
