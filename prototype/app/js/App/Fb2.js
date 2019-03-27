@@ -53,7 +53,6 @@ App.Fb2 = {
             });
             book.sections.push(section);
         });
-        console.log(book);
         return book;
     }
 };

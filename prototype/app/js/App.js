@@ -5,7 +5,7 @@ let App = {
 	/**
 	 * @type {App.Struct.Session}
 	 */
-	session : undefined,
+	session: undefined,
 	debugText: 'В траве сидел кузнечик. He has green color!'.repeat(10),
 	alphabette: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\'',
 	// alphabette : 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890\'',
@@ -27,15 +27,14 @@ let App = {
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
 		document.getElementById('text').addEventListener('click', this.OnTextClick.bind(this));
 		document.getElementById('winWordActions').addEventListener('click', this.OnWordActionClick.bind(this));
-        App.Loadmask.show('Загрузка...');
+		App.Loadmask.show('Загрузка...');
 		this.Idb.open((isSuccess) => {
-			// console.log('aaa', App.Storage.getLastBook());
-			this.Idb.getLastBook((isSuccess, lastBook)=>{
-				if (isSuccess && lastBook){
-                    this.bookToRead(lastBook.content);
+			this.Idb.getLastBook((isSuccess, lastBook) => {
+				if (isSuccess && lastBook) {
+					this.bookToRead(lastBook.content);
 				} else {
-                    this.DisplayStat();
-                    this.go2section('study');
+					this.DisplayStat();
+					this.go2section('study');
 				}
 			});
 			// setTimeout(() => {
@@ -64,29 +63,30 @@ let App = {
 			this.bookToRead(text)
 		});
 	},
-	bookToRead(text){
-        App.Loadmask.show('Конвертация книги...');
-        let book = App.Fb2.getBookFromText(text);
+	bookToRead(text) {
+		App.Loadmask.show('Конвертация книги...');
+		let book = App.Fb2.getBookFromText(text);
+		console.log(book);
 
-        App.Loadmask.show('Формирование области чтения...');
-        this.displayBook(book);
-        this.go2section('read');
-        App.Loadmask.hide();
+		App.Loadmask.show('Формирование области чтения...');
+		this.displayBook(book);
+		this.go2section('read');
+		App.Loadmask.hide();
 
-        App.Idb.Books.add(book.title.join('/'), book.image, text, (isSuccess, bookId, bookHash) => {
-            if(!isSuccess){
-                alert('Ошибка! Не удалось добавить книгу в БД.');
-                return;
-            }
-            this.session.bookHash = bookHash;
-            this.session.bookPosition = 0;
-            App.Idb.LastSession.put(this.session,(isSuccess)=>{
-                if(!isSuccess){
-                    alert('Ошибка! Не удалось обновить сессию в БД.');
-                    return;
-                }
-            })
-        });
+		App.Idb.Books.add(book.title.join('/'), book.image, text, (isSuccess, bookId, bookHash) => {
+			if (!isSuccess) {
+				alert('Ошибка! Не удалось добавить книгу в БД.');
+				return;
+			}
+			this.session.bookHash = bookHash;
+			this.session.bookPosition = 0;
+			App.Idb.LastSession.put(this.session, (isSuccess) => {
+				if (!isSuccess) {
+					alert('Ошибка! Не удалось обновить сессию в БД.');
+					return;
+				}
+			})
+		});
 	},
 
 	go2section(sectionId) {
