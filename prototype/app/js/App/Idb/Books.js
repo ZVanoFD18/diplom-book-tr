@@ -2,7 +2,7 @@
 console.log('App.Idb.Books');
 
 App.Idb.Books = {
-	add(title, image, text, callback) {
+	add(lang, title, image, text, callback) {
 		App.Idb.getDb((isSuccess, db) => {
 			if (!isSuccess) {
 				callback(false);
@@ -11,13 +11,14 @@ App.Idb.Books = {
 			let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
 			let store = transaction.objectStore('Books');
 			let item = {
+				lang : lang,
 				title: title,
 				image: image,
 				hash: undefined,
 				content: text
 			};
 			item.hash = Helper.Hash.md5(item.content);
-			var index = store.index("iHash");
+			var index = store.index('i-hash');
 			let req = index.get(item.hash);
 			req.onsuccess = (event) => {
 				if (undefined !== event.target.result) {

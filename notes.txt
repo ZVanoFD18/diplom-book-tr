@@ -1,5 +1,13 @@
 Дипломный "Перевод книг".
 --------------------------------------------------------------------------------
+Запуск DEV-сервера.
+$webpack-dev-server
+
+В браузере открываем
+http://localhost:8088/
+
+--------------------------------------------------------------------------------
+
 Словари, перевод:
 
 Google Translate API for Free
@@ -32,5 +40,11 @@ https://www.npmjs.com/package/po2json
 indexedDb
 http://mdn.github.io/to-do-notifications/
 https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put
+https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/transaction
+https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange
+https://mdn.github.io/indexeddb-examples/idbkeyrange/
+https://mdn.github.io/indexeddb-examples/
 
 Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
+
+Типы данных: Строки, Числа, Объекты(Массивы), Даты, Файлы.

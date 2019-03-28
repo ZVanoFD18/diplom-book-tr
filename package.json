@@ -1,0 +1,25 @@
+{
+  "name": "zvanoz.diplom",
+  "version": "1.0.0",
+  "description": "Диплом \"Перевод книг\"",
+  "main": "entryPoint.js",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZVanoFD18/diplom-book-tr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZVanoFD18/diplom-book-tr/issues"
+  },
+  "homepage": "https://github.com/ZVanoFD18/diplom-book-tr#readme"
+}

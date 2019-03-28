@@ -6,15 +6,20 @@ let App = {
 	 * @type {App.Struct.Session}
 	 */
 	session: undefined,
-	debugText: 'В траве сидел кузнечик. He has green color!'.repeat(10),
-	alphabette: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\'',
-	// alphabette : 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890\'',
+	langGui: undefined,
+	langStudy: undefined,
 	/**
 	 * private {Object} book
 	 */
 	book: {},
 	wordsStudy: {},
 	wordsStudied: {},
+
+	LANGUAGES: {
+		RUS: 'RUS',
+		ENG: 'ENG'
+	},
+
 	WORD_STATE: {
 		WORD_STATE_STUDY: 'WORD_STATE_STUDY',
 		WORD_STATE_STUDYED: 'WORD_STATE_STUDYES',
@@ -23,23 +28,23 @@ let App = {
 
 	run() {
 		this.session = Object.assign(App.Struct.Session);
+		this.langGui = this.LANGUAGES.RUS;
+		this.langStudy = this.LANGUAGES.ENG;
+
 		document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
-		document.getElementById('text').addEventListener('click', this.OnTextClick.bind(this));
-		document.getElementById('winWordActions').addEventListener('click', this.OnWordActionClick.bind(this));
+		document.getElementById('text').addEventListener('click', this.onTextClick.bind(this));
+		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
 		App.Loadmask.show('Загрузка...');
 		this.Idb.open((isSuccess) => {
 			this.Idb.getLastBook((isSuccess, lastBook) => {
 				if (isSuccess && lastBook) {
 					this.bookToRead(lastBook.content);
 				} else {
-					this.DisplayStat();
+					this.displayStat();
 					this.go2section('study');
 				}
 			});
-			// setTimeout(() => {
-			// 	App.Loadmask.hide();
-			// }, 1500);
 		});
 	},
 
@@ -73,7 +78,7 @@ let App = {
 		this.go2section('read');
 		App.Loadmask.hide();
 
-		App.Idb.Books.add(book.title.join('/'), book.image, text, (isSuccess, bookId, bookHash) => {
+		App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text, (isSuccess, bookId, bookHash) => {
 			if (!isSuccess) {
 				alert('Ошибка! Не удалось добавить книгу в БД.');
 				return;
@@ -109,14 +114,14 @@ let App = {
 			section.title.forEach((titleLine) => {
 				let elLine = document.createElement('p');
 				elLine.classList.add('text-title');
-				let words = this.ExtractWords(titleLine);
+				let words = App.Words.getWords(this.langStudy, titleLine);
 				words.forEach((word) => {
 					let newElWord = document.createElement('span');
 					newElWord.innerHTML = word;
 					let hash = this.getWordHash(word);
 					newElWord.classList.add('word');
 					newElWord.classList.add('word-hash-' + hash);
-					this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+					this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
 
 					elLine.appendChild(newElWord);
 				});
@@ -128,14 +133,14 @@ let App = {
 			section.p.forEach((textLine) => {
 				let elLine = document.createElement('p');
 				elLine.classList.add('text-line');
-				let words = this.ExtractWords(textLine);
+				let words = App.Words.getWords(this.langStudy, textLine);
 				words.forEach((word) => {
 					let newElWord = document.createElement('span');
 					newElWord.innerHTML = word;
 					let hash = this.getWordHash(word);
 					newElWord.classList.add('word');
 					newElWord.classList.add('word-hash-' + hash);
-					this.WordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+					this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
 
 					elLine.appendChild(newElWord);
 				});
@@ -145,68 +150,12 @@ let App = {
 		});
 	},
 
-	ExtractWords(str) {
-		let words = [];
-		let word = '';
-		let separatorsInclude = ',-';
-		let separatorsExclude = ' ';
-		let punctuation = '?!.';
-		let isPrevAlphabette = true;
-		for (let i = 0, len = str.length; i < len; i++) {
-			let currChar = str[i];
-			if (this.alphabette.indexOf(currChar) >= 0) {
-				if (!isPrevAlphabette) {
-					words.push(word);
-					word = '';
-					isPrevAlphabette = true;
-				}
-				word += currChar;
-				continue;
-			}
-			if (word !== '') {
-				if (isPrevAlphabette) {
-					words.push(word);
-					word = '';
-				}
-			}
-			if (punctuation.indexOf(currChar) >= 0) {
-				if (word !== '') {
-					words.push(word);
-					word = '';
-				}
-				words.push(currChar);
-				continue;
-			}
-			if (separatorsInclude.indexOf(currChar) >= 0) {
-				if (word !== '') {
-					words.push(word);
-					word = '';
-				}
-				words.push(currChar);
-				continue;
-			}
-			if (separatorsExclude.indexOf(currChar) >= 0) {
-				if (word !== '') {
-					words.push(word);
-					word = '';
-				}
-				continue;
-			}
-			word += currChar;
-			isPrevAlphabette = false;
-		}
-		if (word !== '') {
-			words.push(word);
-		}
-		return words;
-	},
-
 	/**
 	 *
 	 * @param {DomEvent} e
 	 * @constructor
 	 */
-	OnTextClick(e) {
+	onTextClick(e) {
 		let elDialog = document.getElementById('winWordActions');
 		if (!e.target.classList.contains('word')) {
 			elDialog.classList.add('wa-hidden');
@@ -223,31 +172,31 @@ let App = {
 		});
 	},
 
-	OnWordActionClick(e) {
+	onWordActionClick(e) {
 		let word = undefined,
 			elWord = undefined;
 		if (e.target.classList.contains('wa-btn-studied')) {
 			document.getElementById('winWordActions').classList.add('wa-hidden');
 			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
 			this.WordStudyedAdd(word);
-			this.WordsMark(word, this.WORD_STATE.WORD_STATE_STUDYED);
+			this.wordsMark(word, this.WORD_STATE.WORD_STATE_STUDYED);
 		} else if (e.target.classList.contains('wa-btn-study')) {
 			document.getElementById('winWordActions').classList.add('wa-hidden');
 			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
-			this.WordStudyAdd(word);
-			this.WordsMark(word, this.WORD_STATE.WORD_STATE_STUDY);
+			this.wordStudyAdd(word);
+			this.wordsMark(word, this.WORD_STATE.WORD_STATE_STUDY);
 		}
 	},
 
-	WordsMark(word, state) {
+	wordsMark(word, state) {
 		let classWordHash = 'word-hash-' + this.getWordHash(word);
 		let words = document.getElementById('text').querySelectorAll('.' + classWordHash);
 		words.forEach((elWord) => {
-			this.WordElMark(elWord, state);
+			this.wordElMark(elWord, state);
 		});
 	},
 
-	WordElMark(elWord, state) {
+	wordElMark(elWord, state) {
 		elWord.classList.remove('word-unknown');
 		elWord.classList.remove('word-study');
 		elWord.classList.remove('word-studied');
@@ -264,19 +213,39 @@ let App = {
 		}
 	},
 
-	WordStudyAdd(word) {
+	wordStudyAdd(word) {
 		this.wordsStudy[word] = true;
 		delete this.wordsStudied[word];
-		this.DisplayStat();
+		App.Idb.WordsStudy.put(this.langStudy, word, {
+			isStudy: 1
+		}, (isSuccess) => {
+			console.log('wordStudyAdd', isSuccess);
+
+			App.Idb.WordsStudy.getCountStudy(this.langStudy, (isSuccess, count)=>{
+				console.log(isSuccess, count);
+			});
+			// @TODO: Разобраться и переделать на Promise
+			// App.Idb.WordsStudy.getCountStudy(this.langStudy).then((isSuccess, count)=>{
+			// 	console.log(isSuccess, count);
+			// });
+
+		});
+		this.displayStat();
 	},
 
 	WordStudyedAdd(word) {
 		this.wordsStudied[word] = true;
 		delete this.wordsStudy[word];
-		this.DisplayStat();
+
+		App.Idb.WordsStudy.put(this.langStudy, word, {
+			isStudy: 0
+		}, (isSuccess) => {
+			console.log('wordStudyAdd', isSuccess);
+		});
+		this.displayStat();
 	},
 
-	DisplayStat() {
+	displayStat() {
 		document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = Object.keys(this.wordsStudy).length;
 		document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = Object.keys(this.wordsStudied).length;
 	},

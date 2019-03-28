@@ -6,7 +6,7 @@
 Helper.Io = {};
 Helper.Io.loadTextFromInputFile = function (elFile, callback) {
 	let files = elFile.files;
-	var reader = new FileReader();
+	let reader = new FileReader();
 	reader.onload = (e) => {
 		callback(true, e.target.result);
 	};
