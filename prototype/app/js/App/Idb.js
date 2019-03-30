@@ -2,77 +2,121 @@
 console.log('App.Idb');
 
 App.Idb = {
+	TRUE: 1,
+	FALSE: 0,
 	/**
 	 * @type {IDBDatabase}
 	 */
 	_db: undefined,
+	/**
+	 *
+	 * @param callback
+	 * @return {Promise<any>}
+	 */
 	getDb(callback) {
-		if (this._db) {
-			callback(true, this._db);
+		if (Helper.isFunction(callback)) {
+			Helper.Log.addTodo('Нужно использовать Promise');
+			this.getDb()
+				.then(() => {
+					callback(true, this._db)
+				})
+				.catch((result) => {
+					callback(false);
+				})
 		} else {
-			this.open((isSuccess) => {
-				callback(isSuccess, this._db);
+			return new Promise((resolve, reject) => {
+				if (this._db) {
+					resolve(this._db);
+				} else {
+					this.open()
+						.then((result) => {
+							resolve(this._db);
+						})
+						.catch((result) => {
+							reject(result);
+						})
+				}
 			})
 		}
 	},
+	/**
+	 *
+	 * @param callback
+	 * @return {Promise}
+	 */
 	open(callback) {
-		if (!window.indexedDB) {
-			window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-		}
-		/**
-		 *
-		 * @type {IDBOpenDBRequest}
-		 */
-		let request = indexedDB.open('main', 1);
-		request.onblocked = function (event) {
-			// If some other tab is loaded with the database, then it needs to be closed
-			// before we can proceed.
-			alert("Пожалуйста закройте все другие вкладки, открытые на этом свйте!");
-		};
+		if (Helper.isFunction(callback)) {
+			Helper.Log.addTodo('Нужно использовать Promise');
+			this.open()
+				.then(() => {
+					callback(true)
+				})
+				.catch((result) => {
+					callback(false);
+				})
+		} else {
+			return new Promise((resolve, reject) => {
+				if (!window.indexedDB) {
+					window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+				}
+				/**
+				 *
+				 * @type {IDBOpenDBRequest}
+				 */
+				let request = indexedDB.open('main', 1);
+				request.onblocked = function (event) {
+					// If some other tab is loaded with the database, then it needs to be closed
+					// before we can proceed.
+					alert("Пожалуйста закройте все другие вкладки, открытые на этом сайте!");
+				};
 
-		request.onupgradeneeded = this.onUpgradeNeeded.bind(this);
-		request.onsuccess = (event) => {
-			this._db = event.target.result;
-			this._db.onversionchange = this.onVersionChange.bind(this);
-			callback(true);
-		};
-		request.onerror = (event) => {
-			console.log('Ошибка! Проблема при открытии Вашей БД.');
-			callback(false);
-		};
+				request.onupgradeneeded = this.onUpgradeNeeded.bind(this);
+				request.onsuccess = (event) => {
+					this._db = event.target.result;
+					this._db.onversionchange = this.onVersionChange.bind(this);
+					resolve();
+				};
+				request.onerror = (event) => {
+					Helper.Log.addDebug('Ошибка! Проблема при открытии Вашей БД.');
+					reject();
+				};
+			});
+		}
+
 	},
 
 	getLastBook(callback) {
-		this.getDb((isSuccess, db) => {
-			if (!isSuccess) {
-				callback(false);
-				return;
-			}
-			let transaction = db.transaction(['LastSession', 'Books'], 'readonly');
-			let storeLastSession = transaction.objectStore('LastSession');
-			let req = storeLastSession.get(0);
-			req.onsuccess = (event) => {
-				if (!event.target.result) {
-					callback(false);
+		return new Promise((resolve, reject) => {
+			let db;
+			this.getDb().then((resDb) => {
+				db = resDb;
+				return new Promise((resolve, reject) => {
+					let transaction = db.transaction(['LastSession'], 'readonly');
+					let store = transaction.objectStore('LastSession');
+					let req = store.get(0);
+					req.onsuccess = (event) => {
+						resolve(req.result);
+					};
+					req.onerror = (event) => {
+						reject();
+					};
+				});
+			}).then((lastSession) => {
+				if (!lastSession) {
+					resolve(undefined);
 					return;
 				}
-				let storeBooks = transaction.objectStore('Books');
-				let index = storeBooks.index('i-hash');
-				if (!event.target.result.bookHash) {
-					callback(false);
-					return;
-				}
-				let req = index.get(event.target.result.bookHash);
+				let transaction = db.transaction(['Books'], 'readonly');
+				let store = transaction.objectStore('Books');
+				let index = store.index('i-hash');
+				let req = index.get(lastSession.bookHash);
 				req.onsuccess = (event) => {
-					callback(true, event.target.result);
+					resolve(req.result);
 				};
 				req.onerror = (event) => {
-					callback(false);
+					reject();
 				};
-			};
-			req.onerror = (event) => {
-				callback(false);
-			};
+			});
 		});
 	},
 	onUpgradeNeeded(event) {
@@ -90,7 +134,7 @@ App.Idb = {
 					// keyPath: 'id',
 					autoIncrement: true
 				});
-				tmpObjStore.createIndex('i-lang', 'lang' );
+				tmpObjStore.createIndex('i-lang', 'lang');
 
 				tmpObjStore.createIndex('i-hash', 'hash', {
 					unique: true

@@ -10,7 +10,9 @@
     "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "startg": "webpack-dev-server --open",
+    "startl": "node_modules/.bin/webpack-dev-server --open --env development"
   },
   "repository": {
     "type": "git",

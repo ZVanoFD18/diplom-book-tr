@@ -15,9 +15,9 @@ Helper.Object = {};
  */
 Helper.Object.apply = function (targetObj, sourceObj, isRecursive) {
 	isRecursive = isRecursive || false;
-	for(let key in sourceObj){
-		if(Helper.isObject(sourceObj[key])){
-			if(isRecursive){
+	for (let key in sourceObj) {
+		if (Helper.isObject(sourceObj[key])) {
+			if (isRecursive) {
 				Helper.Object.apply(targetObj[key], sourceObj[key]);
 			} else {
 				targetObj[key] = Object.assign({}, sourceObj[key]);
@@ -25,5 +25,24 @@ Helper.Object.apply = function (targetObj, sourceObj, isRecursive) {
 			continue;
 		}
 		targetObj[key] = sourceObj[key];
+	}
+};
+
+/**
+ * Переопределяет значения свойств targetObj значениями из sourceObj.
+ * При этом свойство должно присутствовать в targetObj.
+ * Если свойство не найдено в targetObj и включен режим isStrict, то генерируется исключение.
+ * @param targetObj
+ * @param sourceObj
+ * @param isStrict
+ */
+Helper.Object.replaceMembers = function (targetObj, sourceObj, isStrict) {
+	isStrict = isStrict === undefined ? true : isStrict;
+	for (let key in sourceObj) {
+		if (key in targetObj) {
+			targetObj[key] = sourceObj[key];
+		} else if (isStrict) {
+			throw new Error('Поле "' + key + '" не найдено в целевом объекте');
+		}
 	}
 };

@@ -2,40 +2,113 @@
 console.log('App.Idb.Books');
 
 App.Idb.Books = {
-	add(lang, title, image, text, callback) {
-		App.Idb.getDb((isSuccess, db) => {
-			if (!isSuccess) {
-				callback(false);
-				return;
-			}
-			let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
-			let store = transaction.objectStore('Books');
-			let item = {
-				lang : lang,
-				title: title,
-				image: image,
-				hash: undefined,
-				content: text
-			};
-			item.hash = Helper.Hash.md5(item.content);
-			var index = store.index('i-hash');
-			let req = index.get(item.hash);
-			req.onsuccess = (event) => {
-				if (undefined !== event.target.result) {
-					callback(true, event.result, item.hash);
-					return;
-				}
-				let req = store.put(item);
+	Struct: {
+		version: 1,
+		lang: undefined,
+		title: undefined,
+		image: undefined,
+		hash: undefined,
+		content: undefined
+	},
+	/**
+	 *
+	 * @param hash
+	 * @return {Promise<any>}
+	 */
+	getKeyByHash(hash) {
+		return new Promise((resolve, reject) => {
+			App.Idb.getDb().then((db) => {
+				let store = db.transaction(['Books'], 'readonly').objectStore('Books');
+				let index = store.index('i-hash');
+				let req = index.getKey(hash);
 				req.onsuccess = (event) => {
-					callback(true, event.result, item.hash);
+					resolve(req.result);
 				};
 				req.onerror = (event) => {
-					callback(false);
+					reject();
 				};
-			};
-			req.onerror = (event) => {
-				callback(false);
-			};
+			});
 		});
+	},
+	/**
+	 *
+	 * @param hash
+	 * @return {Promise<any>}
+	 */
+	getByHash(hash) {
+		let result = {
+			key: undefined,
+			book: undefined
+		};
+		return new Promise((resolve, reject) => {
+			App.Idb.getDb().then((db) => {
+				let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
+				let store = transaction.objectStore('Books');
+				let index = store.index('i-hash');
+				let req = index.get(hash);
+				req.onsuccess = (event) => {
+					if (undefined !== req.result) {
+						result.book = req.result;
+						this.getKeyByHash(hash).then((key) => {
+							result.key = key;
+							resolve(result);
+						}).catch((e) => {
+							reject(e);
+						});
+					} else {
+						resolve(undefined);
+					}
+				};
+				req.onerror = (event) => {
+					Helper.Log.addDebug(event);
+					reject('Ошибка при поиске книги по хешу.');
+				};
+			});
+		});
+	},
+	/**
+	 *
+	 * @param lang
+	 * @param title
+	 * @param image
+	 * @param text
+	 * @return {Promise<any>}
+	 */
+	add(lang, title, image, text) {
+		return new Promise((resolve, reject) => {
+			let store;
+			let item = Object.assign({}, this.Struct);
+			Helper.Object.replaceMembers(item, {
+				lang: lang,
+				title: title,
+				image: image,
+				hash: Helper.Hash.md5(text),
+				content: text
+			});
+			App.Idb.getDb().then((db) => {
+				return this.getByHash(item.hash);
+			}).then((foundBook) => {
+				if (foundBook) {
+					return foundBook;
+				};
+				return new Promise((resolve, reject) => {
+					let req = store.put(item);
+					req.onsuccess = (event) => {
+						resolve({
+							bookId: event.result,
+							bookHash: item.hash
+						});
+					};
+					req.onerror = (event) => {
+						Helper.Log.addDebug(event);
+						reject('Не удалось добавить книгу в БД.');
+					};
+				})
+			}).then((result) => {
+				resolve(result);
+			}).catch((e) => {
+				reject(e);
+			})
+		})
 	}
 };

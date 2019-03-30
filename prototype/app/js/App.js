@@ -2,10 +2,7 @@
 console.log('App');
 
 let App = {
-	/**
-	 * @type {App.Struct.Session}
-	 */
-	session: undefined,
+
 	langGui: undefined,
 	langStudy: undefined,
 	/**
@@ -27,7 +24,6 @@ let App = {
 	},
 
 	run() {
-		this.session = Object.assign(App.Struct.Session);
 		this.langGui = this.LANGUAGES.RUS;
 		this.langStudy = this.LANGUAGES.ENG;
 
@@ -36,16 +32,14 @@ let App = {
 		document.getElementById('text').addEventListener('click', this.onTextClick.bind(this));
 		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
 		App.Loadmask.show('Загрузка...');
-		this.Idb.open((isSuccess) => {
-			this.Idb.getLastBook((isSuccess, lastBook) => {
-				if (isSuccess && lastBook) {
-					this.bookToRead(lastBook.content);
-				} else {
-					this.displayStat();
-					this.go2section('study');
-				}
-			});
+		this.Idb.getLastBook().then((lastBook) => {
+			this.bookToRead(lastBook.content, false);
+		}).catch(() => {
+			this.displayStat();
+			this.go2section('study');
 		});
+		this.displayStat();
+
 	},
 
 	onNavClick(event) {
@@ -65,10 +59,11 @@ let App = {
 				App.Loadmask.hide();
 				return;
 			}
-			this.bookToRead(text)
+			this.bookToRead(text, true)
 		});
 	},
-	bookToRead(text) {
+	bookToRead(text, isAdd) {
+		isAdd = isAdd || true;
 		App.Loadmask.show('Конвертация книги...');
 		let book = App.Fb2.getBookFromText(text);
 		console.log(book);
@@ -77,21 +72,14 @@ let App = {
 		this.displayBook(book);
 		this.go2section('read');
 		App.Loadmask.hide();
-
-		App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text, (isSuccess, bookId, bookHash) => {
-			if (!isSuccess) {
+		if (isAdd) {
+			App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
+				App.Idb.LastSession.put(result.book.hash, 0).then(() => {
+				});
+			}).catch(() => {
 				alert('Ошибка! Не удалось добавить книгу в БД.');
-				return;
-			}
-			this.session.bookHash = bookHash;
-			this.session.bookPosition = 0;
-			App.Idb.LastSession.put(this.session, (isSuccess) => {
-				if (!isSuccess) {
-					alert('Ошибка! Не удалось обновить сессию в БД.');
-					return;
-				}
-			})
-		});
+			});
+		}
 	},
 
 	go2section(sectionId) {
@@ -214,40 +202,41 @@ let App = {
 	},
 
 	wordStudyAdd(word) {
-		this.wordsStudy[word] = true;
-		delete this.wordsStudied[word];
+		//this.wordsStudy[word] = true;
+		//delete this.wordsStudied[word];
 		App.Idb.WordsStudy.put(this.langStudy, word, {
-			isStudy: 1
-		}, (isSuccess) => {
-			console.log('wordStudyAdd', isSuccess);
-
-			App.Idb.WordsStudy.getCountStudy(this.langStudy, (isSuccess, count)=>{
-				console.log(isSuccess, count);
-			});
-			// @TODO: Разобраться и переделать на Promise
-			// App.Idb.WordsStudy.getCountStudy(this.langStudy).then((isSuccess, count)=>{
-			// 	console.log(isSuccess, count);
-			// });
-
+			isStudy: App.Idb.TRUE
+		}).then((isSuccess) => {
+			console.log('wordStudyAdd1', isSuccess);
+			this.displayStat();
+		}).catch((e) => {
+			console.log('wordStudyAdd1  /false', e);
 		});
-		this.displayStat();
 	},
 
 	WordStudyedAdd(word) {
-		this.wordsStudied[word] = true;
-		delete this.wordsStudy[word];
+		// this.wordsStudied[word] = true;
+		// delete this.wordsStudy[word];
 
 		App.Idb.WordsStudy.put(this.langStudy, word, {
-			isStudy: 0
-		}, (isSuccess) => {
-			console.log('wordStudyAdd', isSuccess);
+			isStudy: App.Idb.FALSE
+		}).then((isSuccess) => {
+			console.log('wordStudyAdd2', isSuccess);
+			this.displayStat();
+		}).catch((e) => {
+			console.log('wordStudyAdd2/false', e);
 		});
-		this.displayStat();
 	},
 
 	displayStat() {
-		document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = Object.keys(this.wordsStudy).length;
-		document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = Object.keys(this.wordsStudied).length;
+		App.Idb.WordsStudy.getStat(this.langStudy).then((stat) => {
+			document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = stat.cntStudy;
+			document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = stat.cntStudied;
+		}).catch((e) => {
+			Helper.Log.addDebug('Непредвиденная ошибка при получении статистики изучения слов');
+			document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = '???';
+			document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = '???';
+		})
 	},
 
 	getWordHash(word) {
