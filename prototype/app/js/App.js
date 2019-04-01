@@ -69,17 +69,19 @@ let App = {
 		console.log(book);
 
 		App.Loadmask.show('Формирование области чтения...');
-		this.displayBook(book);
-		this.go2section('read');
-		App.Loadmask.hide();
-		if (isAdd) {
-			App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
-				App.Idb.LastSession.put(result.book.hash, 0).then(() => {
+		this.displayBook(book).then(() => {
+			this.go2section('read');
+			App.Loadmask.hide();
+			if (isAdd) {
+				App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
+					App.Idb.LastSession.put(result.book.hash, 0).then(() => {
+					});
+				}).catch((e) => {
+					Helper.Log.addDebug(e);
+					alert('Ошибка! Не удалось добавить книгу в БД.');
 				});
-			}).catch(() => {
-				alert('Ошибка! Не удалось добавить книгу в БД.');
-			});
-		}
+			}
+		});
 	},
 
 	go2section(sectionId) {
@@ -95,46 +97,67 @@ let App = {
 	},
 
 	displayBook(book) {
-		let elText = document.getElementById('text');
-		elText.innerHTML = '';
-		book.sections.forEach((section) => {
-			let containerTitle = document.createElement('h2');
-			section.title.forEach((titleLine) => {
-				let elLine = document.createElement('p');
-				elLine.classList.add('text-title');
-				let words = App.Words.getWords(this.langStudy, titleLine);
-				words.forEach((word) => {
-					let newElWord = document.createElement('span');
-					newElWord.innerHTML = word;
-					let hash = this.getWordHash(word);
-					newElWord.classList.add('word');
-					newElWord.classList.add('word-hash-' + hash);
-					this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
-
-					elLine.appendChild(newElWord);
-				});
-				containerTitle.appendChild(elLine);
+		return new Promise((resolve, reject) => {
+			let elText = document.getElementById('text');
+			let wordsStudy = {};
+			App.Idb.WordsStudy.getAll(this.langStudy).then((resWords) => {
+				wordsStudy = resWords;
+				parseBook();
+			}).catch(() => {
+				parseBook();
 			});
-			elText.appendChild(containerTitle);
 
-			let containerSubtext = document.createElement('p');
-			section.p.forEach((textLine) => {
-				let elLine = document.createElement('p');
-				elLine.classList.add('text-line');
-				let words = App.Words.getWords(this.langStudy, textLine);
-				words.forEach((word) => {
-					let newElWord = document.createElement('span');
-					newElWord.innerHTML = word;
-					let hash = this.getWordHash(word);
-					newElWord.classList.add('word');
-					newElWord.classList.add('word-hash-' + hash);
-					this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+			let parseBook = () => {
+				elText.innerHTML = '';
+				book.sections.forEach((section) => {
+					let containerTitle = document.createElement('h2');
+					section.title.forEach((titleLine) => {
+						let elLine = document.createElement('p');
+						elLine.classList.add('text-title');
+						let words = App.Words.getWords(this.langStudy, titleLine);
+						words.forEach((word) => {
+							let newElWord = document.createElement('span');
+							newElWord.innerHTML = word;
+							let hash = this.getWordHash(word);
+							newElWord.classList.add('word');
+							newElWord.classList.add('word-hash-' + hash);
+							let normalizedWord = App.Idb.getNormalizedWord(word);
+							if (normalizedWord in wordsStudy) {
+								if (wordsStudy[normalizedWord].isStudy) {
+									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDY);
+								} else {
+									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDYED);
+								}
+							} else {
+								this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+							}
+							elLine.appendChild(newElWord);
+						});
+						containerTitle.appendChild(elLine);
+					});
+					elText.appendChild(containerTitle);
 
-					elLine.appendChild(newElWord);
+					let containerSubtext = document.createElement('p');
+					section.p.forEach((textLine) => {
+						let elLine = document.createElement('p');
+						elLine.classList.add('text-line');
+						let words = App.Words.getWords(this.langStudy, textLine);
+						words.forEach((word) => {
+							let newElWord = document.createElement('span');
+							newElWord.innerHTML = word;
+							let hash = this.getWordHash(word);
+							newElWord.classList.add('word');
+							newElWord.classList.add('word-hash-' + hash);
+							this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+
+							elLine.appendChild(newElWord);
+						});
+						containerSubtext.appendChild(elLine);
+					});
+					elText.appendChild(containerSubtext);
 				});
-				containerSubtext.appendChild(elLine);
-			});
-			elText.appendChild(containerSubtext);
+				resolve();
+			}
 		});
 	},
 

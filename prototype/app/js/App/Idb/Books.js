@@ -42,7 +42,7 @@ App.Idb.Books = {
 		};
 		return new Promise((resolve, reject) => {
 			App.Idb.getDb().then((db) => {
-				let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
+				let transaction = db.transaction(['Books'], 'readonly'); //readonly - для чтения
 				let store = transaction.objectStore('Books');
 				let index = store.index('i-hash');
 				let req = index.get(hash);
@@ -76,7 +76,7 @@ App.Idb.Books = {
 	 */
 	add(lang, title, image, text) {
 		return new Promise((resolve, reject) => {
-			let store;
+			let db;
 			let item = Object.assign({}, this.Struct);
 			Helper.Object.replaceMembers(item, {
 				lang: lang,
@@ -85,18 +85,21 @@ App.Idb.Books = {
 				hash: Helper.Hash.md5(text),
 				content: text
 			});
-			App.Idb.getDb().then((db) => {
+			App.Idb.getDb().then((retDb) => {
+				db = retDb;
 				return this.getByHash(item.hash);
 			}).then((foundBook) => {
 				if (foundBook) {
 					return foundBook;
-				};
+				}
 				return new Promise((resolve, reject) => {
+					let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
+					let store = transaction.objectStore('Books');
 					let req = store.put(item);
 					req.onsuccess = (event) => {
 						resolve({
-							bookId: event.result,
-							bookHash: item.hash
+							key: event.result,
+							book: item
 						});
 					};
 					req.onerror = (event) => {
@@ -107,6 +110,7 @@ App.Idb.Books = {
 			}).then((result) => {
 				resolve(result);
 			}).catch((e) => {
+				Helper.Log.addDebug(event);
 				reject(e);
 			})
 		})

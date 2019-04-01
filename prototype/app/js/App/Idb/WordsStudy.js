@@ -24,12 +24,7 @@ App.Idb.WordsStudy = {
 		Helper.Object.replaceMembers(result, data);
 		return result;
 	},
-	getNormalizedLang(lang) {
-		return lang.toUpperCase();
-	},
-	getNormalizedWord(word) {
-		return word.toLowerCase();
-	},
+
 	/**
 	 * Врзвращает ключ для слова.
 	 * @param lang
@@ -40,7 +35,7 @@ App.Idb.WordsStudy = {
 			return new Promise((resolve, reject) => {
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				let index = store.index('i-lang-word');
-				let req = index.getKey([this.getNormalizedLang(lang), this.getNormalizedWord(word)]);
+				let req = index.getKey([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
 				req.onsuccess = (event) => {
 					resolve(req.result);
 				};
@@ -60,7 +55,7 @@ App.Idb.WordsStudy = {
 			return App.Idb.getDb().then((db) => {
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				let index = store.index('i-lang-word');
-				let req = index.get([this.getNormalizedLang(lang), this.getNormalizedWord(word)]);
+				let req = index.get([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
 				req.onsuccess = (event) => {
 					resolve(this.getStructFromData(event.target.result));
 				};
@@ -69,6 +64,46 @@ App.Idb.WordsStudy = {
 				};
 			})
 		});
+	},
+	getAll(lang) {
+		return new Promise((resolve, reject) => {
+			let result = {};
+			App.Idb.getDb().then((db) => {
+				const normalizedLang = App.Idb.getNormalizedLang(lang);
+				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
+				let index = store.index('i-lang');
+				const key = IDBKeyRange.only(App.Idb.getNormalizedLang(lang));
+				// const key = IDBKeyRange.bound(App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedLang(lang));
+
+
+				// index.getAll(normalizedLang).onsuccess = (event) => {
+				// 	//store.getAll(key).onsuccess = (event) => {
+				// 	let result = event.target.result;
+				// 	if (!result || result.length < 1) {
+				// 		resolve(result);
+				// 		return;
+				// 	}
+				// 	resolve(result);
+				// }
+
+				// @TODO: Разобраться с поиском слов по индексу. Сейчас не фильтруется по языку изучаемых слов.
+				let req = index.openCursor();
+				//let req = index.openCursor(key);
+				//index.openCursor(key).onsuccess = (event) => {
+				req.onsuccess = (event) => {
+					let cursor = req.result;
+					if (!cursor) {
+						resolve(result);
+						return;
+					}
+					result[cursor.value.word] = cursor.value;
+					cursor.continue()
+				}
+
+			}).catch((e) => {
+				throw e;
+			});
+		})
 	},
 	/**
 	 * Вставить или обновить слово.
@@ -98,8 +133,8 @@ App.Idb.WordsStudy = {
 					}
 					Helper.Object.apply(existsStruct, data);
 					Helper.Object.apply(existsStruct, {
-						lang: this.getNormalizedLang(lang),
-						word: this.getNormalizedWord(word)
+						lang: App.Idb.getNormalizedLang(lang),
+						word: App.Idb.getNormalizedWord(word)
 					});
 					let transaction = db.transaction(['WordsStudy'], 'readwrite');
 					let store = transaction.objectStore('WordsStudy');
@@ -127,7 +162,7 @@ App.Idb.WordsStudy = {
 					 * @type {IDBIndex}
 					 */
 					let index = store.index('i-lang-isStudy');
-					const key = IDBKeyRange.only([this.getNormalizedLang(lang), isStudy]);
+					const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang), isStudy]);
 					let req = index.count(key);
 					req.onsuccess = (event) => {
 						return new Promise(() => {

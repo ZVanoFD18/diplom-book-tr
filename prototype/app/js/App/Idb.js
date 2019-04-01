@@ -84,7 +84,18 @@ App.Idb = {
 		}
 
 	},
-
+	getNormalizedLang(lang) {
+		return lang.toUpperCase();
+	},
+	/**
+	 * Возвращает нормализованное значение слова.
+	 * Т.е. в этом регистре храним слова, в этом регистре ищем по базе.
+	 * @param word
+	 * @return {string}
+	 */
+	getNormalizedWord(word) {
+		return word.toLowerCase();
+	},
 	getLastBook(callback) {
 		return new Promise((resolve, reject) => {
 			let db;

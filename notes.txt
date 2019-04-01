@@ -61,7 +61,7 @@ http://chitalka.github.io/demo/
 
 https://www.npmjs.com/package/viva-parser-fb2
 
-Оказалось, что книги FB2 отличаются по структуре. @TODO: попробовать XSLT преобразования.
+Оказалось, что книги FB2 отличаются по структуре. @DONE: попробовать XSLT преобразования.
 XSLT - On the Client = https://www.w3schools.com/xml/xsl_client.asp
 XSLT на стороне клиента = https://msiter.ru/tutorials/xslt/xsl-client
 Using the Mozilla JavaScript interface to XSL Transformations = https://developer.mozilla.org/en-US/docs/Web/XSLT/Using_the_Mozilla_JavaScript_interface_to_XSL_Transformations
@@ -70,13 +70,18 @@ Using the Mozilla JavaScript interface to XSL Transformations = https://develope
 https://www.npmjs.com/package/po2json
 --------------------------------------------------------------------------------
 indexedDb
+Типы данных: Строки, Числа, Объекты(Массивы), Даты, Файлы.
+
+Спецификация = https://w3c.github.io/IndexedDB/
+Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
+
 http://mdn.github.io/to-do-notifications/
 https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put
 https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/transaction
 https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange
+
+indexedDb/Примеры
 https://mdn.github.io/indexeddb-examples/idbkeyrange/
 https://mdn.github.io/indexeddb-examples/
+http://marco-c.github.io/eLibri/
 
-Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
-
-Типы данных: Строки, Числа, Объекты(Массивы), Даты, Файлы.
