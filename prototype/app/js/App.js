@@ -2,16 +2,6 @@
 console.log('App');
 
 let App = {
-
-	langGui: undefined,
-	langStudy: undefined,
-	/**
-	 * private {Object} book
-	 */
-	book: {},
-	wordsStudy: {},
-	wordsStudied: {},
-
 	LANGUAGES: {
 		RUS: 'RUS',
 		ENG: 'ENG'
@@ -23,14 +13,26 @@ let App = {
 		WORD_STATE_UNKNOWN: 'WORD_STATE_UNKNOWN'
 	},
 
+	langGui: undefined,
+	langStudy: undefined,
+	/**
+	 * private {Object} book
+	 */
+	book: {},
+
 	run() {
 		this.langGui = this.LANGUAGES.RUS;
 		this.langStudy = this.LANGUAGES.ENG;
+		// this.langGui = this.LANGUAGES.ENG;
+		// this.langStudy = this.LANGUAGES.RUS;
+
 
 		document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
 		document.getElementById('text').addEventListener('click', this.onTextClick.bind(this));
 		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
+		App.Component.Study.init(document.getElementById('study'));
+
 		App.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
 			this.bookToRead(lastBook.content, false);
@@ -93,6 +95,11 @@ let App = {
 			document.getElementById(sectionId).classList.remove('hidden');
 			document.getElementById(sectionId).scrollIntoView();
 			App.Loadmask.hide();
+			switch (sectionId){
+				case 'study' :
+					this.Component.Study.display();
+					break;
+			}
 		}, 50);
 	},
 
@@ -148,7 +155,16 @@ let App = {
 							let hash = this.getWordHash(word);
 							newElWord.classList.add('word');
 							newElWord.classList.add('word-hash-' + hash);
-							this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+							let normalizedWord = App.Idb.getNormalizedWord(word);
+							if (normalizedWord in wordsStudy) {
+								if (wordsStudy[normalizedWord].isStudy) {
+									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDY);
+								} else {
+									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDYED);
+								}
+							} else {
+								this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
+							}
 
 							elLine.appendChild(newElWord);
 						});
@@ -225,8 +241,6 @@ let App = {
 	},
 
 	wordStudyAdd(word) {
-		//this.wordsStudy[word] = true;
-		//delete this.wordsStudied[word];
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.TRUE
 		}).then((isSuccess) => {
@@ -238,9 +252,6 @@ let App = {
 	},
 
 	WordStudyedAdd(word) {
-		// this.wordsStudied[word] = true;
-		// delete this.wordsStudy[word];
-
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.FALSE
 		}).then((isSuccess) => {

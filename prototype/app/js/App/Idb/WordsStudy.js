@@ -65,41 +65,36 @@ App.Idb.WordsStudy = {
 			})
 		});
 	},
-	getAll(lang) {
+	getAll(lang, filters={}) {
+		Helper.Object.replaceMembers({
+			from : undefined,
+			to : undefined
+		}, filters);
 		return new Promise((resolve, reject) => {
 			let result = {};
+			let cnr=0;
 			App.Idb.getDb().then((db) => {
 				const normalizedLang = App.Idb.getNormalizedLang(lang);
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				let index = store.index('i-lang');
-				const key = IDBKeyRange.only(App.Idb.getNormalizedLang(lang));
-				// const key = IDBKeyRange.bound(App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedLang(lang));
-
-
-				// index.getAll(normalizedLang).onsuccess = (event) => {
-				// 	//store.getAll(key).onsuccess = (event) => {
-				// 	let result = event.target.result;
-				// 	if (!result || result.length < 1) {
-				// 		resolve(result);
-				// 		return;
-				// 	}
-				// 	resolve(result);
-				// }
-
-				// @TODO: Разобраться с поиском слов по индексу. Сейчас не фильтруется по языку изучаемых слов.
-				let req = index.openCursor();
-				//let req = index.openCursor(key);
-				//index.openCursor(key).onsuccess = (event) => {
+				const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang)]);
+				let req = index.openCursor(key);
 				req.onsuccess = (event) => {
 					let cursor = req.result;
 					if (!cursor) {
 						resolve(result);
 						return;
 					}
-					result[cursor.value.word] = cursor.value;
+					if(Helper.isDefined(filters.from) && Helper.isDefined(filters.to)){
+						if (cnr >= filters.from && cnr <= filters.to){
+							result[cursor.value.word] = cursor.value;
+						}
+					} else {
+						result[cursor.value.word] = cursor.value;
+					}
+					++cnr;
 					cursor.continue()
 				}
-
 			}).catch((e) => {
 				throw e;
 			});
@@ -193,8 +188,35 @@ App.Idb.WordsStudy = {
 				result.cntStudied = cnt;
 				resolve(result);
 			}).catch((e) => {
+				App.Log.addDebug(e);
 				reject(e);
 			});
 		})
-	}
+	},
+	getCountForLang(lang) {
+		return new Promise((resolve, reject) => {
+			App.Idb.getDb().then((db) => {
+				return new Promise((resolve, reject) => {
+					let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
+					/**
+					 * @type {IDBIndex}
+					 */
+					let index = store.index('i-lang');
+					const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang)]);
+					let req = index.count(key);
+					req.onsuccess = (event) => {
+						resolve(req.result);
+					};
+					req.onerror = (event) => {
+						App.Log.addDebug(event);
+						reject('Не удалось извлечь количество слов по индексу.');
+					};
+				});
+			}).then((result) => {
+				resolve(result);
+			}).catch((e) => {
+				reject(e);
+			});
+		});
+	},
 };

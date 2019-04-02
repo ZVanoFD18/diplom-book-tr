@@ -1,0 +1,23 @@
+.tpl {
+    visibility: hidden;
+    display: none;
+}
+
+.study-words-grid {
+    width: 100%;
+    border: 1px solid green;
+}
+
+.study-words-grid table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.study-words-grid td,
+.study-words-grid th {
+    border: 1px solid green;
+}
+
+.study-words-grid .study-bbar-gotopage-value {
+    width: 4rem;
+}

@@ -1,0 +1,9 @@
+.component-button{
+    cursor: pointer;
+    border: 1px solid lightgray;
+    border-radius: 0.3rem;
+    margin: 0.2rem;
+}
+.component-button:hover{
+    color: coral;
+}

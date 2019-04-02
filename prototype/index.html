@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="app/css/panel-text.css">
     <link rel="stylesheet" href="app/css/win-word-actions.css">
     <link rel="stylesheet" href="app/css/widget-loadmask.css">
+    <link rel="stylesheet" href="app/css/component-study-grid.css">
+    <link rel="stylesheet" href="app/css/component-common.css">
 </head>
 <body>
 
@@ -19,6 +21,7 @@
         <li><a href="#study">Изучение слов</a></li>
     </ul>
 </nav>
+
 <section id="statistic">
     <h2>Статистика</h2>
     <div>
@@ -26,6 +29,7 @@
         <span>Слов изучено:</span><span class="stat-words-studied">statWordsStudied</span>
     </div>
 </section>
+
 <div id="content">
     <section id="library" class="hidden">
         <h2>Библиотека</h2>
@@ -38,12 +42,10 @@
         <div id="text" class="text">text</div>
     </section>
 
-    <section id="study" class="hidden">
-        изучение слов
-        <div class="words-to-study">
-            <div class="tpl-word-row">
-            </div>
-            <table>
+    <section id="study" class="hidden study">
+        <h2>Изучение слов</h2>
+        <div class="study-words-grid">
+            <table class="study-table">
                 <thead>
                 <tr>
                     <th>№пп</th>
@@ -52,13 +54,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="template">
-                    <td class="cell-word-index">1</td>
-                    <td class="cell-word">2</td>
-                    <td class="cell-translate">3</td>
+                <tr class="tpl study-tr">
+                    <td class="study-td-index">1</td>
+                    <td class="study-td-word">2</td>
+                    <td class="study-td-translate">3</td>
                 </tr>
                 </tbody>
             </table>
+            <div class="study-bbar">
+                <span class="study-bbar-page-label">Страница</span>
+                <span class="study-bbar-page-value">0</span>
+                <span class="study-bbar-page-total-label">из</span>
+                <span class="study-bbar-page-total-value">0</span>
+                <span class="study-bbar-btn-prev component-button">Назад</span>
+                <span class="study-bbar-btn-next component-button">Вперед</span>
+                <span class="study-bbar-gotopage">
+                    <input class="study-bbar-gotopage-value" type="number" name="gotopage">
+                    <span class="study-bbar-gotopage-button component-button">Перейти</span>
+                </span>
+            </div>
         </div>
     </section>
 
@@ -107,6 +121,9 @@
 <script src="app/js/Helper/Object.js"></script>
 <script src="app/js/Helper/Xml.js"></script>
 <script src="app/js/App.js"></script>
+<script src="app/js/App/Component.js"></script>
+<script src="app/js/App/Component/Study.js"></script>
+<script src="app/js/App/Component/Study/Grid.js"></script>
 <script src="app/js/App/Fb2.js"></script>
 <script src="app/js/App/Struct.js"></script>
 <script src="app/js/App/Struct/Session.js"></script>
