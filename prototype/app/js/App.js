@@ -7,6 +7,12 @@ let App = {
 		ENG: 'ENG'
 	},
 
+
+	GOOGLE_LANGUAGES :{
+		RUS : 'ru',
+		ENG : 'en'
+	},
+
 	WORD_STATE: {
 		WORD_STATE_STUDY: 'WORD_STATE_STUDY',
 		WORD_STATE_STUDYED: 'WORD_STATE_STUDYES',
@@ -107,7 +113,7 @@ let App = {
 		return new Promise((resolve, reject) => {
 			let elText = document.getElementById('text');
 			let wordsStudy = {};
-			App.Idb.WordsStudy.getAll(this.langStudy).then((resWords) => {
+			App.Idb.WordsStudy.getAllAsObject(this.langStudy).then((resWords) => {
 				wordsStudy = resWords;
 				parseBook();
 			}).catch(() => {
@@ -192,10 +198,34 @@ let App = {
 		elDialog.querySelector('.wa-translate').innerHTML = '...';
 		elDialog.classList.remove('wa-hidden');
 		App.Loadmask.show('Загрузка перевода...');
-		Helper.Google.translate('ru', e.target.innerHTML).then(function (result) {
+		this.getTranslate(e.target.innerHTML).then((translate)=>{
 			App.Loadmask.hide();
-			console.log(e.target.innerHTML, result);
-			elDialog.querySelector('.wa-translate').innerHTML = result.word;
+			elDialog.querySelector('.wa-translate').innerHTML = translate;
+		}).catch((e)=>{
+			elDialog.querySelector('.wa-translate').innerHTML = '???';
+			Helper.Log.addDebug(e);
+			App.Loadmask.hide();
+		})
+
+	},
+	getTranslate(word){
+		return new Promise((resolve, reject)=>{
+			App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word).then((translateStruct)=>{
+				if (Helper.isObject(translateStruct)){
+					resolve(translateStruct.translate);
+				}else {
+					Helper.Google.translate(this.GOOGLE_LANGUAGES[this.langGui], word).then((result) => {
+						console.log(word, result);
+						if (!Helper.isObject(result)){
+							reject();
+							return;
+						}
+						let struct = Helper.Google.getTranslateConverted(result);
+						resolve(struct.translate);
+						App.Idb.WordsTranslate.put(this.langStudy, this.langGui, word, struct.translate);
+					});
+				}
+			});
 		});
 	},
 

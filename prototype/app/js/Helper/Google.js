@@ -1,5 +1,18 @@
 'use strict';
 Helper.Google = {
+	getTranslateConverted (googleStruct){
+		let result = {
+			wordLang : undefined,
+			word : undefined,
+			translate : undefined,
+			score : undefined
+		};
+		result.wordLang = googleStruct.data[2];
+		result.word = googleStruct.data[0][0][1];
+		result.translate = googleStruct.word;
+		result.score = googleStruct.data[6];
+		return result;
+	},
 	translate: function (translateTo, text, translateFrom = 'auto') {
 		return new Promise((resolve, reject) => {
 			const url = "https://translate.googleapis.com/translate_a/single?"

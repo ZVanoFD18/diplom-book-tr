@@ -65,7 +65,7 @@ App.Idb.WordsStudy = {
 			})
 		});
 	},
-	getAll(lang, filters={}) {
+	getAllAsObject(lang, filters={}) {
 		Helper.Object.replaceMembers({
 			from : undefined,
 			to : undefined
