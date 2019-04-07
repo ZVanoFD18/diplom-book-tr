@@ -9,80 +9,71 @@ App.Idb = {
 	 */
 	_db: undefined,
 	/**
-	 *
-	 * @param callback
-	 * @return {Promise<any>}
+	 * @TODO: Сделать проверку на наличие свободного места для IndexedDB хранилища
 	 */
-	getDb(callback) {
-		if (Helper.isFunction(callback)) {
-			Helper.Log.addTodo('Нужно использовать Promise');
-			this.getDb()
-				.then(() => {
-					callback(true, this._db)
-				})
-				.catch((result) => {
-					callback(false);
-				})
-		} else {
-			return new Promise((resolve, reject) => {
-				if (this._db) {
-					resolve(this._db);
-				} else {
-					this.open()
-						.then((result) => {
-							resolve(this._db);
-						})
-						.catch((result) => {
-							reject(result);
-						})
-				}
-			})
-		}
+	checkQuota() {
+		// --------------------------------------------------
+		// Google Chrome
+		// @see: http://qaru.site/questions/200389/what-are-the-storage-limits-for-the-indexed-db-on-googles-chrome-browser/1092814#1092814
+		// Request storage usage and capacity left
+		window.webkitStorageInfo.queryUsageAndQuota(webkitStorageInfo.TEMPORARY,
+			//the type can be either TEMPORARY or PERSISTENT
+			function (used, remaining) {
+				console.log("Used quota: " + used + ", remaining quota: " + remaining);
+			}, function (e) {
+				console.log('Error', e);
+			});
 	},
 	/**
 	 *
-	 * @param callback
+	 * @return {Promise<any>}
+	 */
+	getDb() {
+		return new Promise((resolve, reject) => {
+			if (this._db) {
+				resolve(this._db);
+			} else {
+				this.open()
+					.then((result) => {
+						resolve(this._db);
+					})
+					.catch((result) => {
+						reject(result);
+					})
+			}
+		})
+	},
+	/**
 	 * @return {Promise}
 	 */
-	open(callback) {
-		if (Helper.isFunction(callback)) {
-			Helper.Log.addTodo('Нужно использовать Promise');
-			this.open()
-				.then(() => {
-					callback(true)
-				})
-				.catch((result) => {
-					callback(false);
-				})
-		} else {
-			return new Promise((resolve, reject) => {
-				if (!window.indexedDB) {
-					window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-				}
-				/**
-				 *
-				 * @type {IDBOpenDBRequest}
-				 */
-				let request = indexedDB.open('main', 2);
-				request.onblocked = function (event) {
-					// If some other tab is loaded with the database, then it needs to be closed
-					// before we can proceed.
-					alert("Пожалуйста закройте все другие вкладки, открытые на этом сайте!");
-				};
+	open() {
+		return new Promise((resolve, reject) => {
+			if (!window.indexedDB) {
+				window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+			}
+			/**
+			 *
+			 * @type {IDBOpenDBRequest}
+			 */
+			let request = indexedDB.open('main', 2);
+			request.onblocked = function (event) {
+				// If some other tab is loaded with the database, then it needs to be closed
+				// before we can proceed.
+				alert("Пожалуйста закройте все другие вкладки, открытые на этом сайте!");
+			};
 
-				request.onupgradeneeded = this.onUpgradeNeeded.bind(this);
-				request.onsuccess = (event) => {
-					this._db = event.target.result;
-					this._db.onversionchange = this.onVersionChange.bind(this);
-					resolve();
-				};
-				request.onerror = (event) => {
-					Helper.Log.addDebug('Ошибка! Проблема при открытии Вашей БД.');
-					reject();
-				};
-			});
-		}
-
+			request.onupgradeneeded = this.onUpgradeNeeded.bind(this);
+			request.onsuccess = (event) => {
+				this._db = event.target.result;
+				this._db.onversionchange = this.onVersionChange.bind(this);
+				resolve();
+			};
+			request.onerror = (event) => {
+				Helper.Log.addDebug('Ошибка! Проблема при открытии БД.');
+				alert('Ошибка! Не могу открыть БД.');
+				reject();
+			};
+		});
 	},
 	onUpgradeNeeded(event) {
 		let tmpObjStore;
@@ -198,9 +189,6 @@ App.Idb = {
 				}
 				return App.Idb.Books.getByHash(lastSession.bookHash);
 			}).then((lastBook) => {
-				if (!Helper.isDefined(lastBook)){
-					return;
-				}
 				console.log('getLastBook/lastBook');
 				resolve(lastBook);
 			}).catch((e) => {
