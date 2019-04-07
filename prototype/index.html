@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="app/css/widget-loadmask.css">
     <link rel="stylesheet" href="app/css/component-study-grid.css">
     <link rel="stylesheet" href="app/css/component-common.css">
+    <link rel="stylesheet" href="app/css/win-msg.css">
+    <link rel="stylesheet" href="app/css/win-word-card.css">
 </head>
 <body>
 
@@ -44,6 +46,13 @@
 
     <section id="study" class="hidden study">
         <h2>Изучение слов</h2>
+
+        <div class="study-panel-start">
+            <span>Кол-во слов для изучения</span>
+            <input type="number" name="cntToStudy">
+            <button class="study-button-start">Начать изучение</button>
+        </div>
+
         <div class="study-words-grid">
             <table class="study-table">
                 <thead>
@@ -81,10 +90,23 @@
 <div id="widgets">
 
     <!--Виджет "Маска загрузки"-->
-    <div id="loadmask">
+    <div id="loadmask" class="background-color-lock-shaded">
         <div class="wrap">
-            <div class="loadmask-message">Загрузка...</div>
+            <div class="loadmask-message color3">Загрузка...</div>
             <div class="img"></div>
+        </div>
+    </div>
+
+    <!--Компонент общего назначения "Вывести пользователю текст"-->
+    <div id="win-msg" class="hidden background-color-lock-transparent">
+        <div class="win-msg-window win background-color1 ">
+            <div class="win-msg-title win-title color2 background-color2">Сообщение</div>
+            <div class="win-msg-body win-body color2 background-color1">
+                <div class="win-msg-text">...</div>
+            </div>
+            <div class="win-msg-buttons win-buttons">
+                <button class="button win-msg-button-close">Закрыть</button>
+            </div>
         </div>
     </div>
 
@@ -102,11 +124,19 @@
     <!--Виджет "Карточка слова".
     @TODO: Доделать карточку слова.
     -->
-    <div id="winWordCard" class="hidden">
-        <span class="wwc-text">...</span>
-        <div class="wwc-buttons">
-            <button class="wwc-btn-memorized">Знаю</button>
-            <button class="wwc-btn-turnover">Перевернуть</button>
+    <div id="win-word-card" class="hidden background-color-lock-transparent">
+        <div class="win-word-card-window win background-color1 ">
+            <div class="win-word-card-title win-title color2 background-color2">Изучение слова</div>
+            <div class="win-word-card-body win-body color2 background-color1">
+                <div class="win-word-card-word">???</div>
+                <div class="tpl win-word-card-answer">???</div>
+                <div class="win-word-card-answers"></div>
+            </div>
+            <div class="win-word-card-buttons win-buttons">
+                <button class="win-word-card-btn-memorized button">Знаю</button>
+                <button class="win-word-card-btn-answer button">Ответ</button>
+                <button class="win-word-card-btn-cancel button">Прервать изучение</button>
+            </div>
         </div>
     </div>
 </div>
@@ -118,21 +148,24 @@
 <script src="app/js/Helper/Hash.js"></script>
 <script src="app/js/Helper/Io.js"></script>
 <script src="app/js/Helper/Log.js"></script>
-<script src="app/js/Helper/Object.js"></script>
+<script src="app/js/Helper/Obj.js"></script>
 <script src="app/js/Helper/Xml.js"></script>
 <script src="app/js/App.js"></script>
 <script src="app/js/App/Component.js"></script>
+<script src="app/js/App/Component/Loadmask.js"></script>
 <script src="app/js/App/Component/Study.js"></script>
 <script src="app/js/App/Component/Study/Grid.js"></script>
+<script src="app/js/App/Component/WinMsg.js"></script>
+<script src="app/js/App/Component/WinWordCard.js"></script>
 <script src="app/js/App/Fb2.js"></script>
 <script src="app/js/App/Struct.js"></script>
 <script src="app/js/App/Struct/Session.js"></script>
 <script src="app/js/App/Idb.js"></script>
 <script src="app/js/App/Idb/Books.js"></script>
-<script src="app/js/App/Idb/LastSession.js"></script>
+<script src="app/js/App/Idb/KeyVal.js"></script>
+<script src="app/js/App/Idb/KeyVal/LastSession.js"></script>
 <script src="app/js/App/Idb/WordsStudy.js"></script>
 <script src="app/js/App/Idb/WordsTranslate.js"></script>
-<script src="app/js/App/Loadmask.js"></script>
 <script src="app/js/App/Words.js"></script>
 
 

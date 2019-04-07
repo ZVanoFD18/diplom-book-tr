@@ -22,7 +22,7 @@ App.Idb.WordsTranslate = {
 			return undefined;
 		}
 		let result = this.getStruct();
-		Helper.Object.replaceMembers(result, data);
+		result = Helper.Obj.replaceMembers(result, data);
 		return result;
 	},
 
@@ -59,11 +59,12 @@ App.Idb.WordsTranslate = {
 		return new Promise((resolve, reject) => {
 			App.Idb.getDb().then((db) => {
 				let struct = this.getStruct();
-				Helper.Object.apply(struct, {
+				Helper.Obj.apply(struct, {
 					langFrom: App.Idb.getNormalizedLang(langFrom),
 					langTo: App.Idb.getNormalizedLang(langTo),
 					word: App.Idb.getNormalizedWord(word),
 					translate: App.Idb.getNormalizedWord(translate),
+					score : score,
 					insertAt: Date.now()
 				});
 				let transaction = db.transaction(['WordsTranslate'], 'readwrite');

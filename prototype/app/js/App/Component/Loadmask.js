@@ -1,4 +1,4 @@
-App.Loadmask ={
+App.Component.Loadmask = {
     getEl(){
         return document.getElementById('loadmask');
     },

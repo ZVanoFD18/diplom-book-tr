@@ -22,14 +22,14 @@ App.Component.Study.Grid = {
 		return new Promise((resolve, reject) => {
 			App.Idb.WordsStudy.getCountForLang(App.langStudy).then((result) => {
 				this.totalPages = Math.ceil(result / this.countPerPage);
-			}).then(()=>{
+			}).then(() => {
 				return this.loadDataTable();
-			}).then(()=>{
+			}).then(() => {
 				resolve();
 			});
 		})
 	},
-	loadDataTable(){
+	loadDataTable() {
 		return new Promise((resolve, reject) => {
 			App.Idb.WordsStudy.getAllAsObject(App.langStudy, {
 				from: (this.currentPage - 1) * this.countPerPage,
@@ -45,7 +45,7 @@ App.Component.Study.Grid = {
 			return;
 		}
 		++this.currentPage;
-		this.loadDataTable().then(()=>{
+		this.loadDataTable().then(() => {
 			this.display();
 		});
 	},
@@ -54,7 +54,7 @@ App.Component.Study.Grid = {
 			return;
 		}
 		--this.currentPage;
-		this.loadDataTable().then(()=>{
+		this.loadDataTable().then(() => {
 			this.display();
 		});
 	},
@@ -63,13 +63,13 @@ App.Component.Study.Grid = {
 		this.elGrid.querySelector('.study-bbar-page-total-value').innerHTML = this.totalPages;
 		let elTbody = this.elGrid.querySelector('table>tbody');
 		let elTplTr = elTbody.querySelector('tr.tpl');
-		elTbody.querySelectorAll('tr').forEach((elTr)=>{
-			if (elTr === elTplTr){
+		elTbody.querySelectorAll('tr').forEach((elTr) => {
+			if (elTr === elTplTr) {
 				return;
 			}
 			elTbody.removeChild(elTr);
 		});
-		let addRow = (wordStruct)=>{
+		let addRow = (wordStruct) => {
 			let elTr = elTplTr.cloneNode(true);
 			elTr.classList.remove('tpl');
 			elTr.querySelector('.study-td-index').innerHTML = (this.currentPage - 1) * this.countPerPage + cnrWord + 1;
@@ -78,11 +78,11 @@ App.Component.Study.Grid = {
 			elTbody.appendChild(elTr);
 		};
 		let cnrWord = 0;
-		for(let word in this.wordsTablePage){
+		for (let word in this.wordsTablePage) {
 			addRow(this.wordsTablePage[word]);
 			++cnrWord;
 		}
-		for(;cnrWord<this.countPerPage; ++cnrWord){
+		for (; cnrWord < this.countPerPage; ++cnrWord) {
 			addRow();
 		}
 	}

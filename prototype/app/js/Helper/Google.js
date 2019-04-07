@@ -9,7 +9,7 @@ Helper.Google = {
 		};
 		result.wordLang = googleStruct.data[2];
 		result.word = googleStruct.data[0][0][1];
-		result.translate = googleStruct.word;
+		result.translate = googleStruct.data[0][0][0];
 		result.score = googleStruct.data[6];
 		return result;
 	},

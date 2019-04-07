@@ -7,10 +7,9 @@ let App = {
 		ENG: 'ENG'
 	},
 
-
-	GOOGLE_LANGUAGES :{
-		RUS : 'ru',
-		ENG : 'en'
+	GOOGLE_LANGUAGES: {
+		RUS: 'ru',
+		ENG: 'en'
 	},
 
 	WORD_STATE: {
@@ -39,15 +38,19 @@ let App = {
 		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
 		App.Component.Study.init(document.getElementById('study'));
 
-		App.Loadmask.show('Загрузка...');
+		App.Component.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
-			this.bookToRead(lastBook.content, false);
-		}).catch(() => {
 			this.displayStat();
-			this.go2section('study');
+			if (Helper.isDefined(lastBook)){
+				this.bookToRead(lastBook.content, false);
+			} else {
+				this.go2section('study');
+			}
+		}).catch((e) => {
+			Helper.Log.addDebug(e)
+			this.go2section('library');
 		});
 		this.displayStat();
-
 	},
 
 	onNavClick(event) {
@@ -60,11 +63,11 @@ let App = {
 	},
 
 	onInputFileChange(event) {
-		App.Loadmask.show('Загрузка файла...');
+		App.Component.Loadmask.show('Загрузка файла...');
 		Helper.Io.loadTextFromInputFile(event.srcElement, (isSuccess, text) => {
 			event.srcElement.value = '';
 			if (!isSuccess) {
-				App.Loadmask.hide();
+				App.Component.Loadmask.hide();
 				return;
 			}
 			this.bookToRead(text, true)
@@ -72,17 +75,19 @@ let App = {
 	},
 	bookToRead(text, isAdd) {
 		isAdd = isAdd || true;
-		App.Loadmask.show('Конвертация книги...');
+		App.Component.Loadmask.show('Конвертация книги...');
 		let book = App.Fb2.getBookFromText(text);
 		console.log(book);
 
-		App.Loadmask.show('Формирование области чтения...');
+		App.Component.Loadmask.show('Формирование области чтения...');
 		this.displayBook(book).then(() => {
 			this.go2section('read');
-			App.Loadmask.hide();
+			App.Component.Loadmask.hide();
 			if (isAdd) {
 				App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
-					App.Idb.LastSession.put(result.book.hash, 0).then(() => {
+					console.log('Книга добавлена в локальную библиотеку');
+					App.Idb.KeyVal.LastSession.put(result.book.hash, 0).then(() => {
+						console.log('Книга добавлена в сессию');
 					});
 				}).catch((e) => {
 					Helper.Log.addDebug(e);
@@ -93,15 +98,15 @@ let App = {
 	},
 
 	go2section(sectionId) {
-		App.Loadmask.show('Навигация...');
+		App.Component.Loadmask.show('Навигация...');
 		setTimeout(() => {
 			document.getElementById('content').querySelectorAll('section').forEach((elSection) => {
 				elSection.classList.add('hidden');
 			});
 			document.getElementById(sectionId).classList.remove('hidden');
 			document.getElementById(sectionId).scrollIntoView();
-			App.Loadmask.hide();
-			switch (sectionId){
+			App.Component.Loadmask.hide();
+			switch (sectionId) {
 				case 'study' :
 					this.Component.Study.display();
 					break;
@@ -197,35 +202,82 @@ let App = {
 		elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
 		elDialog.querySelector('.wa-translate').innerHTML = '...';
 		elDialog.classList.remove('wa-hidden');
-		App.Loadmask.show('Загрузка перевода...');
-		this.getTranslate(e.target.innerHTML).then((translate)=>{
-			App.Loadmask.hide();
+		App.Component.Loadmask.show('Загрузка перевода...');
+		this.getTranslate(e.target.innerHTML).then((translate) => {
+			App.Component.Loadmask.hide();
 			elDialog.querySelector('.wa-translate').innerHTML = translate;
-		}).catch((e)=>{
+		}).catch((e) => {
 			elDialog.querySelector('.wa-translate').innerHTML = '???';
 			Helper.Log.addDebug(e);
-			App.Loadmask.hide();
+			elDialog.classList.add('wa-hidden');
+			App.Component.WinMsg.show({
+				title: 'Ошибка!',
+				message: e instanceof Error ? e.message : 'Не удалось получить перевод слова'
+			});
+			App.Component.Loadmask.hide();
 		})
 
 	},
-	getTranslate(word){
-		return new Promise((resolve, reject)=>{
-			App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word).then((translateStruct)=>{
-				if (Helper.isObject(translateStruct)){
-					resolve(translateStruct.translate);
-				}else {
+	getTranslate(word, isReturnStruct = false) {
+		return new Promise((resolve, reject) => {
+			App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word).then((translateStruct) => {
+				if (Helper.isObject(translateStruct)) {
+					if (isReturnStruct) {
+						resolve(translateStruct);
+					} else {
+						resolve(translateStruct.translate);
+					}
+				} else {
 					Helper.Google.translate(this.GOOGLE_LANGUAGES[this.langGui], word).then((result) => {
 						console.log(word, result);
-						if (!Helper.isObject(result)){
+						if (!Helper.isObject(result)) {
 							reject();
 							return;
 						}
 						let struct = Helper.Google.getTranslateConverted(result);
-						resolve(struct.translate);
-						App.Idb.WordsTranslate.put(this.langStudy, this.langGui, word, struct.translate);
+						if (Helper.isEmpty(struct.translate)) {
+							reject(new Error('Не удалось получить перевод от Google'))
+						} else {
+							if (!isReturnStruct) {
+								resolve(struct.translate);
+							}
+							;
+							App.Idb.WordsTranslate.put(this.langStudy, this.langGui, word, struct.translate, struct.score)
+								.then(() => {
+									return App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word);
+								})
+								.then((translateStruct) => {
+									if (isReturnStruct) {
+										if (Helper.isObject(translateStruct)) {
+											resolve(translateStruct);
+										} else {
+											reject(new Error('Неудалось извлечь слово из БД после сохранения'));
+										}
+									}
+								});
+						}
 					});
 				}
 			});
+		});
+	},
+	/**
+	 *
+	 * @param {Array} words
+	 */
+	getTranslates(words) {
+		let result = [];
+		return Promise.all((() => {
+			let promices = [];
+			words.forEach((word) => {
+				promices.push(this.getTranslate(word, true))
+			});
+			return promices;
+		})()).then((results) => {
+			if (!Helper.isArray(results)){
+				return new Error('Не удалось получить перевод для списка слов');
+			}
+			return results;
 		});
 	},
 
@@ -273,8 +325,8 @@ let App = {
 	wordStudyAdd(word) {
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.TRUE
-		}).then((isSuccess) => {
-			console.log('wordStudyAdd1', isSuccess);
+		}).then((rowId) => {
+			console.log('wordStudyAdd1', rowId);
 			this.displayStat();
 		}).catch((e) => {
 			console.log('wordStudyAdd1  /false', e);

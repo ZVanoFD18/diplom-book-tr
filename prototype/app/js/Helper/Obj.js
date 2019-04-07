@@ -1,9 +1,10 @@
 'use strict';
+console.log('Helper.Obj');
 /**
  *
- * @type {{}}
+ * @type {Object}
  */
-Helper.Object = {};
+Helper.Obj = {};
 
 /**
  * Копирует свойства из одного объекта в другой.
@@ -13,12 +14,12 @@ Helper.Object = {};
  * Если false, то свойство будет скопировано (как новый объект, т.е. на выходе не ссылка).
  * Если true, то к свойствам targetObj будут подмешаны свойства из sourceObj.
  */
-Helper.Object.apply = function (targetObj, sourceObj, isRecursive) {
+Helper.Obj.apply =  (targetObj, sourceObj, isRecursive) => {
 	isRecursive = isRecursive || false;
 	for (let key in sourceObj) {
 		if (Helper.isObject(sourceObj[key])) {
 			if (isRecursive) {
-				Helper.Object.apply(targetObj[key], sourceObj[key]);
+				Helper.Obj.apply(targetObj[key], sourceObj[key]);
 			} else {
 				targetObj[key] = Object.assign({}, sourceObj[key]);
 			}
@@ -36,7 +37,7 @@ Helper.Object.apply = function (targetObj, sourceObj, isRecursive) {
  * @param sourceObj
  * @param isStrict
  */
-Helper.Object.replaceMembers = function (targetObj, sourceObj, isStrict) {
+Helper.Obj.replaceMembers = (targetObj, sourceObj, isStrict) => {
 	isStrict = isStrict === undefined ? true : isStrict;
 	for (let key in sourceObj) {
 		if (key in targetObj) {
@@ -45,4 +46,24 @@ Helper.Object.replaceMembers = function (targetObj, sourceObj, isStrict) {
 			throw new Error('Поле "' + key + '" не найдено в целевом объекте');
 		}
 	}
+	return targetObj;
+};
+/**
+ * Ищет в массиве объектов "arrOfObject" 1й элемент, у которого поле "findFieldName"
+ * содержит значение "findFieldValue".
+ * Если найдено, возвращает найденный элемент.
+ * Если не найдено, возвращает "defValue"
+ * @param arrOfObject
+ * @param findFieldName
+ * @param findFieldValue
+ * @param defValue
+ * @return {*}
+ */
+Helper.Obj.getObjectFromArray = (arrOfObject, findFieldName, findFieldValue, defValue = undefined) => {
+	for (let i = 0, arrLength = arrOfObject.length; i < arrLength; i++) {
+		if (arrOfObject[i][findFieldName] === findFieldValue) {
+			return arrOfObject[i];
+		}
+	}
+	return defValue;
 };

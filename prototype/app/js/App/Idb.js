@@ -85,7 +85,7 @@ App.Idb = {
 
 	},
 	onUpgradeNeeded(event) {
-		var tmpObjStore;
+		let tmpObjStore;
 		let transaction = event.target.transaction;
 		/**
 		 *
@@ -95,37 +95,43 @@ App.Idb = {
 
 		switch (event.oldVersion) {
 			case 0 :
+				//-------------------------------------------------------------
+				// Таблица "Хеш-таблица"
+				tmpObjStore = db.createObjectStore('KeyVal');
+				//-------------------------------------------------------------
+				// Таблица "Сохраненные книги"
 				tmpObjStore = db.createObjectStore('Books', {
-					// keyPath: 'id',
-					autoIncrement: true
+					keyPath: 'hash',
+					autoIncrement: false
 				});
 				tmpObjStore.createIndex('i-lang', 'lang');
-
-				tmpObjStore.createIndex('i-hash', 'hash', {
-					unique: true
-				});
+				// tmpObjStore.createIndex('i-hash', 'hash', {
+				// 	unique: true
+				// });
 				tmpObjStore.createIndex('i-title', 'title', {
 					unique: false
 				});
-
-				tmpObjStore = db.createObjectStore('LastSession');
-
+				//-------------------------------------------------------------
+				// Таблица "Изучаемые слова"
 				tmpObjStore = db.createObjectStore('WordsStudy', {
-					autoIncrement: true
+					keyPath: ['lang', 'word'],
+					autoIncrement: false
 				});
 				tmpObjStore = transaction.objectStore('WordsStudy');
 				tmpObjStore.createIndex('i-lang', ['lang'],);
-				tmpObjStore.createIndex('i-lang-word', ['lang', 'word'], {
-					unique: true
-				});
+				// tmpObjStore.createIndex('i-lang-word', ['lang', 'word'], {
+				// 	unique: true
+				// });
 				tmpObjStore.createIndex('i-lang-isStudy', ['lang', 'isStudy'], {
 					unique: false
 				});
+			//-------------------------------------------------------------
 			// goto next
 			case 1 :
+				//-------------------------------------------------------------
 				// Таблица "Переводы слов"
 				tmpObjStore = db.createObjectStore('WordsTranslate', {
-					keyPath :  ['langFrom', 'langTo', 'word'],
+					keyPath: ['langFrom', 'langTo', 'word'],
 					autoIncrement: false
 				});
 				// Поиска всех слов по языку
@@ -136,6 +142,8 @@ App.Idb = {
 				tmpObjStore.createIndex('i-langFrom-langTo-word', ['langFrom', 'langTo', 'word'], {
 					unique: true
 				});
+			//-------------------------------------------------------------
+			// goto next
 			default:
 				break;
 		}
@@ -180,36 +188,24 @@ App.Idb = {
 		return word.toLowerCase();
 	},
 	getLastBook(callback) {
+		let db;
 		return new Promise((resolve, reject) => {
-			let db;
-			this.getDb().then((resDb) => {
-				db = resDb;
-				return new Promise((resolve, reject) => {
-					let transaction = db.transaction(['LastSession'], 'readonly');
-					let store = transaction.objectStore('LastSession');
-					let req = store.get(0);
-					req.onsuccess = (event) => {
-						resolve(req.result);
-					};
-					req.onerror = (event) => {
-						reject();
-					};
-				});
-			}).then((lastSession) => {
+			App.Idb.KeyVal.get(App.Idb.KeyVal.KEYS.LAST_SESSION).then((lastSession) => {
+				console.log('getLastBook/lastSession');
 				if (!lastSession) {
 					resolve(undefined);
 					return;
 				}
-				let transaction = db.transaction(['Books'], 'readonly');
-				let store = transaction.objectStore('Books');
-				let index = store.index('i-hash');
-				let req = index.get(lastSession.bookHash);
-				req.onsuccess = (event) => {
-					resolve(req.result);
-				};
-				req.onerror = (event) => {
-					reject();
-				};
+				return App.Idb.Books.getByHash(lastSession.bookHash);
+			}).then((lastBook) => {
+				if (!Helper.isDefined(lastBook)){
+					return;
+				}
+				console.log('getLastBook/lastBook');
+				resolve(lastBook);
+			}).catch((e) => {
+				Helper.Log.addDebug(e);
+				reject(e);
 			});
 		});
 	}

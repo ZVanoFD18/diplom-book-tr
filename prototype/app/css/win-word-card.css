@@ -1,0 +1,23 @@
+#win-word-card {
+    z-index: 99999;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#win-word-card .win-word-card-word {
+    font-weight: bold;
+    padding: 1rem 0;
+}
+
+#win-word-card .win-word-card-answer {
+    box-sizing: border-box;
+}
+
+#win-word-card .win-word-card-answer:hover {
+    border: 1px solid coral;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}

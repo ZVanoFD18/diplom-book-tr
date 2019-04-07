@@ -9,42 +9,34 @@ App.Idb.WordsStudy = {
 		version: 1,
 		lang: undefined,
 		word: undefined,
+		/**
+		 * Флаг: Слово для изучения? 0 - нет, 1 - Да.
+		 * 0 - слово уже изучено.
+		 * 1 - слово не изучено - прогнать через процесс изучения.
+		 */
 		isStudy: undefined,
-		cntCorrect: 0,
-		cntIncorrect: 0
+		/**
+		 * Изучение с родного языка на изучаемый
+		 */
+		isFinishedLang1ToLang2: undefined,
+		/**
+		 * Изучение с изучаемого языка на основной
+		 */
+		isFinishedLang2ToLang1: undefined
 	},
 	getStruct() {
-		return Object.assign({}, this.Struct);
+		let result = Object.assign({}, this.Struct);
+		return result;
 	},
 	getStructFromData(data) {
 		if (!Helper.isDefined(data)) {
 			return undefined;
 		}
 		let result = this.getStruct();
-		Helper.Object.replaceMembers(result, data);
+		result = Helper.Obj.replaceMembers(result, data, false);
 		return result;
 	},
 
-	/**
-	 * Врзвращает ключ для слова.
-	 * @param lang
-	 * @param word
-	 */
-	getKey(lang, word) {
-		return App.Idb.getDb().then((db) => {
-			return new Promise((resolve, reject) => {
-				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
-				let index = store.index('i-lang-word');
-				let req = index.getKey([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
-				req.onsuccess = (event) => {
-					resolve(req.result);
-				};
-				req.onerror = (event) => {
-					reject();
-				};
-			})
-		});
-	},
 	/**
 	 * Возвращает структуру из БД.
 	 * @param lang
@@ -54,8 +46,9 @@ App.Idb.WordsStudy = {
 		return new Promise((resolve, reject) => {
 			return App.Idb.getDb().then((db) => {
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
-				let index = store.index('i-lang-word');
-				let req = index.get([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
+				//let index = store.index('i-lang-word');
+				//let req = index.get([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
+				let req = store.get([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
 				req.onsuccess = (event) => {
 					resolve(this.getStructFromData(event.target.result));
 				};
@@ -65,14 +58,14 @@ App.Idb.WordsStudy = {
 			})
 		});
 	},
-	getAllAsObject(lang, filters={}) {
-		Helper.Object.replaceMembers({
-			from : undefined,
-			to : undefined
+	getAllAsObject(lang, filters = {}) {
+		Helper.Obj.replaceMembers({
+			from: undefined,
+			to: undefined
 		}, filters);
 		return new Promise((resolve, reject) => {
 			let result = {};
-			let cnr=0;
+			let cnr = 0;
 			App.Idb.getDb().then((db) => {
 				const normalizedLang = App.Idb.getNormalizedLang(lang);
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
@@ -85,8 +78,8 @@ App.Idb.WordsStudy = {
 						resolve(result);
 						return;
 					}
-					if(Helper.isDefined(filters.from) && Helper.isDefined(filters.to)){
-						if (cnr >= filters.from && cnr <= filters.to){
+					if (Helper.isDefined(filters.from) && Helper.isDefined(filters.to)) {
+						if (cnr >= filters.from && cnr <= filters.to) {
 							result[cursor.value.word] = cursor.value;
 						}
 					} else {
@@ -117,23 +110,20 @@ App.Idb.WordsStudy = {
 			}
 			App.Idb.getDb().then((resDb) => {
 				db = resDb;
-				return this.getKey(lang, word);
-			}).then((resKey) => {
-				key = resKey;
 				return this.get(lang, word);
 			}).then((existsStruct) => {
 				return new Promise((resolve, reject) => {
 					if (!existsStruct) {
 						existsStruct = this.getStruct();
 					}
-					Helper.Object.apply(existsStruct, data);
-					Helper.Object.apply(existsStruct, {
+					Helper.Obj.apply(existsStruct, data);
+					Helper.Obj.apply(existsStruct, {
 						lang: App.Idb.getNormalizedLang(lang),
 						word: App.Idb.getNormalizedWord(word)
 					});
 					let transaction = db.transaction(['WordsStudy'], 'readwrite');
 					let store = transaction.objectStore('WordsStudy');
-					let req = store.put(existsStruct, key);
+					let req = store.put(existsStruct);
 					req.onsuccess = (event) => {
 						resolve(event.target.result);
 					};
@@ -144,6 +134,39 @@ App.Idb.WordsStudy = {
 			}).then((result) => {
 				resolve(result);
 			}).catch((e) => {
+				reject(e);
+			});
+		});
+	},
+	getForStudy(lang, count) {
+		return new Promise((resolve, reject) => {
+			let result = [];
+			App.Idb.getDb().then((db) => {
+				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
+				/**
+				 * @type {IDBIndex}
+				 */
+				let index = store.index('i-lang-isStudy');
+				const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang), App.Idb.TRUE]);
+				let req = index.openCursor(key);
+				req.onsuccess = (event) => {
+					let cursor = req.result;
+					if (!cursor) {
+						resolve(result);
+						return;
+					}
+					result.push(cursor.value);
+					if (result.length < count) {
+						cursor.continue()
+					} else {
+						resolve(result);
+					}
+				};
+				req.onerror = (event) => {
+					reject('Не удалось получить слова по индексу.');
+				};
+			}).catch((e) => {
+				Helper.Log.addDebug(e);
 				reject(e);
 			});
 		});
