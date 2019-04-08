@@ -113,17 +113,18 @@ App.Idb.WordsStudy = {
 				return this.get(lang, word);
 			}).then((existsStruct) => {
 				return new Promise((resolve, reject) => {
-					if (!existsStruct) {
-						existsStruct = this.getStruct();
+					let newStruct = existsStruct;
+					if (!newStruct) {
+						newStruct = this.getStruct();
+						Helper.Obj.apply(newStruct, {
+							lang: App.Idb.getNormalizedLang(lang),
+							word: App.Idb.getNormalizedWord(word)
+						});
 					}
-					Helper.Obj.apply(existsStruct, data);
-					Helper.Obj.apply(existsStruct, {
-						lang: App.Idb.getNormalizedLang(lang),
-						word: App.Idb.getNormalizedWord(word)
-					});
+					Helper.Obj.apply(newStruct, data);
 					let transaction = db.transaction(['WordsStudy'], 'readwrite');
 					let store = transaction.objectStore('WordsStudy');
-					let req = store.put(existsStruct);
+					let req = store.put(newStruct);
 					req.onsuccess = (event) => {
 						resolve(event.target.result);
 					};

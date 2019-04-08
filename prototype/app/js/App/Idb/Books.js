@@ -24,7 +24,7 @@ App.Idb.Books = {
 			App.Idb.getDb().then((db) => {
 				let transaction = db.transaction(['Books'], 'readonly'); //readonly - для чтения
 				let store = transaction.objectStore('Books');
-				let req = store.get([hash]);
+				let req = store.get(hash);
 				req.onsuccess = (event) => {
 					resolve(req.result);
 				};

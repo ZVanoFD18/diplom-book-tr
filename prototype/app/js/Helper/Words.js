@@ -1,7 +1,7 @@
 'use strict';
-console.log('App.Words');
+console.log('Helper.Text');
 
-App.Words = {
+Helper.Text = {
 	alphabette:{
 		ENG : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\'',
 		RUS : 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890'

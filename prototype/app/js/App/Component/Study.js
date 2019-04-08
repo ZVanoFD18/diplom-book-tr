@@ -81,7 +81,6 @@ App.Component.Study = {
 		}).catch((e) => {
 			Helper.Log.addDebug(e);
 		})
-		// alert(cntToStudy);
 	},
 	/**
 	 * Очищает прогресс и заполняет его пустыми структурами.
@@ -100,15 +99,22 @@ App.Component.Study = {
 	doStudy() {
 		this.clearProgress();
 		this.doStudyLang1ToLang2()
-			.then(this.updateIdbWordStudy())
-			.then(this.doStudyLang2ToLang1())
-			.then(this.updateIdbWordStudy())
 			.then(() => {
+				return this.updateIdbWordStudy();
+			})
+			.then(() => {
+				return this.doStudyLang2ToLang1();
+			})
+			.then(() => {
+				return this.updateIdbWordStudy();
+			})
+			.then(() => {
+				App.Component.WinWordCard.hide();
 				App.Component.WinMsg.show({
 					title: 'Уведомление.',
 					message: 'Все слова изучены'
 				});
-				App.Component.WinWordCard.hide();
+				App.Component.Statistic.display();
 			})
 			.catch((e) => {
 				App.Component.WinMsg.show({
@@ -126,12 +132,18 @@ App.Component.Study = {
 			this.wordsStudy.forEach((wordStudyStruct, index) => {
 				let progressItemLang1ToLang2 = this.wordsStudyProgress.algLang1ToLang2[index];
 				let progressItemLang2ToLang1 = this.wordsStudyProgress.algLang2ToLang1[index];
-				let wordStudyData ={
-					isFinishedLang1ToLang2 : progressItemLang1ToLang2.isMemorized
-					|| (progressItemLang1ToLang2.cntCorrect - progressItemLang1ToLang2.cntWrong > this.defaults.cntCorrectForPass),
-					isFinishedLang2ToLang1 : progressItemLang2ToLang1.isMemorized
-					|| (progressItemLang2ToLang1.cntCorrect - progressItemLang2ToLang1.cntWrong > this.defaults.cntCorrectForPass),
+				let wordStudyData = {
+					isStudy: App.Idb.TRUE,
+					isFinishedLang1ToLang2: App.Idb.getBool(progressItemLang1ToLang2.isMemorized
+						|| (progressItemLang1ToLang2.cntCorrect - progressItemLang1ToLang2.cntWrong > this.defaults.cntCorrectForPass)
+					),
+					isFinishedLang2ToLang1: App.Idb.getBool(progressItemLang2ToLang1.isMemorized
+						|| (progressItemLang2ToLang1.cntCorrect - progressItemLang2ToLang1.cntWrong > this.defaults.cntCorrectForPass)
+					),
 				};
+				if (wordStudyData.isFinishedLang1ToLang2 && wordStudyData.isFinishedLang2ToLang1) {
+					wordStudyData.isStudy = App.Idb.FALSE;
+				}
 				promises.push(App.Idb.WordsStudy.put(App.langStudy, wordStudyStruct.word, wordStudyData))
 			});
 			return promises;
@@ -142,7 +154,6 @@ App.Component.Study = {
 	 * @return {Promise<any>}
 	 */
 	doStudyLang1ToLang2() {
-		let studied = [];
 		let answers = [];
 		let cnrAttempt = 0;
 		let currentSet;
@@ -194,6 +205,7 @@ App.Component.Study = {
 		 * Возвращает следующий набор данных для изучения слова.
 		 */
 		function getNextSet() {
+			console.log('doStudyLang1ToLang2/getNextSet');
 			let result = {
 				wordIndex: undefined,
 				word: undefined,
@@ -241,15 +253,58 @@ App.Component.Study = {
 	 * @return {Promise<any>}
 	 */
 	doStudyLang2ToLang1() {
-		return new Promise((resolve, reject) => {
-			console.log('doStudyLang2ToLang1/resolve');
-			resolve();
+		let answers = [];
+		let cnrAttempt = 0;
+		let currentSet;
+		this.wordsTranslate.forEach((translateStruct) => {
+			answers.push(translateStruct.translate);
 		});
+		return new Promise((resolve, reject) => {
+			doExam.call(this, resolve, reject);
+		});
+
+		function doExam(resolve, reject) {
+			currentSet = getNextSet.call(this);
+			if (!Helper.isDefined(currentSet)) {
+				App.Component.WinWordCard.hide();
+				console.log('doStudyLang1ToLang2/resolve/1');
+				return resolve();
+			}
+			App.Component.WinWordCard.update({
+				title: 'Изучение слов с целевого языка на родной',
+				word: currentSet.word,
+				answers: answers,
+				correctAnswer: currentSet.answer
+			});
+			if (cnrAttempt == 0) {
+				App.Component.WinWordCard.show({
+					onMemorized: () => {
+						this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].isMemorized = true;
+						doExam.call(this, resolve, reject);
+					},
+					onCancel: () => {
+						reject('Пользователь отменил изучение')
+					},
+					onAnswerCorrect: () => {
+						alert('onAnswerCorrect');
+						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntCorrect;
+						doExam.call(this, resolve, reject);
+					},
+					onAnswerWrong: () => {
+						alert('onAnswerWrong');
+						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntWrong;
+						doExam.call(this, resolve, reject);
+					}
+				});
+			}
+			cnrAttempt++;
+		}
 
 		/**
 		 * Возвращает следующий набор данных для изучения слова.
 		 */
 		function getNextSet() {
+			console.log('doStudyLang2ToLang1/getNextSet');
 			let result = {
 				wordIndex: undefined,
 				word: undefined,
@@ -258,14 +313,13 @@ App.Component.Study = {
 			let wordsStudy = [];
 
 			this.wordsStudy.forEach((wordStudy, index) => {
-				if (!Helper.isObject(this.wordsStudyProgress.algLang1ToLang2[index])) {
-					wordsStudy.push(index);
-					return;
-				}
 				/**
 				 * @type {this.wordsStudyProgress.tplItem} progressItem
 				 */
-				let progressItem = this.wordsStudyProgress.algLang1ToLang2[index];
+				let progressItem = this.wordsStudyProgress.algLang2ToLang1[index];
+				if (progressItem.isMemorized) {
+					return;
+				}
 				if (progressItem.cntCorrect - progressItem.cntWrong < this.defaults.cntCorrectForPass) {
 					wordsStudy.push(index);
 				}
@@ -273,23 +327,23 @@ App.Component.Study = {
 			if (wordsStudy.length < 1) {
 				return undefined;
 			}
-			result.wordIndex = Math.floor(Math.random() * wordsStudy.length);
-			result.word = this.wordsStudy[result.wordIndex].word;
+			let wordsStudyIndex = Math.floor(Math.random() * wordsStudy.length);
+			result.wordIndex = wordsStudy[wordsStudyIndex];
 			/**
 			 *
 			 * @type {App.Idb.WordsTranslate.Struct}
 			 */
-			let translateStruct = Helper.Obj.getObjectFromArray(this.wordsTranslate, 'word', result.word);
-			if (translateStruct !== undefined) {
-				result.answer = translateStruct.translate;
-				return result;
-			} else {
+			let translateStruct = Helper.Obj.getObjectFromArray(this.wordsTranslate, 'word', this.wordsStudy[result.wordIndex].word);
+			if (!Helper.isDefined(translateStruct)) {
 				App.Component.WinMsg.show({
 					title: 'Ошибка!',
 					message: 'Не удалось извлечь перевод из кеша.',
 				});
 				return undefined;
 			}
+			result.word = translateStruct.word;
+			result.answer = translateStruct.translate;
+			return result;
 		}
 	}
 };

@@ -1,4 +1,4 @@
-App.Fb2 = {
+Helper.Fb2 = {
     /**
      * Формирует книгу из текста FB2.
      * @param text

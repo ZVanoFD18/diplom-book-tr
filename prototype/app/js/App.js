@@ -31,7 +31,6 @@ let App = {
 		// this.langGui = this.LANGUAGES.ENG;
 		// this.langStudy = this.LANGUAGES.RUS;
 
-
 		document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
 		document.getElementById('text').addEventListener('click', this.onTextClick.bind(this));
@@ -40,7 +39,7 @@ let App = {
 
 		App.Component.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
-			this.displayStat();
+			App.Component.Statistic.display();
 			if (Helper.isDefined(lastBook)){
 				this.bookToRead(lastBook.content, false);
 			} else {
@@ -50,7 +49,7 @@ let App = {
 			Helper.Log.addDebug(e)
 			this.go2section('library');
 		});
-		this.displayStat();
+		App.Component.Statistic.display();
 	},
 
 	onNavClick(event) {
@@ -74,9 +73,9 @@ let App = {
 		});
 	},
 	bookToRead(text, isAdd) {
-		isAdd = isAdd || true;
+		isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 		App.Component.Loadmask.show('Конвертация книги...');
-		let book = App.Fb2.getBookFromText(text);
+		let book = Helper.Fb2.getBookFromText(text);
 		console.log(book);
 
 		App.Component.Loadmask.show('Формирование области чтения...');
@@ -132,7 +131,7 @@ let App = {
 					section.title.forEach((titleLine) => {
 						let elLine = document.createElement('p');
 						elLine.classList.add('text-title');
-						let words = App.Words.getWords(this.langStudy, titleLine);
+						let words = Helper.Text.getWords(this.langStudy, titleLine);
 						words.forEach((word) => {
 							let newElWord = document.createElement('span');
 							newElWord.innerHTML = word;
@@ -159,7 +158,7 @@ let App = {
 					section.p.forEach((textLine) => {
 						let elLine = document.createElement('p');
 						elLine.classList.add('text-line');
-						let words = App.Words.getWords(this.langStudy, textLine);
+						let words = Helper.Text.getWords(this.langStudy, textLine);
 						words.forEach((word) => {
 							let newElWord = document.createElement('span');
 							newElWord.innerHTML = word;
@@ -327,7 +326,7 @@ let App = {
 			isStudy: App.Idb.TRUE
 		}).then((rowId) => {
 			console.log('wordStudyAdd1', rowId);
-			this.displayStat();
+			App.Component.Statistic.display();
 		}).catch((e) => {
 			console.log('wordStudyAdd1  /false', e);
 		});
@@ -338,21 +337,10 @@ let App = {
 			isStudy: App.Idb.FALSE
 		}).then((isSuccess) => {
 			console.log('wordStudyAdd2', isSuccess);
-			this.displayStat();
+			App.Component.Statistic.display();
 		}).catch((e) => {
 			console.log('wordStudyAdd2/false', e);
 		});
-	},
-
-	displayStat() {
-		App.Idb.WordsStudy.getStat(this.langStudy).then((stat) => {
-			document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = stat.cntStudy;
-			document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = stat.cntStudied;
-		}).catch((e) => {
-			Helper.Log.addDebug('Непредвиденная ошибка при получении статистики изучения слов');
-			document.getElementById('statistic').querySelector('.stat-words-study').innerHTML = '???';
-			document.getElementById('statistic').querySelector('.stat-words-studied').innerHTML = '???';
-		})
 	},
 
 	getWordHash(word) {

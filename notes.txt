@@ -85,3 +85,9 @@ https://mdn.github.io/indexeddb-examples/idbkeyrange/
 https://mdn.github.io/indexeddb-examples/
 http://marco-c.github.io/eLibri/
 
+--------------------------------------------------------------------------------
+CSS:
+
+Стрелки с помощью свойства border
+http://css.yoksel.ru/strelki-s-pomoshh-yu-svojstva-border/
+--------------------------------------------------------------------------------

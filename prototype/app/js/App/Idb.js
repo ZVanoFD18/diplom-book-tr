@@ -8,6 +8,9 @@ App.Idb = {
 	 * @type {IDBDatabase}
 	 */
 	_db: undefined,
+	getBool(boolValue){
+		return boolValue ? this.TRUE : this.FALSE;
+	},
 	/**
 	 * @TODO: Сделать проверку на наличие свободного места для IndexedDB хранилища
 	 */
