@@ -13,7 +13,7 @@
     --border-radius: 0.2rem;
     --padding: 0 0.05rem;
     --border-style: groove;
-    border: 2px solid rgba(0, 0, 0, 0);
+    border: 2px solid transparent;
     box-sizing: border-box;
 }
 .word:hover{

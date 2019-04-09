@@ -91,3 +91,10 @@ CSS:
 Стрелки с помощью свойства border
 http://css.yoksel.ru/strelki-s-pomoshh-yu-svojstva-border/
 --------------------------------------------------------------------------------
+-- Шрифты
+------
+Font Awesome
+https://fontawesome.com/icons
+https://fontawesome.com/icons?d=gallery&m=free
+https://fontawesome.com/how-to-use/on-the-web/setup/hosting-font-awesome-yourself
+--------------------------------------------------------------------------------

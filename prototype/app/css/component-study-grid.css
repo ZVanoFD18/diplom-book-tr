@@ -2,18 +2,49 @@
 .study-words-grid {
     width: 100%;
     border: 1px solid green;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+    margin: 1rem;
+    box-sizing: border-box;
+    max-width: 40rem;
 }
 
 .study-words-grid table {
     width: 100%;
     border-collapse: collapse;
 }
+#study tbody>tr:hover {
+    background-color: rgba(255, 232, 41, 0.18);
+}
+#study tr.empty{
+    background-color: #f2f2f2;
+}
 
 .study-words-grid td,
 .study-words-grid th {
-    border: 1px solid green;
+    --border: 1px solid green;
+}
+.study-words-grid tr{
+    border-bottom: 1px solid green;
+}
+#study .study-td-index{
+    width: 6rem;
+    text-align: right;
+}
+#study .study-td-is-study{
+    width: 32px;
+    text-align: center;
+}
+#study .study-td-is-study > i.is-study-true{
+    color: green;
+}
+#study .study-td-is-study > i.is-study-false{
+    color: #fcfcfc;
 }
 
+.study-words-grid .study-bbar{
+    padding: 0.2rem;
+    height: 1.4rem;
+}
 .study-words-grid .study-bbar-gotopage-value {
     width: 4rem;
 }

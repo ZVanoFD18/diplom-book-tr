@@ -12,10 +12,14 @@
     padding: 1rem 0;
 }
 
+/*
 #win-word-card .win-word-card-answer {
     box-sizing: border-box;
 }
-
+*/
+#win-word-card .win-word-card-answer{
+    border: 1px solid transparent;
+}
 #win-word-card .win-word-card-answer:hover {
     border: 1px solid coral;
     border-radius: 0.2rem;

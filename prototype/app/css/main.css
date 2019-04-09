@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 /*Элемент является скрытым*/
 .hidden {
     visibility: hidden;
@@ -33,41 +37,14 @@
     background-color: #35baf6;
 }
 
+.background-color3 {
+    background-color: goldenrod;
+}
+
 .background-color-lock-transparent {
     background-color: rgba(255, 255, 255, 0);
 }
 
 .background-color-lock-shaded {
     background-color: rgba(255, 255, 255, 0.75);
-}
-
-.win {
-    max-width: 50%;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    display: inline-block;
-    transform: translateY(-50%) translateX(-50%);
-    text-align: center;
-    border-radius: 0.5rem;
-    box-shadow: 0.1rem 0.1rem 0.1rem silver;
-}
-
-.win-title {
-    border-radius: 0.5rem 0 0.5rem 0;
-    padding: 0 1rem 0;
-}
-
-.win-body {
-    padding: 0.5rem;
-}
-
-.win-buttons {
-    width: 100%;
-    margin: 0 0 0.5rem 0;
-    text-align: center;
-}
-
-.win-buttons .button {
-    cursor: pointer;
 }

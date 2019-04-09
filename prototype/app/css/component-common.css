@@ -1,9 +1,48 @@
 .component-button{
+    box-sizing: border-box;
     cursor: pointer;
     border: 1px solid lightgray;
     border-radius: 0.3rem;
     margin: 0.2rem;
+    padding: 0.2rem;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.9);
+    transition:  box-shadow 1s;
 }
 .component-button:hover{
     color: coral;
+}
+.component-button:active{
+    box-shadow: 0 0 0 rgb(0,0,0);
+}
+
+
+.win {
+    max-width: 50%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+    border-radius: 0.5rem;
+    box-shadow: 0.1rem 0.1rem 0.1rem silver;
+}
+
+.win-title {
+    border-radius: 0.5rem 0 0.5rem 0;
+    padding: 0 1rem 0;
+}
+
+.win-body {
+    padding: 0.5rem;
+}
+
+.win-buttons {
+    width: 100%;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+}
+
+.win-buttons .button {
+    cursor: pointer;
 }
