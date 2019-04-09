@@ -33,8 +33,7 @@ let App = {
 
 		document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
-		document.getElementById('text').addEventListener('click', this.onTextClick.bind(this));
-		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
+		App.Component.Read.init();
 		App.Component.Study.init(document.getElementById('study'));
 
 		App.Component.Loadmask.show('Загрузка...');
@@ -72,6 +71,7 @@ let App = {
 			this.bookToRead(text, true)
 		});
 	},
+
 	bookToRead(text, isAdd) {
 		isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 		App.Component.Loadmask.show('Конвертация книги...');
@@ -79,7 +79,7 @@ let App = {
 		console.log(book);
 
 		App.Component.Loadmask.show('Формирование области чтения...');
-		this.displayBook(book).then(() => {
+		App.Component.Read.displayBook(book).then(() => {
 			this.go2section('read');
 			App.Component.Loadmask.hide();
 			if (isAdd) {
@@ -113,110 +113,6 @@ let App = {
 		}, 50);
 	},
 
-	displayBook(book) {
-		return new Promise((resolve, reject) => {
-			let elText = document.getElementById('text');
-			let wordsStudy = {};
-			App.Idb.WordsStudy.getAllAsObject(this.langStudy).then((resWords) => {
-				wordsStudy = resWords;
-				parseBook();
-			}).catch(() => {
-				parseBook();
-			});
-
-			let parseBook = () => {
-				elText.innerHTML = '';
-				book.sections.forEach((section) => {
-					let containerTitle = document.createElement('h2');
-					section.title.forEach((titleLine) => {
-						let elLine = document.createElement('p');
-						elLine.classList.add('text-title');
-						let words = Helper.Text.getWords(this.langStudy, titleLine);
-						words.forEach((word) => {
-							let newElWord = document.createElement('span');
-							newElWord.innerHTML = word;
-							let hash = this.getWordHash(word);
-							newElWord.classList.add('word');
-							newElWord.classList.add('word-hash-' + hash);
-							let normalizedWord = App.Idb.getNormalizedWord(word);
-							if (normalizedWord in wordsStudy) {
-								if (wordsStudy[normalizedWord].isStudy) {
-									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDY);
-								} else {
-									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDYED);
-								}
-							} else {
-								this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
-							}
-							elLine.appendChild(newElWord);
-						});
-						containerTitle.appendChild(elLine);
-					});
-					elText.appendChild(containerTitle);
-
-					let containerSubtext = document.createElement('p');
-					section.p.forEach((textLine) => {
-						let elLine = document.createElement('p');
-						elLine.classList.add('text-line');
-						let words = Helper.Text.getWords(this.langStudy, textLine);
-						words.forEach((word) => {
-							let newElWord = document.createElement('span');
-							newElWord.innerHTML = word;
-							let hash = this.getWordHash(word);
-							newElWord.classList.add('word');
-							newElWord.classList.add('word-hash-' + hash);
-							let normalizedWord = App.Idb.getNormalizedWord(word);
-							if (normalizedWord in wordsStudy) {
-								if (wordsStudy[normalizedWord].isStudy) {
-									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDY);
-								} else {
-									this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_STUDYED);
-								}
-							} else {
-								this.wordElMark(newElWord, this.WORD_STATE.WORD_STATE_UNKNOWN);
-							}
-
-							elLine.appendChild(newElWord);
-						});
-						containerSubtext.appendChild(elLine);
-					});
-					elText.appendChild(containerSubtext);
-				});
-				resolve();
-			}
-		});
-	},
-
-	/**
-	 *
-	 * @param {DomEvent} e
-	 * @constructor
-	 */
-	onTextClick(e) {
-		let elDialog = document.getElementById('winWordActions');
-		if (!e.target.classList.contains('word')) {
-			elDialog.classList.add('wa-hidden');
-			return;
-		}
-		elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
-		elDialog.querySelector('.wa-translate').innerHTML = '...';
-		elDialog.classList.remove('wa-hidden');
-		App.Component.Loadmask.show('Загрузка перевода...');
-		this.getTranslate(e.target.innerHTML).then((translate) => {
-			App.Component.Loadmask.hide();
-			elDialog.querySelector('.wa-translate').innerHTML = translate;
-		}).catch((e) => {
-			elDialog.querySelector('.wa-translate').innerHTML = '???';
-			Helper.Log.addDebug(e);
-			elDialog.classList.add('wa-hidden');
-			App.Component.WinMsg.show({
-				title: 'Ошибка!',
-				message: e instanceof Error ? e.message : 'Не удалось получить перевод слова'
-			});
-			App.Component.Loadmask.hide();
-		})
-
-	},
 	getTranslate(word, isReturnStruct = false) {
 		return new Promise((resolve, reject) => {
 			App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word).then((translateStruct) => {
@@ -280,47 +176,6 @@ let App = {
 		});
 	},
 
-	onWordActionClick(e) {
-		let word = undefined,
-			elWord = undefined;
-		if (e.target.classList.contains('wa-btn-studied')) {
-			document.getElementById('winWordActions').classList.add('wa-hidden');
-			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
-			this.WordStudyedAdd(word);
-			this.wordsMark(word, this.WORD_STATE.WORD_STATE_STUDYED);
-		} else if (e.target.classList.contains('wa-btn-study')) {
-			document.getElementById('winWordActions').classList.add('wa-hidden');
-			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
-			this.wordStudyAdd(word);
-			this.wordsMark(word, this.WORD_STATE.WORD_STATE_STUDY);
-		}
-	},
-
-	wordsMark(word, state) {
-		let classWordHash = 'word-hash-' + this.getWordHash(word);
-		let words = document.getElementById('text').querySelectorAll('.' + classWordHash);
-		words.forEach((elWord) => {
-			this.wordElMark(elWord, state);
-		});
-	},
-
-	wordElMark(elWord, state) {
-		elWord.classList.remove('word-unknown');
-		elWord.classList.remove('word-study');
-		elWord.classList.remove('word-studied');
-		switch (state) {
-			case this.WORD_STATE.WORD_STATE_STUDY:
-				elWord.classList.add('word-study');
-				break;
-			case this.WORD_STATE.WORD_STATE_STUDYED:
-				elWord.classList.add('word-studied');
-				break;
-			case this.WORD_STATE.WORD_STATE_UNKNOWN:
-				elWord.classList.add('word-unknown');
-				break;
-		}
-	},
-
 	wordStudyAdd(word) {
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.TRUE
@@ -328,7 +183,7 @@ let App = {
 			console.log('wordStudyAdd1', rowId);
 			App.Component.Statistic.display();
 		}).catch((e) => {
-			console.log('wordStudyAdd1  /false', e);
+			console.log('wordStudyAdd1/false', e);
 		});
 	},
 

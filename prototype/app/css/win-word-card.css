@@ -19,9 +19,16 @@
 */
 #win-word-card .win-word-card-answer{
     border: 1px solid transparent;
+    transition: background-color 0.5s;
 }
 #win-word-card .win-word-card-answer:hover {
     border: 1px solid coral;
     border-radius: 0.2rem;
     cursor: pointer;
+}
+#win-word-card .win-word-card-answer.wrong{
+    background-color: red;
+}
+#win-word-card .win-word-card-answer.correct{
+    background-color: green;
 }

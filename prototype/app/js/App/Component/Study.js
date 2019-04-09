@@ -126,7 +126,6 @@ App.Component.Study = {
 			});
 	},
 	updateIdbWordStudy() {
-		console.log('updateIdbWordStudy');
 		return Promise.all((() => {
 			let promises = [];
 			this.wordsStudy.forEach((wordStudyStruct, index) => {
@@ -168,7 +167,6 @@ App.Component.Study = {
 			currentSet = getNextSet.call(this);
 			if (!Helper.isDefined(currentSet)) {
 				App.Component.WinWordCard.hide();
-				console.log('doStudyLang1ToLang2/resolve/1');
 				return resolve();
 			}
 			App.Component.WinWordCard.update({
@@ -187,12 +185,10 @@ App.Component.Study = {
 						reject('Пользователь отменил изучение')
 					},
 					onAnswerCorrect: () => {
-						alert('onAnswerCorrect');
 						++this.wordsStudyProgress.algLang1ToLang2[currentSet.wordIndex].cntCorrect;
 						doExam.call(this, resolve, reject);
 					},
 					onAnswerWrong: () => {
-						alert('onAnswerWrong');
 						++this.wordsStudyProgress.algLang1ToLang2[currentSet.wordIndex].cntWrong;
 						doExam.call(this, resolve, reject);
 					}
@@ -205,7 +201,6 @@ App.Component.Study = {
 		 * Возвращает следующий набор данных для изучения слова.
 		 */
 		function getNextSet() {
-			console.log('doStudyLang1ToLang2/getNextSet');
 			let result = {
 				wordIndex: undefined,
 				word: undefined,
@@ -267,7 +262,6 @@ App.Component.Study = {
 			currentSet = getNextSet.call(this);
 			if (!Helper.isDefined(currentSet)) {
 				App.Component.WinWordCard.hide();
-				console.log('doStudyLang1ToLang2/resolve/1');
 				return resolve();
 			}
 			App.Component.WinWordCard.update({
@@ -286,12 +280,10 @@ App.Component.Study = {
 						reject('Пользователь отменил изучение')
 					},
 					onAnswerCorrect: () => {
-						alert('onAnswerCorrect');
 						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntCorrect;
 						doExam.call(this, resolve, reject);
 					},
 					onAnswerWrong: () => {
-						alert('onAnswerWrong');
 						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntWrong;
 						doExam.call(this, resolve, reject);
 					}
@@ -304,7 +296,6 @@ App.Component.Study = {
 		 * Возвращает следующий набор данных для изучения слова.
 		 */
 		function getNextSet() {
-			console.log('doStudyLang2ToLang1/getNextSet');
 			let result = {
 				wordIndex: undefined,
 				word: undefined,

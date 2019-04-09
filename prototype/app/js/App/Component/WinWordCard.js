@@ -41,9 +41,17 @@ App.Component.WinWordCard = {
 				options.onMemorized();
 			} else if (event.target.classList.contains('win-word-card-answer')) {
 				if (event.target.innerHTML === this.correctAnswer) {
-					options.onAnswerCorrect();
+					event.target.classList.add('correct');
+					setTimeout(()=>{
+						event.target.classList.remove('correct');
+						options.onAnswerCorrect();
+					}, 700);
 				} else {
-					options.onAnswerWrong();
+					event.target.classList.add('wrong');
+					setTimeout(()=>{
+						event.target.classList.remove('wrong');
+						options.onAnswerWrong();
+					}, 1500);
 				}
 			}
 		};
