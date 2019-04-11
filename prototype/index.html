@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Book Reader</title>
     <link rel="stylesheet" href="app/css/main.css">
+    <link rel="stylesheet" href="app/css/statistic.css">
     <link rel="stylesheet" href="app/css/nav.css">
     <link rel="stylesheet" href="app/css/panel-text.css">
     <link rel="stylesheet" href="app/css/win-word-actions.css">
@@ -16,22 +17,28 @@
 </head>
 <body>
 
-<nav class="nav">
-    <ul>
-        <li><a href="#library">Библиотека</a></li>
-        <!--<li><a href="#statistic">Статистика</a></li>-->
-        <li><a href="#read">Чтение</a></li>
-        <li><a href="#study">Изучение слов</a></li>
-    </ul>
-</nav>
-
-<section id="statistic">
-    <h2>Статистика</h2>
-    <div>
-        <span>Слов на изучение:</span><span class="stat-words-study">statWords2Study</span>
-        <span>Слов изучено:</span><span class="stat-words-studied">statWordsStudied</span>
+<div id="toppanel">
+    <section id="statistic">
+        <h2>Статистика слов</h2>
+        <div class="statistic-data">
+            <span>на изучении:</span><span class="stat-words-study">statWords2Study</span>
+            <span>изучено:</span><span class="stat-words-studied">statWordsStudied</span>
+        </div>
+    </section>
+    <div class="nav-icon">
+        <i class="fas fa-list-ul"></i>
     </div>
-</section>
+    <nav class="nav hidden">
+        <ul>
+            <li><a href="#library">Библиотека</a></li>
+            <!--<li><a href="#statistic">Статистика</a></li>-->
+            <li><a href="#read">Чтение</a></li>
+            <li><a href="#study">Изучение слов</a></li>
+        </ul>
+    </nav>
+</div>
+
+
 
 <div id="content">
     <section id="library" class="hidden">

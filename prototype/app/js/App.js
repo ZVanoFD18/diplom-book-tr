@@ -30,8 +30,9 @@ let App = {
 		this.langStudy = this.LANGUAGES.ENG;
 		// this.langGui = this.LANGUAGES.ENG;
 		// this.langStudy = this.LANGUAGES.RUS;
+		document.querySelector('.nav-icon').addEventListener('click', this.onNavIconClick.bind(this));
+		document.querySelector('nav.nav').addEventListener('click', this.onNavClick.bind(this));
 
-		document.querySelector('nav').addEventListener('click', this.onNavClick.bind(this));
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
 		App.Component.Read.init();
 		App.Component.Study.init(document.getElementById('study'));
@@ -45,12 +46,17 @@ let App = {
 				this.go2section('study');
 			}
 		}).catch((e) => {
-			Helper.Log.addDebug(e)
+			Helper.Log.addDebug(e);
 			this.go2section('library');
 		});
 		App.Component.Statistic.display();
 	},
-
+	onNavIconClick (event){
+		let elNav = document.querySelector('.nav');
+		elNav.classList.toggle('hidden')
+		// if(elNav.classList.contains('hidden')){
+		// }
+	},
 	onNavClick(event) {
 		event.preventDefault();
 		let href = event.target.getAttribute('href');

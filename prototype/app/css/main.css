@@ -1,6 +1,9 @@
 * {
     box-sizing: border-box;
 }
+/*body{
+    position: relative;
+}*/
 
 /*Элемент является скрытым*/
 .hidden {
@@ -47,4 +50,18 @@
 
 .background-color-lock-shaded {
     background-color: rgba(255, 255, 255, 0.75);
+}
+
+
+#toppanel{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 4rem;
+    background-color: #8eb9cb;
+    padding: 0.3rem;
+}
+
+#content{
+    margin-top: 4rem;
 }

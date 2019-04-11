@@ -1,0 +1,10 @@
+#statistic{
+    display: inline-block;
+}
+#statistic h2{
+    display: inline-block;
+    font-size: 1.3rem;
+}
+#statistic .statistic-data{
+    display: inline-block;
+}

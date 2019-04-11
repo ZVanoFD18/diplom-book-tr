@@ -7,11 +7,15 @@
     opacity: 0.2;
     background-color: lightgray;
     border-radius: 0.3rem;
-    transition-property: opacity;
-    transition-duration: 1s;
+    transition-property: all;
+    transition-duration: 5s;
 }
-.nav:hover{
-    opacity:1;
+
+.nav:not(.hidden){
+    opacity: 1;
+    right: 4.2rem;
+    top: 0.3rem;
+    background-color: #35baf6;
 }
 
 .nav ul{
@@ -19,7 +23,26 @@
 }
 .nav a{
     text-decoration: none;
+    font-weight: bold;
 }
 .nav a:hover{
     color: coral;
+}
+
+.nav-icon{
+    font-size: 2rem;
+    position: absolute;
+    right: 1.5rem;
+    top: 0.3rem;
+    color: coral;
+    background-color: #59c2ce;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    opacity: 0.7;
+}
+.nav-icon:hover{
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #35baf6;
+    opacity: 1;
 }
