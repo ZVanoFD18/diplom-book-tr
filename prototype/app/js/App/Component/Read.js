@@ -151,11 +151,16 @@ App.Component.Read = {
 		}
 	},
 
-	wordsMark(word, state) {
-		let classWordHash = 'word-hash-' + App.getWordHash(word);
-		let words = this.el.querySelectorAll('.' + classWordHash);
-		words.forEach((elWord) => {
-			this.wordElMark(elWord, state);
-		});
+	wordsMark(words, state) {
+		if (!Helper.isArray(words)){
+			words = [words];
+		}
+		words.forEach((word)=>{
+			let classWordHash = 'word-hash-' + App.getWordHash(word);
+			let words = this.el.querySelectorAll('.' + classWordHash);
+			words.forEach((elWord) => {
+				this.wordElMark(elWord, state);
+			});
+		})
 	}
 };

@@ -24,18 +24,18 @@ App.Component.Study.Grid = {
 		this.elGrid.querySelector('.study-bbar-btn-next').addEventListener('click', this.onBbarBtnNextClick.bind(this));
 		this.elGrid.querySelector('.study-bbar-btn-prev').addEventListener('click', this.onBbarBtnPrevClick.bind(this));
 	},
-	loadData() {
+	_loadData() {
 		return new Promise((resolve, reject) => {
 			App.Idb.WordsStudy.getCountForLang(App.langStudy).then((result) => {
 				this.totalPages = Math.ceil(result / this.countPerPage);
 			}).then(() => {
-				return this.loadDataTable();
+				return this._loadDataTable();
 			}).then(() => {
 				resolve();
 			});
 		})
 	},
-	loadDataTable() {
+	_loadDataTable() {
 		this.rows = [];
 		return new Promise((resolve, reject) => {
 			App.Idb.WordsStudy.getAllAsObject(App.langStudy, {
@@ -68,7 +68,7 @@ App.Component.Study.Grid = {
 			return;
 		}
 		++this.currentPage;
-		this.loadDataTable().then(() => {
+		this._loadDataTable().then(() => {
 			this.display();
 		});
 	},
@@ -77,9 +77,19 @@ App.Component.Study.Grid = {
 			return;
 		}
 		--this.currentPage;
-		this.loadDataTable().then(() => {
+		this._loadDataTable().then(() => {
 			this.display();
 		});
+	},
+	reload() {
+		return new Promise((resolve, reject) => {
+			this._loadData().then(() => {
+				this.display();
+				resolve();
+			}).catch(() => {
+				reject();
+			});
+		})
 	},
 	display() {
 		this.elGrid.querySelector('.study-bbar-page-value').innerHTML = this.currentPage;
@@ -98,11 +108,11 @@ App.Component.Study.Grid = {
 			elTr.querySelector('.study-td-index').innerHTML = (this.currentPage - 1) * this.countPerPage + cnrWord + 1;
 			if (!Helper.isObject(row)) {
 				elTr.classList.add('empty');
-			}else{
+			} else {
 				elTr.querySelector('.study-td-word').innerHTML = row.word;
 				elTr.querySelector('.study-td-translate').innerHTML = row.translate;
 				let elIsStudy = elTr.querySelector('.study-td-is-study>i');
-				if (row.isStudy === App.Idb.TRUE){
+				if (row.isStudy === App.Idb.TRUE) {
 					elIsStudy.classList.add('fas');
 					elIsStudy.classList.add('fa-plus-circle');
 					elIsStudy.classList.add('is-study-true');

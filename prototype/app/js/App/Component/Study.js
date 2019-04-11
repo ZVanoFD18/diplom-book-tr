@@ -45,9 +45,7 @@ App.Component.Study = {
 		this.Grid.init(this.elStudy.querySelector('.study-words-grid'));
 	},
 	display() {
-		this.Grid.loadData().then(() => {
-			this.Grid.display();
-		});
+		this.Grid.reload();
 	},
 	onButtonStartClick(e) {
 		let cntToStudy = this.elStudy.querySelector('.study-panel-start').querySelector('input[name="cntToStudy"]').value;
@@ -115,14 +113,25 @@ App.Component.Study = {
 					message: 'Все слова изучены'
 				});
 				App.Component.Statistic.display();
+				App.Component.Study.Grid.reload();
+				App.Component.Read.wordsMark(Helper.Obj.getFieldsAsArray(this.wordsStudy, 'word'), App.WORD_STATE.WORD_STATE_STUDYED);
 			})
 			.catch((e) => {
-				App.Component.WinMsg.show({
-					title: '<span style="color: red;">Ошибка.</span>',
-					message: e,
-					textButtonClose: 'Ознакомлен',
-				});
 				App.Component.WinWordCard.hide();
+				App.Component.Read.wordsMark(Helper.Obj.getFieldsAsArray(this.wordsStudy, 'word'), App.WORD_STATE.WORD_STATE_STUDY);
+				if (e instanceof App.Errors.User) {
+					App.Component.WinMsg.show({
+						title: 'Уведомление',
+						message: e.message,
+						textButtonClose: 'Ок',
+					});
+				} else {
+					App.Component.WinMsg.show({
+						title: '<span style="color: red;">Ошибка.</span>',
+						message: e,
+						textButtonClose: 'Ок',
+					});
+				}
 			});
 	},
 	updateIdbWordStudy() {
@@ -182,7 +191,7 @@ App.Component.Study = {
 						doExam.call(this, resolve, reject);
 					},
 					onCancel: () => {
-						reject('Пользователь отменил изучение')
+						reject(new App.Errors.User.PressCancel('Пользователь отменил изучение'))
 					},
 					onAnswerCorrect: () => {
 						++this.wordsStudyProgress.algLang1ToLang2[currentSet.wordIndex].cntCorrect;
@@ -277,7 +286,7 @@ App.Component.Study = {
 						doExam.call(this, resolve, reject);
 					},
 					onCancel: () => {
-						reject('Пользователь отменил изучение')
+						reject(new App.Errors.User.PressCancel('Пользователь отменил изучение'))
 					},
 					onAnswerCorrect: () => {
 						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntCorrect;

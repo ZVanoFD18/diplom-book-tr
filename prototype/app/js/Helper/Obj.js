@@ -48,6 +48,26 @@ Helper.Obj.replaceMembers = (targetObj, sourceObj, isStrict) => {
 	}
 	return targetObj;
 };
+
+/**
+ * Возвращает в виде массива занчения полей оюбъектов, которые переданы в массиве "arrOfObject".
+ * @param arrOfObject
+ * @param findFieldName
+ * @return {Array}
+ */
+Helper.Obj.getFieldsAsArray = (arrOfObject, findFieldName) => {
+	let result = [];
+	arrOfObject.forEach((obj)=>{
+		if (!Helper.isObject(obj)){
+			return;
+		}
+		if (findFieldName in obj){
+			result.push(obj[findFieldName]);
+		}
+	});
+	return result;
+};
+
 /**
  * Ищет в массиве объектов "arrOfObject" 1й элемент, у которого поле "findFieldName"
  * содержит значение "findFieldValue".
