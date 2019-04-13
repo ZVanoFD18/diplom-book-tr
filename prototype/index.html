@@ -43,8 +43,13 @@
 <div id="content">
     <section id="library" class="hidden">
         <h2>Библиотека</h2>
-        <input name="inpFile" type="file">
-        <div class="inpFilePath"></div>
+        <div class="library-loadfromfile">
+            <input name="inpFile" type="file">
+            <div class="inpFilePath"></div>
+        </div>
+        <div class="library-books">
+            @TODO: реализовать компонент "список книг"
+        </div>
     </section>
 
 
@@ -164,6 +169,9 @@
 <script src="app/js/Helper/Xml.js"></script>
 <script src="app/js/App.js"></script>
 <script src="app/js/App/Component.js"></script>
+<script src="app/js/App/Component/Library.js"></script>
+<script src="app/js/App/Component/Library/BooksList.js"></script>
+<script src="app/js/App/Component/Library/LoadFromFile.js"></script>
 <script src="app/js/App/Component/Loadmask.js"></script>
 <script src="app/js/App/Component/Nav.js"></script>
 <script src="app/js/App/Component/Read.js"></script>

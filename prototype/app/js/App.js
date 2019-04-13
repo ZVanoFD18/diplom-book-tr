@@ -39,8 +39,8 @@ let App = {
 			return false
 		};
 
-		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
 		App.Component.Nav.init();
+		App.Component.Library.init();
 		App.Component.Read.init();
 		App.Component.Study.init();
 
@@ -57,18 +57,6 @@ let App = {
 			App.Component.Nav.go2section('library');
 		});
 		App.Component.Statistic.display();
-	},
-
-	onInputFileChange(event) {
-		App.Component.Loadmask.show('Загрузка файла...');
-		Helper.Io.loadTextFromInputFile(event.srcElement, (isSuccess, text) => {
-			event.srcElement.value = '';
-			if (!isSuccess) {
-				App.Component.Loadmask.hide();
-				return;
-			}
-			this.bookToRead(text, true)
-		});
 	},
 
 	bookToRead(text, isAdd) {
