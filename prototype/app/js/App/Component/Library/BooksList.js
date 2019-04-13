@@ -33,7 +33,6 @@ App.Component.Library.BooksList = {
 	},
 	display() {
 		this.clean();
-		//this.el.innerHTML = '';
 		let elTplItem = this.el.querySelector('.tpl.library-books-item');
 		this.books.forEach((book) => {
 			let newItem = elTplItem.cloneNode(true);
@@ -43,10 +42,7 @@ App.Component.Library.BooksList = {
 			newItem.querySelector('.library-books-title').innerHTML = book.title.concat('<br>');
 			let img = book.image;
 			if (img) {
-				//newItem.querySelector('.library-books-title').setAttribute('src', 'data:image/png;base64,' + img);
-				//newItem.querySelector('.library-books-title').src = 'data:image/png;base64,' + img);
-				//newItem.querySelector('.library-books-title').src = '/resources/images/book.png';
-				newItem.querySelector('.library-books-title').src = '/aaa.jpg';
+				newItem.querySelector('.library-books-image img').src = 'data:image/;base64,' + img;
 			}
 			this.el.appendChild(newItem);
 		});

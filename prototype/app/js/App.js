@@ -43,14 +43,14 @@ let App = {
 		App.Component.Library.init();
 		App.Component.Read.init();
 		App.Component.Study.init();
-
+		App.translate();
 		App.Component.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
 			App.Component.Statistic.display();
 			if (Helper.isDefined(lastBook)) {
 				this.bookToRead(lastBook.content, false);
 			} else {
-				App.Component.Nav.go2section('study');
+				App.Component.Nav.go2section('library');
 			}
 		}).catch((e) => {
 			Helper.Log.addDebug(e);
@@ -194,5 +194,11 @@ let App = {
 	getWordHash(word) {
 		let result = Helper.Hash.hashCode(word.toLowerCase());
 		return result;
+	},
+	translate(){
+		let elList = document.querySelectorAll('.need-translate');
+		elList.forEach((elTranslate)=>{
+			elTranslate.innerHTML = elTranslate.innerHTML + '-'+ App.langGui;
+		})
 	}
 };

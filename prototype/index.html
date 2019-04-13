@@ -40,14 +40,15 @@
 </div>
 
 
-
 <div id="content">
 
     <section id="library" class="hidden">
         <h2 class="library-header need-translate">Библиотека</h2>
         <div class="library-loadfromfile">
-            <input name="inpFile" type="file">
-            <div class="inpFilePath"></div>
+            <div class="library-loadfromfile-wrapper">
+                <button class="library-loadfromfile-button need-translate">Добавить книгу из файла</button>
+                <input class="library-loadfromfile-input hidden" name="inpFile" type="file">
+            </div>
         </div>
         <div class="library-books-list">
             <div class="tpl library-books-item">
@@ -204,8 +205,8 @@
 
 
 <script defer>
-    'use struct';
-    document.addEventListener('DOMContentLoaded', () => {
+	'use struct';
+	document.addEventListener('DOMContentLoaded', () => {
 		console.log('Document loaded')
 		App.run();
 	});

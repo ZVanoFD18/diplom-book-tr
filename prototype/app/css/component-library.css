@@ -1,9 +1,30 @@
+/*---------------------------------------------------------------------------*/
+/*Заголовок раздела*/
+.library-header {
+    font-size: 2rem;
+    text-align: center;
+}
+
+/*---------------------------------------------------------------------------*/
+/*Добавление книги*/
+.library-loadfromfile {
+    text-align: center;
+}
+
+.library-loadfromfile-wrapper {
+    display: inline-block;
+}
+
+.library-loadfromfile-button {
+    display: inline-blockblock;
+}
+
+/*---------------------------------------------------------------------------*/
+/*Список книг*/
 .library-books-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    --justify-content: space-around;
-    --justify-content: space-between;
 }
 
 .library-books-item {
@@ -14,11 +35,14 @@
     border-radius: 1rem;
     transition: transform 1s;
 }
-.library-books-item:hover{
+
+.library-books-item:hover {
     background-color: #35baf6;
 }
-.library-books-item.active{
-    transform: scale(0.1);
+
+.library-books-item.active {
+    --transform: scale(0.1);
+    transform: scale(1.5);
 }
 
 .library-books-lang-label {
@@ -33,3 +57,9 @@
     height: 3rem;
     overflow: auto;
 }
+
+.library-books-image img {
+    border-radius: 1rem;
+}
+
+/*---------------------------------------------------------------------------*/

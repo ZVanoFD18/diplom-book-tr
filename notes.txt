@@ -56,6 +56,10 @@ https://github.com/dejurin/php-google-translate-for-free
 https://github.com/Stichoza/google-translate-php
 --------------------------------------------------------------------------------
 Чтение fb2
+
+Книги можно скачать: https://aldebaran.ru/author/tven_mark/
+
+Примеры:
 https://github.com/chitalka/reader
 http://chitalka.github.io/demo/
 
