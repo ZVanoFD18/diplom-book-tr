@@ -1,21 +1,24 @@
 .nav{
+    display: inline-block;
     position: fixed;
     top: 0;
     right: 0;
     padding-right: 1rem;
     z-index: 110;
-    opacity: 0.2;
+    opacity: 0;
     background-color: lightgray;
-    border-radius: 0.3rem;
+    border-radius: 50%;
     transition-property: all;
-    transition-duration: 5s;
+    transition-duration: 1s;
+    transform : scale(0,0);;
 }
-
 .nav:not(.hidden){
     opacity: 1;
     right: 4.2rem;
     top: 0.3rem;
     background-color: #35baf6;
+    transform : scale(1,1) rotate(360deg);
+    border-radius: 0.3rem;
 }
 
 .nav ul{

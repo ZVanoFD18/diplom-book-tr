@@ -30,6 +30,15 @@ let App = {
 		this.langStudy = this.LANGUAGES.ENG;
 		// this.langGui = this.LANGUAGES.ENG;
 		// this.langStudy = this.LANGUAGES.RUS;
+
+		// Отключаем выделение мышью (чтобы не выделялся текст меню при двойном клике).
+		document.body.onmousedown = () => {
+			return false
+		};
+		document.body.onselectstart = () => {
+			return false
+		};
+		// Обработчики навигации
 		document.querySelector('.nav-icon').addEventListener('click', this.onNavIconClick.bind(this));
 		document.querySelector('nav.nav').addEventListener('click', this.onNavClick.bind(this));
 
@@ -40,7 +49,7 @@ let App = {
 		App.Component.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
 			App.Component.Statistic.display();
-			if (Helper.isDefined(lastBook)){
+			if (Helper.isDefined(lastBook)) {
 				this.bookToRead(lastBook.content, false);
 			} else {
 				this.go2section('study');
@@ -51,14 +60,12 @@ let App = {
 		});
 		App.Component.Statistic.display();
 	},
-	onNavIconClick (event){
+	onNavIconClick(event) {
 		let elNav = document.querySelector('.nav');
-		elNav.classList.toggle('hidden')
-		// if(elNav.classList.contains('hidden')){
-		// }
+		elNav.classList.toggle('hidden');
 	},
 	onNavClick(event) {
-		event.preventDefault();
+		//event.preventDefault();
 		let href = event.target.getAttribute('href');
 		if (href === null) {
 			return;
@@ -175,7 +182,7 @@ let App = {
 			});
 			return promices;
 		})()).then((results) => {
-			if (!Helper.isArray(results)){
+			if (!Helper.isArray(results)) {
 				return new Error('Не удалось получить перевод для списка слов');
 			}
 			return results;
