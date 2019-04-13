@@ -6,11 +6,11 @@ console.log('App.Component.Read');
  */
 App.Component.Read = {
 	/**
-	 * @see: '#text'
+	 * @see: '#read'
 	 */
 	el : undefined,
 	init(){
-		this.el = document.getElementById('text');
+		this.el = document.getElementById('read');
 		this.el.addEventListener('click', this.onTextClick.bind(this));
 		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
 	},
@@ -29,15 +29,16 @@ App.Component.Read = {
 				elText.innerHTML = '';
 				book.sections.forEach((section) => {
 					let containerTitle = document.createElement('h2');
+					containerTitle.classList.add('read-text-title');
 					section.title.forEach((titleLine) => {
 						let elLine = document.createElement('p');
-						elLine.classList.add('text-title');
+						elLine.classList.add('read-text-title-item');
 						let words = Helper.Text.getWords(App.langStudy, titleLine);
 						words.forEach((word) => {
 							let newElWord = document.createElement('span');
 							newElWord.innerHTML = word;
 							let hash = App.getWordHash(word);
-							newElWord.classList.add('word');
+							newElWord.classList.add('read-word');
 							newElWord.classList.add('word-hash-' + hash);
 							let normalizedWord = App.Idb.getNormalizedWord(word);
 							if (normalizedWord in wordsStudy) {
@@ -56,15 +57,16 @@ App.Component.Read = {
 					elText.appendChild(containerTitle);
 
 					let containerSubtext = document.createElement('p');
+					containerSubtext.classList.add('read-text-line');
 					section.p.forEach((textLine) => {
 						let elLine = document.createElement('p');
-						elLine.classList.add('text-line');
+						elLine.classList.add('read-text-line');
 						let words = Helper.Text.getWords(App.langStudy, textLine);
 						words.forEach((word) => {
 							let newElWord = document.createElement('span');
 							newElWord.innerHTML = word;
 							let hash = App.getWordHash(word);
-							newElWord.classList.add('word');
+							newElWord.classList.add('read-word');
 							newElWord.classList.add('word-hash-' + hash);
 							let normalizedWord = App.Idb.getNormalizedWord(word);
 							if (normalizedWord in wordsStudy) {
@@ -95,7 +97,7 @@ App.Component.Read = {
 	 */
 	onTextClick(e) {
 		let elDialog = document.getElementById('winWordActions');
-		if (!e.target.classList.contains('word')) {
+		if (!e.target.classList.contains('read-word')) {
 			elDialog.classList.add('wa-hidden');
 			return;
 		}
@@ -119,18 +121,18 @@ App.Component.Read = {
 	},
 
 	wordElMark(elWord, state) {
-		elWord.classList.remove('word-unknown');
-		elWord.classList.remove('word-study');
-		elWord.classList.remove('word-studied');
+		elWord.classList.remove('read-word-unknown');
+		elWord.classList.remove('read-word-study');
+		elWord.classList.remove('read-word-studied');
 		switch (state) {
 			case App.WORD_STATE.WORD_STATE_STUDY:
-				elWord.classList.add('word-study');
+				elWord.classList.add('read-word-study');
 				break;
 			case App.WORD_STATE.WORD_STATE_STUDYED:
-				elWord.classList.add('word-studied');
+				elWord.classList.add('read-word-studied');
 				break;
 			case App.WORD_STATE.WORD_STATE_UNKNOWN:
-				elWord.classList.add('word-unknown');
+				elWord.classList.add('read-word-unknown');
 				break;
 		}
 	},

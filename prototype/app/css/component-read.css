@@ -1,0 +1,71 @@
+/*Секция "Чтение"*/
+#read{
+    border: 3px double gray;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+/*---------------------------------------------------------------------------*/
+/*Заголовок читаемого раздела*/
+
+/*Блок "Заголовок раздела"*/
+.read-text-title{
+    line-height: 1.2em;
+}
+/*Строка блока "Заголовок раздела"*/
+.read-text-title-item{
+    text-align: center;
+}
+/*1я Строка блока "Заголовок раздела"*/
+.read-text-title .read-text-title-item:nth-child(1){
+    font-size: 2.2rem;
+}
+/*Строка блока "Заголовок раздела", но не первая*/
+.read-text-title .read-text-title-item:not(:first-child){
+    font-size: 1.5rem;
+}
+/*---------------------------------------------------------------------------*/
+/*Текст читаемого раздела*/
+
+/*Строка текста в области чтения*/
+.read-text-line{
+    line-height: 1.2em;
+    margin-bottom: 0.4rem;
+}
+
+
+/*Первое слово предложения*/
+.read-text-line span:first-child{
+    margin-left: 2rem;
+    font-weight: bold;
+}
+/*---------------------------------------------------------------------------*/
+/*Стилизация для читаемых слов*/
+
+/*Слово в тексте*/
+.read-word{
+    display: inline-block;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    border-radius: 0.4em;
+    margin-bottom: 0.1em;/*Межстрочный интервал*/
+    padding: 0.1em;
+}
+/*Слово в тексте, на которое наведен курсор*/
+.read-word:hover{
+    border-color: coral;
+    border-style: outset;
+    cursor: pointer;
+}
+/*Слово в тексте с неизвестным статусом изучения*/
+.read-word-unknown{
+    background-color: bisque;
+}
+/*Слово в тексте со статусом изучения "На изучении"*/
+.read-word-study{
+    background-color: yellow;
+}
+/*Слово в тексте со статусом изучения "Изучено"*/
+.read-word-studied{
+    background-color: white;
+}
