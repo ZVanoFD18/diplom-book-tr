@@ -38,13 +38,11 @@ let App = {
 		document.body.onselectstart = () => {
 			return false
 		};
-		// Обработчики навигации
-		document.querySelector('.nav-icon').addEventListener('click', this.onNavIconClick.bind(this));
-		document.querySelector('nav.nav').addEventListener('click', this.onNavClick.bind(this));
 
 		document.querySelector('input[name="inpFile"]').addEventListener('change', this.onInputFileChange.bind(this));
+		App.Component.Nav.init();
 		App.Component.Read.init();
-		App.Component.Study.init(document.getElementById('study'));
+		App.Component.Study.init();
 
 		App.Component.Loadmask.show('Загрузка...');
 		this.Idb.getLastBook().then((lastBook) => {
@@ -52,25 +50,13 @@ let App = {
 			if (Helper.isDefined(lastBook)) {
 				this.bookToRead(lastBook.content, false);
 			} else {
-				this.go2section('study');
+				App.Component.Nav.go2section('study');
 			}
 		}).catch((e) => {
 			Helper.Log.addDebug(e);
-			this.go2section('library');
+			App.Component.Nav.go2section('library');
 		});
 		App.Component.Statistic.display();
-	},
-	onNavIconClick(event) {
-		let elNav = document.querySelector('.nav');
-		elNav.classList.toggle('hidden');
-	},
-	onNavClick(event) {
-		//event.preventDefault();
-		let href = event.target.getAttribute('href');
-		if (href === null) {
-			return;
-		}
-		this.go2section(href.substr(1))
 	},
 
 	onInputFileChange(event) {
@@ -93,7 +79,7 @@ let App = {
 
 		App.Component.Loadmask.show('Формирование области чтения...');
 		App.Component.Read.displayBook(book).then(() => {
-			this.go2section('read');
+			App.Component.Nav.go2section('read');
 			App.Component.Loadmask.hide();
 			if (isAdd) {
 				App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
@@ -107,23 +93,6 @@ let App = {
 				});
 			}
 		});
-	},
-
-	go2section(sectionId) {
-		App.Component.Loadmask.show('Навигация...');
-		setTimeout(() => {
-			document.getElementById('content').querySelectorAll('section').forEach((elSection) => {
-				elSection.classList.add('hidden');
-			});
-			document.getElementById(sectionId).classList.remove('hidden');
-			document.getElementById(sectionId).scrollIntoView();
-			App.Component.Loadmask.hide();
-			switch (sectionId) {
-				case 'study' :
-					this.Component.Study.display();
-					break;
-			}
-		}, 50);
 	},
 
 	getTranslate(word, isReturnStruct = false) {

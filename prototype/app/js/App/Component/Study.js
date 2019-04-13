@@ -38,8 +38,8 @@ App.Component.Study = {
 	 * @see: DomElement '#study'
 	 */
 	elStudy: undefined,
-	init(elStudy) {
-		this.elStudy = elStudy;
+	init() {
+		this.elStudy = document.getElementById('study');
 		this.elStudy.querySelector('.study-panel-start').querySelector('input[name="cntToStudy"]').value = this.defaults.cntWordForStudy;
 		this.elStudy.querySelector('.study-button-start').addEventListener('click', this.onButtonStartClick.bind(this));
 		this.Grid.init(this.elStudy.querySelector('.study-words-grid'));
