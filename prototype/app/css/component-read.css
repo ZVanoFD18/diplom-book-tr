@@ -67,5 +67,5 @@
 }
 /*Слово в тексте со статусом изучения "Изучено"*/
 .read-word-studied{
-    background-color: white;
+    background-color: transparent;
 }

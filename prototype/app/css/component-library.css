@@ -1,0 +1,35 @@
+.library-books-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    --justify-content: space-around;
+    --justify-content: space-between;
+}
+
+.library-books-item {
+    width: 15rem;
+    margin: 0.3rem;
+    padding: 0.3rem;
+    background-color: #8eb9cb;
+    border-radius: 1rem;
+    transition: transform 1s;
+}
+.library-books-item:hover{
+    background-color: #35baf6;
+}
+.library-books-item.active{
+    transform: scale(0.1);
+}
+
+.library-books-lang-label {
+    display: inline-block;
+}
+
+.library-books-lang-value {
+    display: inline-block;
+}
+
+.library-books-title {
+    height: 3rem;
+    overflow: auto;
+}

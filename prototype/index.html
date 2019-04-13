@@ -2,16 +2,17 @@
 <html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Book Reader</title>
+    <title class="need-translate">Book Reader</title>
     <link rel="stylesheet" href="app/css/reset.css">
     <link rel="stylesheet" href="app/css/main.css">
+    <link rel="stylesheet" href="app/css/component-common.css">
+    <link rel="stylesheet" href="app/css/component-library.css">
     <link rel="stylesheet" href="app/css/component-statistic.css">
     <link rel="stylesheet" href="app/css/component-nav.css">
     <link rel="stylesheet" href="app/css/component-read.css">
     <link rel="stylesheet" href="app/css/win-word-actions.css">
     <link rel="stylesheet" href="app/css/widget-loadmask.css">
     <link rel="stylesheet" href="app/css/component-study-grid.css">
-    <link rel="stylesheet" href="app/css/component-common.css">
     <link rel="stylesheet" href="app/css/win-msg.css">
     <link rel="stylesheet" href="app/css/win-word-card.css">
     <link href="/resources/fonts/fontawesome-free-5.8.1-web/css/all.css" rel="stylesheet"> <!--load all styles -->
@@ -20,10 +21,10 @@
 
 <div id="toppanel">
     <section id="statistic">
-        <h2>Статистика слов</h2>
+        <h2 class="need-translate">Статистика слов</h2>
         <div class="statistic-data">
-            <span>на изучении:</span><span class="stat-words-study">statWords2Study</span>
-            <span>изучено:</span><span class="stat-words-studied">statWordsStudied</span>
+            <span class="need-translate">на изучении:</span><span class="stat-words-study">statWords2Study</span>
+            <span class="need-translate">изучено:</span><span class="stat-words-studied">statWordsStudied</span>
         </div>
     </section>
     <div class="nav-icon">
@@ -31,9 +32,9 @@
     </div>
     <nav class="nav hidden">
         <ul>
-            <li><a href="#library">Библиотека</a></li>
-            <li><a href="#read">Чтение</a></li>
-            <li><a href="#study">Изучение слов</a></li>
+            <li><a href="#library" class="need-translate">Библиотека</a></li>
+            <li><a href="#read" class="need-translate">Чтение</a></li>
+            <li><a href="#study" class="need-translate">Изучение слов</a></li>
         </ul>
     </nav>
 </div>
@@ -41,39 +42,49 @@
 
 
 <div id="content">
+
     <section id="library" class="hidden">
-        <h2>Библиотека</h2>
+        <h2 class="library-header need-translate">Библиотека</h2>
         <div class="library-loadfromfile">
             <input name="inpFile" type="file">
             <div class="inpFilePath"></div>
         </div>
-        <div class="library-books">
-            @TODO: реализовать компонент "список книг"
+        <div class="library-books-list">
+            <div class="tpl library-books-item">
+                <div class="library-books-hash hidden"></div>
+                <div class="library-books-lang">
+                    <div class="library-books-lang-label need-translate">Язык</div>
+                    <div class="library-books-lang-value"></div>
+                </div>
+                <div class="library-books-title"></div>
+                <div class="library-books-image">
+                    <img src="/resources/img/book.png" alt="Empty book">
+                </div>
+            </div>
         </div>
     </section>
-
 
     <section id="read" class="hidden">
         <div id="text" class="text">text</div>
     </section>
 
     <section id="study" class="hidden study">
-        <h2>Изучение слов</h2>
+        <h2 class="need-translate">Изучение слов</h2>
 
         <div class="study-panel-start">
-            <span>Кол-во слов для изучения</span>
+            <span class="need-translate">Кол-во слов для изучения</span>
             <input type="number" name="cntToStudy">
-            <button class="study-button-start">Начать изучение</button>
+            <button class="study-button-start need-translate">Начать изучение</button>
         </div>
 
         <div class="study-words-grid">
             <table class="study-table">
                 <thead>
                 <tr>
-                    <th>№пп</th>
-                    <th>Изучается</th>
-                    <th>Слово</th>
-                    <th>Перевод</th>
+                    <th class="need-translate">№пп</th>
+                    <th class="need-translate">Изучается</th>
+                    <th class="need-translate">Слово</th>
+                    <th class="need-translate">Перевод</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -86,15 +97,15 @@
                 </tbody>
             </table>
             <div class="study-bbar">
-                <span class="study-bbar-page-label">Страница</span>
+                <span class="study-bbar-page-label need-translate">Страница</span>
                 <span class="study-bbar-page-value">0</span>
-                <span class="study-bbar-page-total-label">из</span>
+                <span class="study-bbar-page-total-label need-translate">из</span>
                 <span class="study-bbar-page-total-value">0</span>
-                <span class="study-bbar-btn-prev component-button">Назад</span>
-                <span class="study-bbar-btn-next component-button">Вперед</span>
+                <span class="study-bbar-btn-prev component-button need-translate">Назад</span>
+                <span class="study-bbar-btn-next component-button need-translate">Вперед</span>
                 <span class="study-bbar-gotopage">
                     <input class="study-bbar-gotopage-value" type="number" name="gotopage">
-                    <span class="study-bbar-gotopage-button component-button">Перейти</span>
+                    <span class="study-bbar-gotopage-button component-button need-translate">Перейти</span>
                 </span>
             </div>
         </div>
@@ -107,7 +118,7 @@
     <!--Виджет "Маска загрузки"-->
     <div id="loadmask" class="background-color-lock-shaded">
         <div class="wrap">
-            <div class="loadmask-message color3">Загрузка...</div>
+            <div class="loadmask-message color3need-translate">Загрузка...</div>
             <div class="img"></div>
         </div>
     </div>
@@ -115,24 +126,24 @@
     <!--Компонент общего назначения "Вывести пользователю текст"-->
     <div id="win-msg" class="hidden background-color-lock-transparent">
         <div class="win-msg-window win background-color1 ">
-            <div class="win-msg-title win-title color2 background-color2">Сообщение</div>
+            <div class="win-msg-title win-title color2 background-color2 need-translate">Сообщение</div>
             <div class="win-msg-body win-body color2 background-color1">
                 <div class="win-msg-text">...</div>
             </div>
             <div class="win-msg-buttons win-buttons">
-                <button class="button win-msg-button-close">Закрыть</button>
+                <button class="button win-msg-button-close need-translate">Закрыть</button>
             </div>
         </div>
     </div>
 
     <!--Виджет "Что делать с выбранным словом?"-->
     <div id="winWordActions" class="wa-hidden">
-        <p class="wa-word">Слово</p>
-        <p class="wa-translate">Перевод</p>
+        <p class="wa-word need-translate">Слово</p>
+        <p class="wa-translate need-translate">Перевод</p>
         <div class="wa-buttons">
-            <button class="wa-btn-studied">Знаю</button>
-            <div class="wa-btn-separator"></div>
-            <button class="wa-btn-study">Изучить</button>
+            <button class="wa-btn-studied need-translate">Знаю</button>
+            <div class="wa-btn-separator need-translate"></div>
+            <button class="wa-btn-study need-translate">Изучить</button>
         </div>
     </div>
 
@@ -141,16 +152,16 @@
     -->
     <div id="win-word-card" class="hidden background-color-lock-transparent">
         <div class="win-word-card-window win background-color1 ">
-            <div class="win-word-card-title win-title color2 background-color2">Изучение слова</div>
+            <div class="win-word-card-title win-title color2 background-color2 need-translate">Изучение слова</div>
             <div class="win-word-card-body win-body color2 background-color1">
                 <div class="win-word-card-word">???</div>
                 <div class="tpl win-word-card-answer">???</div>
                 <div class="win-word-card-answers"></div>
             </div>
             <div class="win-word-card-buttons win-buttons">
-                <button class="win-word-card-btn-memorized button">Знаю</button>
-                <button class="win-word-card-btn-answer button">Ответ</button>
-                <button class="win-word-card-btn-cancel button">Прервать изучение</button>
+                <button class="win-word-card-btn-memorized button need-translate">Знаю</button>
+                <button class="win-word-card-btn-answer button need-translate">Ответ</button>
+                <button class="win-word-card-btn-cancel button need-translate">Прервать изучение</button>
             </div>
         </div>
     </div>

@@ -58,28 +58,51 @@ let App = {
 		});
 		App.Component.Statistic.display();
 	},
+	bookToReadByHash(hash) {
+		App.Component.Loadmask.show('Извлечение книги...');
+		let book;
+		return new Promise((resolve, reject) => {
+			this.Idb.Books.getByHash(hash).then((resBook) => {
+				book = resBook;
+				//App.Component.Loadmask.hide();
+				return this.bookToRead(resBook.content, false);
+			}).then(() => {
+				return App.Idb.KeyVal.LastSession.put(book.hash, 0).then(() => {
+					console.log('Книга добавлена в сессию');
+				});
+			}).catch((e) => {
+				reject(new App.Errors.User('Книга не найдена в библиотеке'));
+			});
+		});
+	},
 
 	bookToRead(text, isAdd) {
-		isAdd = Helper.isDefined(isAdd) ? isAdd : true;
-		App.Component.Loadmask.show('Конвертация книги...');
-		let book = Helper.Fb2.getBookFromText(text);
-		console.log(book);
+		return new Promise((resolve, reject) => {
+			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
+			App.Component.Loadmask.show('Конвертация книги...');
+			let book = Helper.Fb2.getBookFromText(text);
+			console.log(book);
 
-		App.Component.Loadmask.show('Формирование области чтения...');
-		App.Component.Read.displayBook(book).then(() => {
-			App.Component.Nav.go2section('read');
-			App.Component.Loadmask.hide();
-			if (isAdd) {
-				App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
-					console.log('Книга добавлена в локальную библиотеку');
-					App.Idb.KeyVal.LastSession.put(result.book.hash, 0).then(() => {
-						console.log('Книга добавлена в сессию');
+			App.Component.Loadmask.show('Формирование области чтения...');
+			App.Component.Read.displayBook(book).then(() => {
+				App.Component.Nav.go2section('read');
+				App.Component.Loadmask.hide();
+				if (!isAdd) {
+					resolve();
+				} else {
+					App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
+						console.log('Книга добавлена в локальную библиотеку');
+						App.Idb.KeyVal.LastSession.put(result.book.hash, 0).then(() => {
+							console.log('Книга добавлена в сессию');
+							resolve();
+						});
+					}).catch((e) => {
+						Helper.Log.addDebug(e);
+						alert('Ошибка! Не удалось добавить книгу в БД.');
+						reject();
 					});
-				}).catch((e) => {
-					Helper.Log.addDebug(e);
-					alert('Ошибка! Не удалось добавить книгу в БД.');
-				});
-			}
+				}
+			});
 		});
 	},
 

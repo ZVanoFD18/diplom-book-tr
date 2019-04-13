@@ -77,7 +77,7 @@ App.Idb.Books = {
 						reject('Не удалось добавить книгу в БД.');
 					};
 					// @TODO: удалить блок после исследования.
-					transaction.oncomplete = function(e){
+					transaction.oncomplete = function (e) {
 						console.log('App.Idb.Books.add/transaction.oncomplete', e);
 						db.close();
 					};
@@ -89,5 +89,37 @@ App.Idb.Books = {
 				reject(e);
 			})
 		})
+	},
+	getAll(options) {
+		options = options || {};
+		options.filter = options.filter || {};
+		if (Helper.isDefined(options.filter.lang)){
+			options.filter.lang = App.Idb.getNormalizedLang(options.filter.lang);
+		}
+		// options = Helper.Obj.replaceMembers({
+		// 	lang : App.langStudy
+		// },options);
+		return new Promise((resolve, reject) => {
+			let result = [];
+			App.Idb.getDb().then((db) => {
+				let store = db.transaction(['Books'], 'readonly').objectStore('Books');
+				let req = store.openCursor();
+				req.onsuccess = (event) => {
+					let cursor = req.result;
+					if (!cursor) {
+						resolve(result);
+						return;
+					}
+					if (Helper.isDefined(options.filter.lang)) {
+						if (options.filter.lang === cursor.value.lang) {
+							result.push(cursor.value);
+						}
+					} else {
+						result.push(cursor.value);
+					}
+					cursor.continue()
+				}
+			});
+		});
 	}
 };

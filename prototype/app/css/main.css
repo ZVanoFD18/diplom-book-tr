@@ -1,9 +1,14 @@
 * {
     box-sizing: border-box;
 }
-/*body{
-    position: relative;
-}*/
+body{
+    /*Цвет папируса*/
+    --background-color: rgb(227, 203, 157);
+    /*Цвет пергамента*/
+    background-color: rgb(245, 238, 209);
+    /*Цвет старой бумаги*/
+    --background-color: rgb(214, 201, 169);
+}
 
 /*Элемент является скрытым*/
 .hidden {

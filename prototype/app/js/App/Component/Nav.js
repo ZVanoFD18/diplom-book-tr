@@ -58,6 +58,9 @@ App.Component.Nav = {
 				case 'study' :
 					App.Component.Study.display();
 					break;
+				case 'library' :
+					App.Component.Library.display();
+					break;
 			}
 		}, 50);
 	}
