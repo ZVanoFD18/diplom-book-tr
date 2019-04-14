@@ -27,7 +27,7 @@ App.Component.Library.BooksList = {
 				this.books = books;
 				resolve();
 			}).catch((e) => {
-				reject(new App.Errors.User('Не удалось загрузить список книг из БД'));
+				reject(new App.Errors.User(App.localize('Не удалось загрузить список книг из БД')));
 			})
 		});
 	},

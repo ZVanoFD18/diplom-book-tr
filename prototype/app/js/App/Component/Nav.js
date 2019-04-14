@@ -46,7 +46,7 @@ App.Component.Nav = {
 	 * @param sectionId
 	 */
 	go2section(sectionId) {
-		App.Component.Loadmask.show('Навигация...');
+		App.Component.Loadmask.show(App.localize('Навигация...'));
 		setTimeout(() => {
 			document.getElementById('content').querySelectorAll('section').forEach((elSection) => {
 				elSection.classList.add('hidden');
@@ -55,6 +55,9 @@ App.Component.Nav = {
 			document.getElementById(sectionId).scrollIntoView();
 			App.Component.Loadmask.hide();
 			switch (sectionId) {
+				case 'setlang' :
+					App.Component.Setlang.display();
+					break;
 				case 'study' :
 					App.Component.Study.display();
 					break;

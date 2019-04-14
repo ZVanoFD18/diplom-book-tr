@@ -21,6 +21,12 @@ body{
     visibility: hidden;
     display: none;
 }
+button
+, input
+, select
+{
+    border-radius: 0.3em;
+}
 
 .color1 {
     color: rgb(132, 205, 194);

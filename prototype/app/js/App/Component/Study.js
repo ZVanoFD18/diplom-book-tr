@@ -52,18 +52,18 @@ App.Component.Study = {
 		cntToStudy = parseInt(cntToStudy);
 		if (!Helper.isNumber(cntToStudy) || cntToStudy < 1) {
 			App.Component.WinMsg.show({
-				title: 'Уведомление.',
-				message: 'Недостаточно слов для изучения'
+				title:App.localize('Уведомление.'),
+				message:App.localize('Недостаточно слов для изучения')
 			});
 			return;
 		}
-		App.Component.Loadmask.show('Получение списка слов для изучения...');
+		App.Component.Loadmask.show(App.localize('Получение списка слов для изучения...'));
 		App.Idb.WordsStudy.getForStudy(App.langStudy, cntToStudy).then((wordsForStudy) => {
 			App.Component.Loadmask.hide();
 			if (wordsForStudy.length < 1) {
 				App.Component.WinMsg.show({
-					title: 'Уведомление.',
-					message: 'Недостаточно слов для изучения.<br>Следует добавить слова в разделе "Чтение"'
+					title:App.localize('Уведомление.'),
+					message:App.localize('Недостаточно слов для изучения.<br>Следует добавить слова в разделе "Чтение"')
 				});
 				return;
 			}
@@ -72,7 +72,7 @@ App.Component.Study = {
 			this.wordsStudy.forEach((wordStruct) => {
 				wordsForTranslate.push(wordStruct.word);
 			});
-			App.getTranslates(wordsForTranslate).then((translateStructArray) => {
+			App.getWordsTranslate(wordsForTranslate).then((translateStructArray) => {
 				this.wordsTranslate = translateStructArray;
 				this.doStudy();
 			});
@@ -109,8 +109,8 @@ App.Component.Study = {
 			.then(() => {
 				App.Component.WinWordCard.hide();
 				App.Component.WinMsg.show({
-					title: 'Уведомление.',
-					message: 'Все слова изучены'
+					title:App.localize('Уведомление.'),
+					message:App.localize('Все слова изучены')
 				});
 				App.Component.Statistic.display();
 				App.Component.Study.Grid.reload();
@@ -121,15 +121,15 @@ App.Component.Study = {
 				App.Component.Read.wordsMark(Helper.Obj.getFieldsAsArray(this.wordsStudy, 'word'), App.WORD_STATE.WORD_STATE_STUDY);
 				if (e instanceof App.Errors.User) {
 					App.Component.WinMsg.show({
-						title: 'Уведомление',
+						title:App.localize('Уведомление'),
 						message: e.message,
-						textButtonClose: 'Ок',
+						textButtonClose:App.localize('Ок'),
 					});
 				} else {
 					App.Component.WinMsg.show({
-						title: '<span style="color: red;">Ошибка.</span>',
+						title:App.localize('<span style="color: red;">Ошибка.</span>'),
 						message: e,
-						textButtonClose: 'Ок',
+						textButtonClose:App.localize('Ок'),
 					});
 				}
 			});
@@ -179,7 +179,7 @@ App.Component.Study = {
 				return resolve();
 			}
 			App.Component.WinWordCard.update({
-				title: 'Изучение слов с родного языка на целевой',
+				title:App.localize('Изучение слов с родного языка на целевой'),
 				word: currentSet.word,
 				answers: answers,
 				correctAnswer: currentSet.answer
@@ -191,7 +191,7 @@ App.Component.Study = {
 						doExam.call(this, resolve, reject);
 					},
 					onCancel: () => {
-						reject(new App.Errors.User.PressCancel('Пользователь отменил изучение'))
+						reject(new App.Errors.User.PressCancel(App.localize('Пользователь отменил изучение')))
 					},
 					onAnswerCorrect: () => {
 						++this.wordsStudyProgress.algLang1ToLang2[currentSet.wordIndex].cntCorrect;
@@ -245,8 +245,8 @@ App.Component.Study = {
 				return result;
 			} else {
 				App.Component.WinMsg.show({
-					title: 'Ошибка!',
-					message: 'Не удалось извлечь перевод из кеша.',
+					title:App.localize('Ошибка!'),
+					message:App.localize('Не удалось извлечь перевод из кеша.'),
 				});
 				return undefined;
 			}
@@ -274,7 +274,7 @@ App.Component.Study = {
 				return resolve();
 			}
 			App.Component.WinWordCard.update({
-				title: 'Изучение слов с целевого языка на родной',
+				title:App.localize('Изучение слов с целевого языка на родной'),
 				word: currentSet.word,
 				answers: answers,
 				correctAnswer: currentSet.answer
@@ -286,7 +286,7 @@ App.Component.Study = {
 						doExam.call(this, resolve, reject);
 					},
 					onCancel: () => {
-						reject(new App.Errors.User.PressCancel('Пользователь отменил изучение'))
+						reject(new App.Errors.User.PressCancel(App.localize('Пользователь отменил изучение')))
 					},
 					onAnswerCorrect: () => {
 						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntCorrect;
@@ -336,8 +336,8 @@ App.Component.Study = {
 			let translateStruct = Helper.Obj.getObjectFromArray(this.wordsTranslate, 'word', this.wordsStudy[result.wordIndex].word);
 			if (!Helper.isDefined(translateStruct)) {
 				App.Component.WinMsg.show({
-					title: 'Ошибка!',
-					message: 'Не удалось извлечь перевод из кеша.',
+					title:App.localize('Ошибка!'),
+					message:App.localize('Не удалось извлечь перевод из кеша.')
 				});
 				return undefined;
 			}

@@ -50,7 +50,7 @@ App.Component.Study.Grid = {
 					newRow.isStudy = words[word].isStudy;
 					this.rows.push(newRow);
 				}
-				return App.getTranslates(wordsList);
+				return App.getWordsTranslate(wordsList);
 			}).then((translates) => {
 				translates.forEach((translateStruct) => {
 					let rowRef = Helper.Obj.getObjectFromArray(this.rows, 'word', translateStruct.word);
@@ -122,14 +122,12 @@ App.Component.Study.Grid = {
 					elIsStudy.classList.add('is-study-false');
 				}
 			}
-
 			elTbody.appendChild(elTr);
 		};
 		let cnrWord = 0;
 		this.rows.forEach((row) => {
 			addRow(row);
 			++cnrWord;
-
 		});
 		for (; cnrWord < this.countPerPage; ++cnrWord) {
 			addRow();

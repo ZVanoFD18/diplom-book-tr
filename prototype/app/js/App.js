@@ -17,7 +17,7 @@ let App = {
 		WORD_STATE_STUDYED: 'WORD_STATE_STUDYES',
 		WORD_STATE_UNKNOWN: 'WORD_STATE_UNKNOWN'
 	},
-
+	appEnv : undefined,
 	langGui: undefined,
 	langStudy: undefined,
 	/**
@@ -26,10 +26,10 @@ let App = {
 	book: {},
 
 	run() {
-		this.langGui = this.LANGUAGES.RUS;
-		this.langStudy = this.LANGUAGES.ENG;
-		// this.langGui = this.LANGUAGES.ENG;
-		// this.langStudy = this.LANGUAGES.RUS;
+		// this.langGui = this.LANGUAGES.RUS;
+		// this.langStudy = this.LANGUAGES.ENG;
+		this.langGui = this.LANGUAGES.ENG;
+		this.langStudy = this.LANGUAGES.RUS;
 
 		// Отключаем выделение мышью (чтобы не выделялся текст меню при двойном клике).
 		document.body.onmousedown = () => {
@@ -40,26 +40,54 @@ let App = {
 		};
 
 		App.Component.Nav.init();
+		App.Component.Setlang.init();
 		App.Component.Library.init();
 		App.Component.Read.init();
 		App.Component.Study.init();
-		App.translate();
-		App.Component.Loadmask.show('Загрузка...');
-		this.Idb.getLastBook().then((lastBook) => {
-			App.Component.Statistic.display();
-			if (Helper.isDefined(lastBook)) {
-				this.bookToRead(lastBook.content, false);
-			} else {
+		App.Component.Loadmask.show('...');
+		this.loadEnv().then(()=>{
+			App.localizeGui();
+			App.Component.Loadmask.show(App.localize('Загрузка...'));
+			this.Idb.getLastBook().then((lastBook) => {
+				App.Component.Statistic.display();
+				if (Helper.isDefined(lastBook)) {
+					this.bookToRead(lastBook.content, false);
+				} else {
+					App.Component.Nav.go2section('setlang');
+				}
+			}).catch((e) => {
+				Helper.Log.addDebug(e);
 				App.Component.Nav.go2section('library');
-			}
-		}).catch((e) => {
-			Helper.Log.addDebug(e);
-			App.Component.Nav.go2section('library');
+			});
+			App.Component.Statistic.display();
+		}).catch((e)=>{
+			App.Component.WinMsg.show({
+				title:App.localize('Уведомление.'),
+				message:App.localize('Не удалось инициализировать приложение.')
+			});
 		});
-		App.Component.Statistic.display();
+	},
+	loadEnv(){
+		return new Promise((resolve, reject)=>{
+			/**
+			 *
+			 * @type {XMLHttpRequest}
+			 */
+			let xhr = Helper.Ajax.getXhr();
+			xhr.open('GET', '/resources/app-env.json');
+			xhr.send();
+			xhr.addEventListener('readystatechange', () => {
+				if (xhr.readyState !== 4) {
+					return;
+				}
+				let json = JSON.parse(xhr.responseText);
+				this.appEnv = json;
+				resolve();
+			});
+		});
 	},
 	bookToReadByHash(hash) {
-		App.Component.Loadmask.show('Извлечение книги...');
+		App.Component.Loadmask.show(App.localize('Извлечение книги...'));
 		let book;
 		return new Promise((resolve, reject) => {
 			this.Idb.Books.getByHash(hash).then((resBook) => {
@@ -79,18 +107,23 @@ let App = {
 	bookToRead(text, isAdd) {
 		return new Promise((resolve, reject) => {
 			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
-			App.Component.Loadmask.show('Конвертация книги...');
+			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
 			let book = Helper.Fb2.getBookFromText(text);
 			console.log(book);
 
-			App.Component.Loadmask.show('Формирование области чтения...');
+			App.Component.Loadmask.show(App.localize('Формирование области чтения...'));
 			App.Component.Read.displayBook(book).then(() => {
 				App.Component.Nav.go2section('read');
 				App.Component.Loadmask.hide();
 				if (!isAdd) {
 					resolve();
 				} else {
-					App.Idb.Books.add(this.langStudy, book.title.join('/'), book.image, text).then((result) => {
+					App.Idb.Books.add(
+						this.langStudy,
+						book.title.join('/'),
+						book.image,
+						text
+					).then((result) => {
 						console.log('Книга добавлена в локальную библиотеку');
 						App.Idb.KeyVal.LastSession.put(result.book.hash, 0).then(() => {
 							console.log('Книга добавлена в сессию');
@@ -105,10 +138,19 @@ let App = {
 			});
 		});
 	},
-
-	getTranslate(word, isReturnStruct = false) {
+	/**
+	 * Фозвращает Promise перевода одного слова.
+	 * @param word {String}
+	 * @param isReturnStruct {Boolean}
+	 * @return {Promise<any>}
+	 */
+	getWordTranslate(word, isReturnStruct = false) {
 		return new Promise((resolve, reject) => {
-			App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word).then((translateStruct) => {
+			App.Idb.WordsTranslate.get(
+				this.langStudy,
+				this.langGui,
+				word
+			).then((translateStruct) => {
 				if (Helper.isObject(translateStruct)) {
 					if (isReturnStruct) {
 						resolve(translateStruct);
@@ -116,7 +158,10 @@ let App = {
 						resolve(translateStruct.translate);
 					}
 				} else {
-					Helper.Google.translate(this.GOOGLE_LANGUAGES[this.langGui], word).then((result) => {
+					Helper.Google.translate(
+						this.GOOGLE_LANGUAGES[this.langGui],
+						word
+					).then((result) => {
 						console.log(word, result);
 						if (!Helper.isObject(result)) {
 							reject();
@@ -129,20 +174,23 @@ let App = {
 							if (!isReturnStruct) {
 								resolve(struct.translate);
 							}
-							;
-							App.Idb.WordsTranslate.put(this.langStudy, this.langGui, word, struct.translate, struct.score)
-								.then(() => {
-									return App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word);
-								})
-								.then((translateStruct) => {
-									if (isReturnStruct) {
-										if (Helper.isObject(translateStruct)) {
-											resolve(translateStruct);
-										} else {
-											reject(new Error('Неудалось извлечь слово из БД после сохранения'));
-										}
+							App.Idb.WordsTranslate.put(
+								this.langStudy,
+								this.langGui,
+								word,
+								struct.translate,
+								struct.score
+							).then(() => {
+								return App.Idb.WordsTranslate.get(this.langStudy, this.langGui, word);
+							}).then((translateStruct) => {
+								if (isReturnStruct) {
+									if (Helper.isObject(translateStruct)) {
+										resolve(translateStruct);
+									} else {
+										reject(new Error('Неудалось извлечь слово из БД после сохранения'));
 									}
-								});
+								}
+							});
 						}
 					});
 				}
@@ -150,15 +198,15 @@ let App = {
 		});
 	},
 	/**
-	 *
+	 * Возвращает Promise перевода массива слов.
 	 * @param {Array} words
 	 */
-	getTranslates(words) {
+	getWordsTranslate(words) {
 		let result = [];
 		return Promise.all((() => {
 			let promices = [];
 			words.forEach((word) => {
-				promices.push(this.getTranslate(word, true))
+				promices.push(this.getWordTranslate(word, true))
 			});
 			return promices;
 		})()).then((results) => {
@@ -195,10 +243,18 @@ let App = {
 		let result = Helper.Hash.hashCode(word.toLowerCase());
 		return result;
 	},
-	translate(){
+	/**
+	 *
+	 * @param text
+	 * @return {*}
+	 */
+	localize(text) {
+		return App.Localize.get(text, App.langGui)
+	},
+	localizeGui() {
 		let elList = document.querySelectorAll('.need-translate');
-		elList.forEach((elTranslate)=>{
-			elTranslate.innerHTML = elTranslate.innerHTML + '-'+ App.langGui;
+		elList.forEach((elTranslate) => {
+			elTranslate.innerHTML = App.Localize.get(elTranslate.innerHTML, App.langGui);
 		})
 	}
 };

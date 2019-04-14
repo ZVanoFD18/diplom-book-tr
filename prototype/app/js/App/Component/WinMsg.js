@@ -14,9 +14,9 @@ App.Component.WinMsg = {
 	show(options) {
 		options = options || {};
 		options = Helper.Obj.replaceMembers({
-			title : this.defaultTitle,
-			message : this.defaultMessage,
-			textButtonClose : this.defaultTextButtonClose,
+			title : App.localize(this.defaultTitle),
+			message : App.localize(this.defaultMessage),
+			textButtonClose : App.localize(this.defaultTextButtonClose),
 			callback : Helper.emptyFn
 		}, options);
 		this.getEl().querySelector('.win-msg-title').innerHTML = options.title;

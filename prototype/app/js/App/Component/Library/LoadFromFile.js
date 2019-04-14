@@ -15,7 +15,7 @@ App.Component.Library.LoadFromFile = {
 		this.elInput.click();
 	},
 	onInputFileChange(event) {
-		App.Component.Loadmask.show('Загрузка файла...');
+		App.Component.Loadmask.show(App.localize('Загрузка файла...'));
 		Helper.Io.loadTextFromInputFile(event.srcElement, (isSuccess, text) => {
 			event.srcElement.value = '';
 			if (!isSuccess) {

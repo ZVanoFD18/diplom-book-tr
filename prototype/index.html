@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="app/css/component-statistic.css">
     <link rel="stylesheet" href="app/css/component-nav.css">
     <link rel="stylesheet" href="app/css/component-read.css">
+    <link rel="stylesheet" href="app/css/component-setlang.css">
     <link rel="stylesheet" href="app/css/win-word-actions.css">
     <link rel="stylesheet" href="app/css/widget-loadmask.css">
     <link rel="stylesheet" href="app/css/component-study-grid.css">
@@ -23,8 +24,8 @@
     <section id="statistic">
         <h2 class="need-translate">Статистика слов</h2>
         <div class="statistic-data">
-            <span class="need-translate">на изучении:</span><span class="stat-words-study">statWords2Study</span>
-            <span class="need-translate">изучено:</span><span class="stat-words-studied">statWordsStudied</span>
+            <span class="need-translate">на изучении:</span><span class="stat-words-study"></span>
+            <span class="need-translate">изучено:</span><span class="stat-words-studied"></span>
         </div>
     </section>
     <div class="nav-icon">
@@ -32,6 +33,7 @@
     </div>
     <nav class="nav hidden">
         <ul>
+            <li><a href="#setlang" class="need-translate">Язык</a></li>
             <li><a href="#library" class="need-translate">Библиотека</a></li>
             <li><a href="#read" class="need-translate">Чтение</a></li>
             <li><a href="#study" class="need-translate">Изучение слов</a></li>
@@ -41,6 +43,29 @@
 
 
 <div id="content">
+
+    <section id="setlang" class="hidden">
+        <div class="wrap">
+            <h2 class="setlang-header need-translate">Выбор языка</h2>
+            <form action="">
+                <label for="lang-gui">
+                    <span class="need-translate">Основной</span>
+                    <select name="lang-gui" id="lang-gui">
+                        <option value="" class="tpl"></option>
+                    </select>
+                </label>
+                <label for="lang-study">
+                    <span class="need-translate">Изучаемый</span>
+                    <select name="lang-study" id="lang-study">
+                        <option value="" class="tpl"></option>
+                    </select>
+                </label>
+                <div class="panel-buttons">
+                    <button type="submit" class="button-submit need-translate">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </section>
 
     <section id="library" class="hidden">
         <h2 class="library-header need-translate">Библиотека</h2>
@@ -148,9 +173,7 @@
         </div>
     </div>
 
-    <!--Виджет "Карточка слова".
-    @TODO: Доделать карточку слова.
-    -->
+    <!--Виджет "Карточка слова". Позволяет изучать слова в прямом и обратном направлении.-->
     <div id="win-word-card" class="hidden background-color-lock-transparent">
         <div class="win-word-card-window win background-color1 ">
             <div class="win-word-card-title win-title color2 background-color2 need-translate">Изучение слова</div>
@@ -171,6 +194,7 @@
 
 <!--<script src="vendor/xml2json/xml2json.min.js"></script>-->
 <script src="app/js/Helper.js"></script>
+<script src="app/js/Helper/Ajax.js"></script>
 <script src="app/js/Helper/Google.js"></script>
 <script src="app/js/Helper/Hash.js"></script>
 <script src="app/js/Helper/Fb2.js"></script>
@@ -187,6 +211,7 @@
 <script src="app/js/App/Component/Loadmask.js"></script>
 <script src="app/js/App/Component/Nav.js"></script>
 <script src="app/js/App/Component/Read.js"></script>
+<script src="app/js/App/Component/Setlang.js"></script>
 <script src="app/js/App/Component/Statistic.js"></script>
 <script src="app/js/App/Component/Study.js"></script>
 <script src="app/js/App/Component/Study/Grid.js"></script>
@@ -196,6 +221,7 @@
 <script src="app/js/App/Errors/User.js"></script>
 <script src="app/js/App/Errors/User/PressCancel.js"></script>
 <script src="app/js/App/Struct.js"></script>
+<script src="app/js/App/Localize.js"></script>
 <script src="app/js/App/Idb.js"></script>
 <script src="app/js/App/Idb/Books.js"></script>
 <script src="app/js/App/Idb/KeyVal.js"></script>

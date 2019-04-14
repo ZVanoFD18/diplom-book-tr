@@ -1,0 +1,23 @@
+
+#setlang{
+    text-align: center;
+}
+
+#setlang>.wrap{
+    display: inline-block;
+    background-color: #35baf6;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 1rem;
+}
+
+.setlang-header {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#setlang .panel-buttons{
+    padding-top: 1rem;
+}
+

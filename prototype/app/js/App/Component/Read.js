@@ -104,8 +104,8 @@ App.Component.Read = {
 		elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
 		elDialog.querySelector('.wa-translate').innerHTML = '...';
 		elDialog.classList.remove('wa-hidden');
-		App.Component.Loadmask.show('Загрузка перевода...');
-		App.getTranslate(e.target.innerHTML).then((translate) => {
+		App.Component.Loadmask.show(App.localize('Загрузка перевода...'));
+		App.getWordTranslate(e.target.innerHTML).then((translate) => {
 			App.Component.Loadmask.hide();
 			elDialog.querySelector('.wa-translate').innerHTML = translate;
 		}).catch((e) => {
@@ -113,8 +113,8 @@ App.Component.Read = {
 			Helper.Log.addDebug(e);
 			elDialog.classList.add('wa-hidden');
 			App.Component.WinMsg.show({
-				title: 'Ошибка!',
-				message: e instanceof Error ? e.message : 'Не удалось получить перевод слова'
+				title: App.localize('Ошибка!'),
+				message: e instanceof Error ? e.message : App.localize('Не удалось получить перевод слова')
 			});
 			App.Component.Loadmask.hide();
 		})
