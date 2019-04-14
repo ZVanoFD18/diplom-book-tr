@@ -4,13 +4,6 @@ Helper.Fb2 = {
      * @param text
      */
     getBookFromText(text){
-        // Вариант 1. Чтение сырого XML. Не катит, ибо требуется XSLT-преобразование.
-        // let x2js = new X2JS();
-        // let json = x2js.xml_str2json(document.querySelector('pre.fb2').innerText);
-        // console.log('json', json);
-        // document.querySelector('pre.json').innerText = JSON.stringify(json);
-
-        // Вариант 2. Через спец.объекты современных браузеров.
         let tplBook = {
                 image: undefined,
                 title: [],
@@ -24,7 +17,7 @@ Helper.Fb2 = {
         book.title = [];
         book.sections = [];
         let xml = Helper.Xml.getXMLFromString(text);
-        console.log(xml);
+        // console.log(xml);
         book.image = xml.querySelector('body').querySelector('image');
         if (book.image) {
             book.image = xml.querySelector('binary[id="' + book.image.getAttribute('l:href').substr(1) + '"');

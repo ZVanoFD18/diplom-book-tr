@@ -15,7 +15,7 @@ App.Component.Library = {
 	},
 	display(){
 		if (this.isDisplayed){
-			return;
+//			return;
 		}
 		App.Component.Library.BooksList.loadAndDisplay();
 		this.isDisplayed = true;

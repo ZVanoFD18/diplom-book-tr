@@ -4,12 +4,14 @@ console.log('App');
 let App = {
 	LANGUAGES: {
 		RUS: 'RUS',
-		ENG: 'ENG'
+		ENG: 'ENG',
+		UKR: 'UKR'
 	},
 
 	GOOGLE_LANGUAGES: {
 		RUS: 'ru',
-		ENG: 'en'
+		ENG: 'en',
+		UKR: 'ua'
 	},
 
 	WORD_STATE: {
@@ -17,7 +19,11 @@ let App = {
 		WORD_STATE_STUDYED: 'WORD_STATE_STUDYES',
 		WORD_STATE_UNKNOWN: 'WORD_STATE_UNKNOWN'
 	},
-	appEnv : undefined,
+	/**
+	 * Перечень тегов, для которых разрешено выделение мышью
+	 */
+	selectibleTags: ['SELECT', 'INPUT'],
+	appEnv: undefined,
 	langGui: undefined,
 	langStudy: undefined,
 	/**
@@ -26,16 +32,17 @@ let App = {
 	book: {},
 
 	run() {
-		// this.langGui = this.LANGUAGES.RUS;
-		// this.langStudy = this.LANGUAGES.ENG;
-		this.langGui = this.LANGUAGES.ENG;
-		this.langStudy = this.LANGUAGES.RUS;
-
 		// Отключаем выделение мышью (чтобы не выделялся текст меню при двойном клике).
-		document.body.onmousedown = () => {
+		document.body.onmousedown = (event) => {
+			if (this.selectibleTags.indexOf(event.target.tagName) >= 0) {
+				return true
+			}
 			return false
 		};
 		document.body.onselectstart = () => {
+			if (this.selectibleTags.indexOf(event.target.tagName) >= 0) {
+				return true
+			}
 			return false
 		};
 
@@ -44,31 +51,59 @@ let App = {
 		App.Component.Library.init();
 		App.Component.Read.init();
 		App.Component.Study.init();
+
+		// Пока локализация не установлена.
 		App.Component.Loadmask.show('...');
-		this.loadEnv().then(()=>{
-			App.localizeGui();
-			App.Component.Loadmask.show(App.localize('Загрузка...'));
-			this.Idb.getLastBook().then((lastBook) => {
-				App.Component.Statistic.display();
-				if (Helper.isDefined(lastBook)) {
-					this.bookToRead(lastBook.content, false);
-				} else {
+		this.loadEnv().then(() => {
+			App.Idb.KeyVal.LastSession.get().then((lastSession) => {
+				return new Promise((resolve, reject) => {
+					resolve(lastSession);
+				});
+			}).then((lastSession) => {
+				let data = {
+					lastSession: lastSession,
+					lastBook: undefined
+				};
+				return new Promise((resolve, reject) => {
+					if (Helper.isObject(lastSession)) {
+						this.langGui = lastSession.langGui;
+						this.langStudy = lastSession.langStudy;
+					} else {
+						this.langGui = this.LANGUAGES.RUS;
+						this.langStudy = this.LANGUAGES.ENG;
+					}
+					App.localizeGui();
+					App.Component.Loadmask.show(App.localize('Загрузка...'));
+					if (Helper.isObject(lastSession) && Helper.isString(lastSession.bookHash)) {
+						App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
+							data.lastBook = lastBook;
+							resolve(data);
+						}).then();
+					} else {
+						resolve(data);
+					}
+				});
+			}).then((data) => {
+				if (data.lastBook && data.lastBook.content) {
+					this.bookToRead(data.lastBook.content, false);
+				} else if (!data.lastSession) {
 					App.Component.Nav.go2section('setlang');
+				} else {
+					App.Component.Nav.go2section('library');
 				}
 			}).catch((e) => {
 				Helper.Log.addDebug(e);
-				App.Component.Nav.go2section('library');
+				App.Component.Nav.go2section('setlang');
 			});
-			App.Component.Statistic.display();
-		}).catch((e)=>{
+		}).catch((e) => {
 			App.Component.WinMsg.show({
-				title:App.localize('Уведомление.'),
-				message:App.localize('Не удалось инициализировать приложение.')
+				title: App.localize('Уведомление.'),
+				message: App.localize('Не удалось инициализировать приложение.')
 			});
 		});
 	},
-	loadEnv(){
-		return new Promise((resolve, reject)=>{
+	loadEnv() {
+		return new Promise((resolve, reject) => {
 			/**
 			 *
 			 * @type {XMLHttpRequest}
@@ -95,7 +130,12 @@ let App = {
 				//App.Component.Loadmask.hide();
 				return this.bookToRead(resBook.content, false);
 			}).then(() => {
-				return App.Idb.KeyVal.LastSession.put(book.hash, 0).then(() => {
+				return App.Idb.KeyVal.LastSession.put({
+					langGui: App.langGui,
+					langStudy: App.langStudy,
+					bookHash: book.hash,
+					bookPosition: 0
+				}).then(() => {
 					console.log('Книга добавлена в сессию');
 				});
 			}).catch((e) => {
@@ -109,7 +149,7 @@ let App = {
 			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
 			let book = Helper.Fb2.getBookFromText(text);
-			console.log(book);
+			// console.log(book);
 
 			App.Component.Loadmask.show(App.localize('Формирование области чтения...'));
 			App.Component.Read.displayBook(book).then(() => {
@@ -119,13 +159,16 @@ let App = {
 					resolve();
 				} else {
 					App.Idb.Books.add(
-						this.langStudy,
+						App.langStudy,
 						book.title.join('/'),
 						book.image,
 						text
 					).then((result) => {
 						console.log('Книга добавлена в локальную библиотеку');
-						App.Idb.KeyVal.LastSession.put(result.book.hash, 0).then(() => {
+						App.Idb.KeyVal.LastSession.put({
+							bookHash: result.book.hash,
+							bookPosition: 0
+						}).then(() => {
 							console.log('Книга добавлена в сессию');
 							resolve();
 						});
@@ -254,7 +297,11 @@ let App = {
 	localizeGui() {
 		let elList = document.querySelectorAll('.need-translate');
 		elList.forEach((elTranslate) => {
-			elTranslate.innerHTML = App.Localize.get(elTranslate.innerHTML, App.langGui);
+			let key = elTranslate.getAttribute('data-localize-key');
+			key = key || elTranslate.innerHTML;
+			let translate = App.Localize.get(key, App.langGui)
+			elTranslate.innerHTML = translate;
+			elTranslate.setAttribute('data-localize-key', key);
 		})
 	}
 };

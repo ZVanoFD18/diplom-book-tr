@@ -22,7 +22,8 @@ App.Component.Library.LoadFromFile = {
 				App.Component.Loadmask.hide();
 				return;
 			}
-			App.bookToRead(text, true)
+			App.bookToRead(text, true);
+			App.Component.Library.isDisplayed = false;
 		});
 	}
 };

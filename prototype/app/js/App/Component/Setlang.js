@@ -24,7 +24,7 @@ App.Component.Setlang = {
 		this.elLangStudy = this.el.querySelector('select[name="lang-study"]');
 		this.elLangStudyTplOptions = this.elLangStudy.querySelector('option.tpl').cloneNode(true);
 
-
+		this.el.querySelector('.button-submit').addEventListener('click', this.onSubmit.bind(this));
 	},
 	display() {
 		if (this.isDisplayed) {
@@ -44,11 +44,25 @@ App.Component.Setlang = {
 			newElLangStudy.value = lang;
 			newElLangStudy.innerHTML = App.appEnv.Languages[lang];
 			this.elLangStudy.appendChild(newElLangStudy);
-			
+
 		}
 		this.elLangGui.value = App.langGui;
 		this.elLangStudy.value = App.langStudy;
 		// App.Component.Setlang.BooksList.loadAndDisplay();
 		this.isDisplayed = true;
+	},
+	onSubmit(event) {
+		event.preventDefault();
+		App.langGui = this.elLangGui.value;
+		App.langStudy = this.elLangStudy.value;
+		App.localizeGui();
+		return App.Idb.KeyVal.LastSession.put({
+			langGui: App.langGui,
+			langStudy: App.langStudy,
+			bookHash: undefined,
+			bookPosition: undefined
+		}).then(()=>{
+			App.Component.Nav.go2section('library');
+		})
 	}
 };

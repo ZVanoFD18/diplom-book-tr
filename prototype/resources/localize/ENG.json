@@ -2,7 +2,7 @@
   "" : "",
   "..." : "...",
   "Ok" : "Ok",
-  "Book Reader" : "Read book and words study",
+  "Читалка с изучением слов" : "Read book and words study",
   "Статистика слов" : "Statistic of words",
   "на изучении:" : "studing:",
   "изучено:" : "studied:",
@@ -41,5 +41,8 @@
   "Изучаемый" : "For study",
   "Сохранить" : "Save",
   "Уведомление." : "Notice.",
-  "Недостаточно слов для изучения.<br>Следует добавить слова в разделе \"Чтение\"" : "Not enouth words for study. Need add words in section \"Reading\""
+  "Недостаточно слов для изучения.<br>Следует добавить слова в разделе \"Чтение\"" : "Not enouth words for study. Need add words in section \"Reading\"",
+  "Пользователь отменил изучение" : "User cancel study",
+  "Уведомление" : "Notice",
+  "Ок" : "Ok"
 }

@@ -27,6 +27,12 @@ button
 {
     border-radius: 0.3em;
 }
+button{
+    padding: 0.3rem 1rem;
+}
+button:hover{
+    color: coral;
+}
 
 .color1 {
     color: rgb(132, 205, 194);

@@ -8,7 +8,7 @@ App.Idb = {
 	 * @type {IDBDatabase}
 	 */
 	_db: undefined,
-	getBool(boolValue){
+	getBool(boolValue) {
 		return boolValue ? this.TRUE : this.FALSE;
 	},
 	/**
@@ -190,7 +190,15 @@ App.Idb = {
 					resolve(undefined);
 					return;
 				}
-				return App.Idb.Books.getByHash(lastSession.bookHash);
+				return new Promise((resolve, reject) => {
+					if (!Helper.isString(lastSession.bookHash)) {
+						resolve();
+					} else {
+						App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
+							resolve(lastBook);
+						});
+					}
+				});
 			}).then((lastBook) => {
 				console.log('getLastBook/lastBook');
 				resolve(lastBook);
