@@ -5,6 +5,7 @@ App.Idb = {
 	TRUE: 1,
 	FALSE: 0,
 	/**
+	 *
 	 * @type {IDBDatabase}
 	 */
 	_db: undefined,
@@ -33,9 +34,18 @@ App.Idb = {
 	 */
 	getDb() {
 		return new Promise((resolve, reject) => {
-			if (this._db) {
-				resolve(this._db);
-			} else {
+			/**
+			 *  Кешировать нельзя т.к . после загрузки книги при первой же операции
+			 *  получаем ошибку
+			 *  в Google Chrome :
+			 *  "DOMException: Failed to execute 'transaction' on 'IDBDatabase': The database connection is closing."
+			 *  в Firefox
+			 *  "InvalidStateError: A mutation operation was attempted on a database that did not allow mutations."
+			 *  @TODO: нагуглить объяснение этим ошибкам.
+			 * */
+			// if (this._db) {
+			// 	resolve(this._db);
+			// } else {
 				this.open()
 					.then((result) => {
 						resolve(this._db);
@@ -43,7 +53,7 @@ App.Idb = {
 					.catch((result) => {
 						reject(result);
 					})
-			}
+			// }
 		})
 	},
 	/**
@@ -54,6 +64,7 @@ App.Idb = {
 			if (!window.indexedDB) {
 				window.indexedDB = window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 			}
+			//IDBDatabase.onclose = this.onClose.bind(this);
 			/**
 			 *
 			 * @type {IDBOpenDBRequest}
@@ -69,6 +80,7 @@ App.Idb = {
 			request.onsuccess = (event) => {
 				this._db = event.target.result;
 				this._db.onversionchange = this.onVersionChange.bind(this);
+				this._db.onclose = this.onClose.bind(this);
 				resolve();
 			};
 			request.onerror = (event) => {
@@ -77,6 +89,9 @@ App.Idb = {
 				reject();
 			};
 		});
+	},
+	onClose(e){
+		console.log('Idb/onClose', e);
 	},
 	onUpgradeNeeded(event) {
 		let tmpObjStore;
@@ -180,32 +195,5 @@ App.Idb = {
 	 */
 	getNormalizedWord(word) {
 		return word.toLowerCase();
-	},
-	getLastBook(callback) {
-		let db;
-		return new Promise((resolve, reject) => {
-			App.Idb.KeyVal.get(App.Idb.KeyVal.KEYS.LAST_SESSION).then((lastSession) => {
-				console.log('getLastBook/lastSession');
-				if (!lastSession) {
-					resolve(undefined);
-					return;
-				}
-				return new Promise((resolve, reject) => {
-					if (!Helper.isString(lastSession.bookHash)) {
-						resolve();
-					} else {
-						App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
-							resolve(lastBook);
-						});
-					}
-				});
-			}).then((lastBook) => {
-				console.log('getLastBook/lastBook');
-				resolve(lastBook);
-			}).catch((e) => {
-				Helper.Log.addDebug(e);
-				reject(e);
-			});
-		});
 	}
 };

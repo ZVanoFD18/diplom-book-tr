@@ -38,7 +38,12 @@ App.Localize = {
 			return text;
 		}
 		if (text in this._translates[lang]) {
-			return this._translates[lang][text];
+			let translate = this._translates[lang][text];
+			if (Helper.isNull(translate)){
+				return text;
+			} else {
+				return translate;
+			}
 		}
 		this.addUnknownTranslate(text, lang);
 		return text;

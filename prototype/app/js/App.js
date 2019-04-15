@@ -74,14 +74,16 @@ let App = {
 					}
 					App.localizeGui();
 					App.Component.Loadmask.show(App.localize('Загрузка...'));
-					if (Helper.isObject(lastSession) && Helper.isString(lastSession.bookHash)) {
-						App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
-							data.lastBook = lastBook;
+					App.Component.Statistic.display().then(() => {
+						if (Helper.isObject(lastSession) && Helper.isString(lastSession.bookHash)) {
+							App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
+								data.lastBook = lastBook;
+								resolve(data);
+							}).then();
+						} else {
 							resolve(data);
-						}).then();
-					} else {
-						resolve(data);
-					}
+						}
+					});
 				});
 			}).then((data) => {
 				if (data.lastBook && data.lastBook.content) {
@@ -136,7 +138,6 @@ let App = {
 					bookHash: book.hash,
 					bookPosition: 0
 				}).then(() => {
-					console.log('Книга добавлена в сессию');
 				});
 			}).catch((e) => {
 				reject(new App.Errors.User('Книга не найдена в библиотеке'));
@@ -149,8 +150,6 @@ let App = {
 			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
 			let book = Helper.Fb2.getBookFromText(text);
-			// console.log(book);
-
 			App.Component.Loadmask.show(App.localize('Формирование области чтения...'));
 			App.Component.Read.displayBook(book).then(() => {
 				App.Component.Nav.go2section('read');
@@ -164,17 +163,18 @@ let App = {
 						book.image,
 						text
 					).then((result) => {
-						console.log('Книга добавлена в локальную библиотеку');
 						App.Idb.KeyVal.LastSession.put({
 							bookHash: result.book.hash,
 							bookPosition: 0
 						}).then(() => {
-							console.log('Книга добавлена в сессию');
 							resolve();
 						});
 					}).catch((e) => {
 						Helper.Log.addDebug(e);
-						alert('Ошибка! Не удалось добавить книгу в БД.');
+						App.Component.WinMsg.show({
+							title: App.localize('<span style="color: red">Ошибка!</span>'),
+							message: App.localize('Не удалось добавить книгу в библиотеку.')
+						});
 						reject();
 					});
 				}
@@ -264,10 +264,9 @@ let App = {
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.TRUE
 		}).then((rowId) => {
-			console.log('wordStudyAdd1', rowId);
 			App.Component.Statistic.display();
 		}).catch((e) => {
-			console.log('wordStudyAdd1/false', e);
+			Helper.Log.addDebug(e);
 		});
 	},
 
@@ -275,10 +274,9 @@ let App = {
 		App.Idb.WordsStudy.put(this.langStudy, word, {
 			isStudy: App.Idb.FALSE
 		}).then((isSuccess) => {
-			console.log('wordStudyAdd2', isSuccess);
 			App.Component.Statistic.display();
 		}).catch((e) => {
-			console.log('wordStudyAdd2/false', e);
+			Helper.Log.addDebug(e);
 		});
 	},
 

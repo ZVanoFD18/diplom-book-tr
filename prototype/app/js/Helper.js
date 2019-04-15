@@ -25,6 +25,9 @@ Helper.isString = function (value) {
 Helper.isDefined = function (value) {
 	return typeof value !== 'undefined';
 };
+Helper.isNull = function (value) {
+	return value === null;
+};
 
 Helper.isFunction = function (value) {
 	return typeof value === 'function';
