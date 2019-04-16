@@ -12,7 +12,7 @@
   "scripts": {
     "test": "test",
     "startg": "webpack-dev-server --open",
-    "startl": "node_modules/.bin/webpack-dev-server --open --env development"
+    "start": "node_modules/.bin/webpack-dev-server --open --env development"
   },
   "repository": {
     "type": "git",

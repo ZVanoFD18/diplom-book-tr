@@ -1,7 +1,14 @@
 {
-  "Languages" : {
-    "RUS" : "Русский",
-    "ENG" : "English",
-    "UKR" : "Українська"
+  "Languages": {
+    "RUS": "Русский",
+    "ENG": "English",
+    "UKR": "Українська"
+  },
+  "Fb2": {
+    "Languages": {
+      "ru": "RUS",
+      "en": "ENG",
+      "ua": "UKR"
+    }
   }
 }

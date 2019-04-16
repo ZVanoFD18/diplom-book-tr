@@ -23,6 +23,9 @@ let App = {
 	 * Перечень тегов, для которых разрешено выделение мышью
 	 */
 	selectibleTags: ['SELECT', 'INPUT'],
+	/**
+	 * @see: {resources/app-env.json}
+	 */
 	appEnv: undefined,
 	langGui: undefined,
 	langStudy: undefined,
@@ -54,49 +57,92 @@ let App = {
 
 		// Пока локализация не установлена.
 		App.Component.Loadmask.show('...');
-		this.loadEnv().then(() => {
-			App.Idb.KeyVal.LastSession.get().then((lastSession) => {
-				return new Promise((resolve, reject) => {
-					resolve(lastSession);
-				});
-			}).then((lastSession) => {
-				let data = {
-					lastSession: lastSession,
-					lastBook: undefined
-				};
-				return new Promise((resolve, reject) => {
-					if (Helper.isObject(lastSession)) {
-						this.langGui = lastSession.langGui;
-						this.langStudy = lastSession.langStudy;
-					} else {
-						this.langGui = this.LANGUAGES.RUS;
-						this.langStudy = this.LANGUAGES.ENG;
-					}
-					App.localizeGui();
-					App.Component.Loadmask.show(App.localize('Загрузка...'));
-					App.Component.Statistic.display().then(() => {
-						if (Helper.isObject(lastSession) && Helper.isString(lastSession.bookHash)) {
-							App.Idb.Books.getByHash(lastSession.bookHash).then((lastBook) => {
-								data.lastBook = lastBook;
-								resolve(data);
-							}).then();
-						} else {
-							resolve(data);
-						}
-					});
-				});
-			}).then((data) => {
-				if (data.lastBook && data.lastBook.content) {
-					this.bookToRead(data.lastBook.content, false);
-				} else if (!data.lastSession) {
-					App.Component.Nav.go2section('setlang');
-				} else {
-					App.Component.Nav.go2section('library');
-				}
-			}).catch((e) => {
-				Helper.Log.addDebug(e);
-				App.Component.Nav.go2section('setlang');
+		(new Promise((resolve, reject) => {
+			// Старт. Читаем с сервера конфиг окружения.
+			this.loadEnv().then(() => {
+				resolve();
 			});
+		})).then(() => {
+			// Раздел чтения последней сессии пользователя из БД
+			let data = {
+				lastSession: undefined,
+				lastBook: undefined,
+				isBookReaded: false
+			};
+			return new Promise((resolve, reject) => {
+				App.Idb.KeyVal.LastSession.get().then((lastSession) => {
+					data.lastSession = lastSession;
+					resolve(data);
+				});
+			});
+		}).then((data) => {
+			// Раздел локализации приложения
+			return new Promise((resolve, reject) => {
+				if (Helper.isObject(data.lastSession)) {
+					this.langGui = data.lastSession.langGui;
+					this.langStudy = data.lastSession.langStudy;
+				} else {
+					this.langGui = this.LANGUAGES.RUS;
+					this.langStudy = this.LANGUAGES.ENG;
+				}
+				App.localizeGui();
+				resolve(data);
+			});
+		}).then((data) => {
+			// Раздел чтения книги из последней сессии пользователя
+			return new Promise((resolve, reject) => {
+				App.Component.Loadmask.show(App.localize('Загрузка...'));
+				App.Component.Statistic.display().then(() => {
+					if (Helper.isObject(data.lastSession) && Helper.isString(data.lastSession.bookHash)) {
+						App.Idb.Books.getByHash(data.lastSession.bookHash).then((lastBook) => {
+							data.lastBook = lastBook;
+							resolve(data);
+						}).catch(()=>{
+							resolve(data);
+						});
+					} else {
+						resolve(data);
+					}
+				});
+			});
+		}).then((data) => {
+			// Раздел вывода книги в область чтения
+			return new Promise((resolve, reject) => {
+				if (data.lastBook && data.lastBook.content) {
+					this.bookToRead(data.lastBook.content, false).then(() => {
+						data.isBookReaded = true;
+						resolve(data);
+					}).catch((e) => {
+						console.log('Не удалось загрузить книгу', e);
+						reject(e);
+					});
+				} else {
+					resolve(data);
+				}
+			});
+		}).then((data) => {
+			// Раздел принятия решения о навигации в зависимости от результата инициализации.
+			App.Component.Loadmask.hide();
+			if (data.isBookReaded) {
+				App.Component.Nav.go2section('read');
+			} else if (data.lastSession) {
+				App.Component.Nav.go2section('library');
+			} else {
+				App.Component.Nav.go2section('setlang');
+			}
+		}).catch((e) => {
+			Helper.Log.addDebug(e);
+			if (e instanceof App.Errors.User) {
+				App.Component.WinMsg.show({
+					title: App.localize('Уведомление.'),
+					message: e.message,
+					callback: () => {
+						App.Component.Nav.go2section('setlang');
+					}
+				});
+			} else {
+				App.Component.Nav.go2section('setlang');
+			}
 		}).catch((e) => {
 			App.Component.WinMsg.show({
 				title: App.localize('Уведомление.'),
@@ -140,7 +186,11 @@ let App = {
 				}).then(() => {
 				});
 			}).catch((e) => {
-				reject(new App.Errors.User('Книга не найдена в библиотеке'));
+				if (e instanceof App.Errors.User) {
+					reject(e);
+				} else {
+					reject(new App.Errors.User('Книга не найдена в библиотеке'));
+				}
 			});
 		});
 	},
@@ -150,9 +200,17 @@ let App = {
 			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
 			let book = Helper.Fb2.getBookFromText(text);
+			if (App.langStudy !== App.appEnv.Fb2.Languages[book.lang]) {
+				//reject(new App.Errors.User(App.localize('Язык книги не соответствует изучаемому.')));
+
+				//throw  new App.Errors.User(App.localize('Язык книги не соответствует изучаемому.'));
+				//throw new Error('aaa');
+				//resolve();
+				reject('aaa');
+				return;
+			}
 			App.Component.Loadmask.show(App.localize('Формирование области чтения...'));
 			App.Component.Read.displayBook(book).then(() => {
-				App.Component.Nav.go2section('read');
 				App.Component.Loadmask.hide();
 				if (!isAdd) {
 					resolve();
