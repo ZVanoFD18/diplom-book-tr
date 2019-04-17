@@ -47,9 +47,9 @@ App.Component.Library.BooksList = {
 			this.el.appendChild(newItem);
 		});
 	},
-	clean(){
+	clean() {
 		let elList = this.el.querySelectorAll('.library-books-item:not(.tpl)');
-		elList.forEach((el)=>{
+		elList.forEach((el) => {
 			this.el.removeChild(el);
 		})
 	},
@@ -72,6 +72,13 @@ App.Component.Library.BooksList = {
 		setTimeout(() => {
 			itemEl.classList.remove('active');
 		}, 2000);
-		App.bookToReadByHash(itemEl.querySelector('.library-books-hash').innerHTML);
+		App.bookToReadByHash(itemEl.querySelector('.library-books-hash').innerHTML).then(() => {
+			App.Component.Nav.go2section('read');
+		}).catch((e) => {
+			App.Component.WinMsg.show({
+				title: App.localize('Уведомление.'),
+				message: (e instanceof App.Errors.User) ? e.message : App.localize('Ошибка при попытке загрузить книгу из библиотеки')
+			});
+		});
 	}
 };

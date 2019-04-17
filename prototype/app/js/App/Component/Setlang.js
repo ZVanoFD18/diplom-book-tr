@@ -31,18 +31,18 @@ App.Component.Setlang = {
 			return;
 		}
 		this.elLangStudy.innerHTML = '';
-		for (let lang in App.appEnv.Languages) {
+		for (let lang in App.appEnv.languages) {
 
 			let newElLangGui = this.elLangStudyTplOptions.cloneNode(true);
 			newElLangGui.classList.remove('tpl');
 			newElLangGui.value = lang;
-			newElLangGui.innerHTML = App.appEnv.Languages[lang];
+			newElLangGui.innerHTML = App.appEnv.languages[lang];
 			this.elLangGui.appendChild(newElLangGui);
 
 			let newElLangStudy = this.elLangStudyTplOptions.cloneNode(true);
 			newElLangStudy.classList.remove('tpl');
 			newElLangStudy.value = lang;
-			newElLangStudy.innerHTML = App.appEnv.Languages[lang];
+			newElLangStudy.innerHTML = App.appEnv.languages[lang];
 			this.elLangStudy.appendChild(newElLangStudy);
 
 		}

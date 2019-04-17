@@ -4,14 +4,16 @@
  * @type {{}}
  */
 Helper.Io = {};
-Helper.Io.loadTextFromInputFile = function (elFile, callback) {
-	let files = elFile.files;
-	let reader = new FileReader();
-	reader.onload = (e) => {
-		callback(true, e.target.result);
-	};
-	reader.onerror = () => {
-		callback(false);
-	};
-	reader.readAsText(files[0]);
+Helper.Io.loadTextFromInputFile = function (elFile) {
+	return new Promise((resolve, reject) => {
+		let files = elFile.files;
+		let reader = new FileReader();
+		reader.onload = (e) => {
+			resolve(e.target.result);
+		};
+		reader.onerror = () => {
+			reject();
+		};
+		reader.readAsText(files[0]);
+	});
 };

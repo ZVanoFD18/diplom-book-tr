@@ -30,7 +30,7 @@ App.Idb.Books = {
 				};
 				req.onerror = (event) => {
 					Helper.Log.addDebug(event);
-					reject('Ошибка при поиске книги по хешу.');
+					reject(new App.Errors.User(App.localize('Ошибка при поиске книги по хешу.')));
 				};
 			});
 		});
@@ -66,7 +66,6 @@ App.Idb.Books = {
 					let store = transaction.objectStore('Books');
 					let req = store.put(item);
 					req.onsuccess = (event) => {
-						console.log('App.Idb.Books.add/Books.put/onsuccess');
 						resolve({
 							key: req.result,
 							book: item
@@ -74,7 +73,7 @@ App.Idb.Books = {
 					};
 					req.onerror = (event) => {
 						Helper.Log.addDebug(event);
-						reject('Не удалось добавить книгу в БД.');
+						reject(new App.Errors.User(App.localize('Не удалось добавить книгу в БД.')));
 					};
 					// @TODO: удалить блок после исследования.
 					transaction.oncomplete = function (e) {

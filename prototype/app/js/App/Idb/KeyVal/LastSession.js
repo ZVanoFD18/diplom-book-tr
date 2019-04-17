@@ -52,7 +52,7 @@ App.Idb.KeyVal.LastSession = {
 					resolve(req.result);
 				};
 				req.onerror = (event) => {
-					reject('Не удалось записать сессию в БД.');
+					reject(new App.Errors.User(App.localize('Не удалось записать сессию в БД.')));
 				};
 			});
 		});

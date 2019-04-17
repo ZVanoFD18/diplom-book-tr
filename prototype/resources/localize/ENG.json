@@ -49,5 +49,10 @@
   "Ошибка!": "Error!",
   "Не удалось добавить книгу в библиотеку.": "Can't add the book into library.",
   "Загрузка перевода...": "Loading translate...",
-  "Язык книги не соответствует изучаемому.": "Languge of the book don't same of the study language."
+  "Язык книги не соответствует изучаемому.": "Languge of the book don't same of the study language.",
+  "Ошибка при обработке книги": "An error during parse the book",
+  "Не удалось добавить книгу в БД.": "Fail to add the book into database",
+  "Ошибка при попытке загрузить книгу из библиотеки": "Error while trying to load a book from the library",
+  "Не удалось записать сессию в БД.": "Could not write session to DB.",
+  "Ошибка при поиске книги по хешу." : "Error when searching for the book by hash."
 }
