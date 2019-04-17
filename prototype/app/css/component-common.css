@@ -10,6 +10,7 @@
 }
 .component-button:hover{
     color: coral;
+    background-color: #35baf6;
 }
 .component-button:active{
     box-shadow: 0 0 0 rgb(0,0,0);

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="app/css/component-setlang.css">
     <link rel="stylesheet" href="app/css/win-word-actions.css">
     <link rel="stylesheet" href="app/css/widget-loadmask.css">
+    <link rel="stylesheet" href="app/css/component-study.css">
     <link rel="stylesheet" href="app/css/component-study-grid.css">
     <link rel="stylesheet" href="app/css/win-msg.css">
     <link rel="stylesheet" href="app/css/win-word-card.css">
@@ -95,44 +96,46 @@
     </section>
 
     <section id="study" class="hidden study">
-        <h2 class="need-translate">Изучение слов</h2>
+        <div class="wrap">
+            <h2 class="header need-translate">Изучение слов</h2>
 
-        <div class="study-panel-start">
-            <span class="need-translate">Кол-во слов для изучения</span>
-            <input type="number" name="cntToStudy">
-            <button class="study-button-start need-translate">Начать изучение</button>
-        </div>
+            <div class="study-panel-start">
+                <span class="need-translate">Кол-во слов для изучения</span>
+                <input type="number" name="cntToStudy">
+                <button class="study-button-start need-translate">Начать изучение</button>
+            </div>
 
-        <div class="study-words-grid">
-            <table class="study-table">
-                <thead>
-                <tr>
-                    <th class="need-translate">№пп</th>
-                    <th class="need-translate">Изучается</th>
-                    <th class="need-translate">Слово</th>
-                    <th class="need-translate">Перевод</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="tpl study-tr">
-                    <td class="study-td-index"></td>
-                    <td class="study-td-is-study" data-value=""><i class=""></i></td>
-                    <td class="study-td-word"></td>
-                    <td class="study-td-translate"></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="study-bbar">
-                <span class="study-bbar-page-label need-translate">Страница</span>
-                <span class="study-bbar-page-value">0</span>
-                <span class="study-bbar-page-total-label need-translate">из</span>
-                <span class="study-bbar-page-total-value">0</span>
-                <span class="study-bbar-btn-prev component-button need-translate">Назад</span>
-                <span class="study-bbar-btn-next component-button need-translate">Вперед</span>
-                <span class="study-bbar-gotopage">
+            <div class="study-words-grid">
+                <table class="study-table">
+                    <thead>
+                    <tr>
+                        <th class="need-translate">№пп</th>
+                        <th class="need-translate">Изучается</th>
+                        <th class="need-translate">Слово</th>
+                        <th class="need-translate">Перевод</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="tpl study-tr">
+                        <td class="study-td-index"></td>
+                        <td class="study-td-is-study" data-value=""><i class=""></i></td>
+                        <td class="study-td-word"></td>
+                        <td class="study-td-translate"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="study-bbar">
+                    <span class="study-bbar-page-label need-translate">Страница</span>
+                    <span class="study-bbar-page-value">0</span>
+                    <span class="study-bbar-page-total-label need-translate">из</span>
+                    <span class="study-bbar-page-total-value">0</span>
+                    <span class="study-bbar-btn-prev component-button need-translate">Назад</span>
+                    <span class="study-bbar-btn-next component-button need-translate">Вперед</span>
+                    <span class="study-bbar-gotopage">
                     <input class="study-bbar-gotopage-value" type="number" name="gotopage">
                     <span class="study-bbar-gotopage-button component-button need-translate">Перейти</span>
                 </span>
+                </div>
             </div>
         </div>
     </section>

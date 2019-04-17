@@ -28,6 +28,7 @@
 }
 #win-word-card .win-word-card-answer.wrong{
     background-color: red;
+    font-weight: bold;
 }
 #win-word-card .win-word-card-answer.correct{
     background-color: green;

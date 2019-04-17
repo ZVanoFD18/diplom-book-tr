@@ -113,7 +113,8 @@ let App = {
 			// Раздел принятия решения о навигации в зависимости от результата инициализации.
 			App.Component.Loadmask.hide();
 			if (data.isBookReaded) {
-				App.Component.Nav.go2section('read');
+				//App.Component.Nav.go2section('read');
+				App.Component.Nav.go2section('study');
 			} else if (data.lastSession) {
 				App.Component.Nav.go2section('library');
 			} else {

@@ -54,5 +54,7 @@
   "Не удалось добавить книгу в БД.": "Fail to add the book into database",
   "Ошибка при попытке загрузить книгу из библиотеки": "Error while trying to load a book from the library",
   "Не удалось записать сессию в БД.": "Could not write session to DB.",
-  "Ошибка при поиске книги по хешу." : "Error when searching for the book by hash."
+  "Ошибка при поиске книги по хешу." : "Error when searching for the book by hash.",
+  "Изучение слов с целевого языка на родной" : "Learning words from target language to native",
+  "Все слова изучены" : "All words learned"
 }

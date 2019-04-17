@@ -28,7 +28,7 @@ App.Component.Study = {
 		/**
 		 * Количество слов для изучения за один заход.
 		 */
-		cntWordForStudy: 15,
+		cntWordForStudy: 6,
 		/**
 		 * Количество правильных ответов для прохождения теста.
 		 */
@@ -143,10 +143,10 @@ App.Component.Study = {
 				let wordStudyData = {
 					isStudy: App.Idb.TRUE,
 					isFinishedLang1ToLang2: App.Idb.getBool(progressItemLang1ToLang2.isMemorized
-						|| (progressItemLang1ToLang2.cntCorrect - progressItemLang1ToLang2.cntWrong > this.defaults.cntCorrectForPass)
+						|| (progressItemLang1ToLang2.cntCorrect - progressItemLang1ToLang2.cntWrong >= this.defaults.cntCorrectForPass)
 					),
 					isFinishedLang2ToLang1: App.Idb.getBool(progressItemLang2ToLang1.isMemorized
-						|| (progressItemLang2ToLang1.cntCorrect - progressItemLang2ToLang1.cntWrong > this.defaults.cntCorrectForPass)
+						|| (progressItemLang2ToLang1.cntCorrect - progressItemLang2ToLang1.cntWrong >= this.defaults.cntCorrectForPass)
 					),
 				};
 				if (wordStudyData.isFinishedLang1ToLang2 && wordStudyData.isFinishedLang2ToLang1) {

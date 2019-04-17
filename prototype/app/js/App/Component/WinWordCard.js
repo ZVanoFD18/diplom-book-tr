@@ -48,8 +48,11 @@ App.Component.WinWordCard = {
 					}, 700);
 				} else {
 					event.target.classList.add('wrong');
+					let word = event.target.innerHTML;
+					event.target.innerHTML = this.correctAnswer;
 					setTimeout(()=>{
 						event.target.classList.remove('wrong');
+						event.target.innerHTML = word;
 						options.onAnswerWrong();
 					}, 1500);
 				}

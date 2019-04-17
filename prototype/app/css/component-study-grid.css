@@ -3,20 +3,26 @@
     width: 100%;
     border: 1px solid green;
     box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
-    margin: 1rem;
+    --margin: 1rem;
     box-sizing: border-box;
     max-width: 40rem;
+    background-color: #8eb9cb;
+    --background-color: #35baf6;
 }
 
 .study-words-grid table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 1rem;
 }
-#study tbody>tr:hover {
-    background-color: rgba(255, 232, 41, 0.18);
+
+#study tbody>tr:not(.empty):hover {
+    --background-color: rgba(255, 232, 41, 0.18);
+    --background-color: rgba(53, 186, 246, 0.3);
+    background-color: #35baf6;
 }
 #study tr.empty{
-    background-color: #f2f2f2;
+    color: rgba(0, 0,0, 0.2);
 }
 
 .study-words-grid td,

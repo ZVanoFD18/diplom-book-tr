@@ -14,7 +14,9 @@ App.Component.Study.Grid = {
 	 * Слова, на текущей странице таблицы
 	 */
 	rows: [],
-
+	/**
+	 * Количество слов, отображаемое на странице за раз
+	 */
 	countPerPage: 15,
 	currentPage: 1,
 	totalPages: 0,
@@ -23,6 +25,7 @@ App.Component.Study.Grid = {
 		this.elGrid = elGrid;
 		this.elGrid.querySelector('.study-bbar-btn-next').addEventListener('click', this.onBbarBtnNextClick.bind(this));
 		this.elGrid.querySelector('.study-bbar-btn-prev').addEventListener('click', this.onBbarBtnPrevClick.bind(this));
+		this.elGrid.querySelector('.study-bbar-gotopage-button').addEventListener('click', this.onBbarBtnGotopageClick.bind(this));
 	},
 	_loadData() {
 		return new Promise((resolve, reject) => {
@@ -80,6 +83,24 @@ App.Component.Study.Grid = {
 		this._loadDataTable().then(() => {
 			this.display();
 		});
+	},
+	onBbarBtnGotopageClick(e) {
+		let pageIndex = this.elGrid.querySelector('.study-bbar-gotopage-value').value;
+		pageIndex = parseInt(pageIndex);
+		if (!Helper.isNumber(pageIndex) || pageIndex < 1 || pageIndex > this.totalPages) {
+			App.Component.WinMsg.show({
+				title: App.localize('Уведомление'),
+				message: App.localize('Номер страницы вне допустимого диапазона')
+			});
+			return;
+		}
+		let lastPage = this.currentPage;
+		this.currentPage = pageIndex;
+		this.reload().then(()=>{
+			this.display();
+		}).catch(()=>{
+			this.currentPage = lastPage;
+		})
 	},
 	reload() {
 		return new Promise((resolve, reject) => {
