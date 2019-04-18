@@ -5,6 +5,8 @@ console.log('App.Component.Study.Table');
  * Компонент "Таблица слов"
  **/
 App.Component.Study.Grid = {
+	elTbody : undefined,
+	elTplTr : undefined,
 	rowStruct: {
 		word: undefined,
 		translate: undefined,
@@ -26,6 +28,9 @@ App.Component.Study.Grid = {
 		this.elGrid.querySelector('.study-bbar-btn-next').addEventListener('click', this.onBbarBtnNextClick.bind(this));
 		this.elGrid.querySelector('.study-bbar-btn-prev').addEventListener('click', this.onBbarBtnPrevClick.bind(this));
 		this.elGrid.querySelector('.study-bbar-gotopage-button').addEventListener('click', this.onBbarBtnGotopageClick.bind(this));
+		this.elTbody = this.elGrid.querySelector('table>tbody');
+		this.elTplTr = this.elTbody.querySelector('tr.tpl');
+		this.elTplTr.classList.remove('tpl');
 	},
 	_loadData() {
 		return new Promise((resolve, reject) => {
@@ -115,16 +120,9 @@ App.Component.Study.Grid = {
 	display() {
 		this.elGrid.querySelector('.study-bbar-page-value').innerHTML = this.currentPage;
 		this.elGrid.querySelector('.study-bbar-page-total-value').innerHTML = this.totalPages;
-		let elTbody = this.elGrid.querySelector('table>tbody');
-		let elTplTr = elTbody.querySelector('tr.tpl');
-		elTbody.querySelectorAll('tr').forEach((elTr) => {
-			if (elTr === elTplTr) {
-				return;
-			}
-			elTbody.removeChild(elTr);
-		});
+		this.elTbody.innerHTML = '';
 		let addRow = (row) => {
-			let elTr = elTplTr.cloneNode(true);
+			let elTr = this.elTplTr.cloneNode(true);
 			elTr.classList.remove('tpl');
 			elTr.querySelector('.study-td-index').innerHTML = (this.currentPage - 1) * this.countPerPage + cnrWord + 1;
 			if (!Helper.isObject(row)) {
@@ -143,7 +141,7 @@ App.Component.Study.Grid = {
 					elIsStudy.classList.add('is-study-false');
 				}
 			}
-			elTbody.appendChild(elTr);
+			this.elTbody.appendChild(elTr);
 		};
 		let cnrWord = 0;
 		this.rows.forEach((row) => {

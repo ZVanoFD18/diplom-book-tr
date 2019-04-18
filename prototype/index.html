@@ -143,20 +143,21 @@
 </div>
 
 <div id="widgets">
+    <div id="modal-background" class="modal-background background-color-lock-shaded hidden"></div>
 
     <!--Виджет "Маска загрузки"-->
     <div id="loadmask" class="background-color-lock-shaded">
         <div class="wrap">
-            <div class="loadmask-message color3need-translate">Загрузка...</div>
+            <div class="loadmask-message color3 need-translate">Загрузка...</div>
             <div class="img"></div>
         </div>
     </div>
 
     <!--Компонент общего назначения "Вывести пользователю текст"-->
     <div id="win-msg" class="hidden background-color-lock-transparent">
-        <div class="win-msg-window win background-color1 ">
-            <div class="win-msg-title win-title color2 background-color2 need-translate">Сообщение</div>
-            <div class="win-msg-body win-body color2 background-color1">
+        <div class="win-msg-window win">
+            <div class="win-msg-title win-title need-translate">Сообщение</div>
+            <div class="win-msg-body win-body ">
                 <div class="win-msg-text">...</div>
             </div>
             <div class="win-msg-buttons win-buttons">
@@ -166,28 +167,29 @@
     </div>
 
     <!--Виджет "Что делать с выбранным словом?"-->
-    <div id="winWordActions" class="wa-hidden">
-        <p class="wa-word need-translate">Слово</p>
-        <p class="wa-translate need-translate">Перевод</p>
-        <div class="wa-buttons">
-            <button class="wa-btn-studied need-translate">Знаю</button>
-            <div class="wa-btn-separator need-translate"></div>
-            <button class="wa-btn-study need-translate">Изучить</button>
+    <div id="win-word-actions" class="win hidden">
+        <div class="win-body ">
+            <p class="word need-translate">Слово</p>
+            <p class="translate need-translate">Перевод</p>
+        </div>
+        <div class="win-buttons">
+            <button class="btn-studied button need-translate">Знаю</button>
+            <button class="btn-study button need-translate">Изучить</button>
+            <button class="btn-cancel button need-translate">Отмена</button>
         </div>
     </div>
 
     <!--Виджет "Карточка слова". Позволяет изучать слова в прямом и обратном направлении.-->
     <div id="win-word-card" class="hidden background-color-lock-transparent">
-        <div class="win-word-card-window win background-color1 ">
-            <div class="win-word-card-title win-title color2 background-color2 need-translate">Изучение слова</div>
-            <div class="win-word-card-body win-body color2 background-color1">
+        <div class="win-word-card-window win">
+            <div class="win-word-card-title win-title need-translate">Изучение слова</div>
+            <div class="win-word-card-body win-body">
                 <div class="win-word-card-word">???</div>
                 <div class="tpl win-word-card-answer">???</div>
                 <div class="win-word-card-answers"></div>
             </div>
             <div class="win-word-card-buttons win-buttons">
                 <button class="win-word-card-btn-memorized button need-translate">Знаю</button>
-                <button class="win-word-card-btn-answer button need-translate">Ответ</button>
                 <button class="win-word-card-btn-cancel button need-translate">Прервать изучение</button>
             </div>
         </div>
@@ -220,6 +222,7 @@
 <script src="app/js/App/Component/Study/Grid.js"></script>
 <script src="app/js/App/Component/WinMsg.js"></script>
 <script src="app/js/App/Component/WinWordCard.js"></script>
+<script src="app/js/App/Component/WinWordActions.js"></script>
 <script src="app/js/App/Errors.js"></script>
 <script src="app/js/App/Errors/User.js"></script>
 <script src="app/js/App/Errors/User/PressCancel.js"></script>

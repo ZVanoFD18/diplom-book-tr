@@ -20,9 +20,11 @@ App.Component.Setlang = {
 
 		this.elLangGui = this.el.querySelector('select[name="lang-gui"]');
 		this.elLangGuiTplOptions = this.elLangGui.querySelector('option.tpl').cloneNode(true);
+		this.elLangGuiTplOptions.classList.remove('tpl');
 
 		this.elLangStudy = this.el.querySelector('select[name="lang-study"]');
 		this.elLangStudyTplOptions = this.elLangStudy.querySelector('option.tpl').cloneNode(true);
+		this.elLangStudyTplOptions.classList.remove('tpl');
 
 		this.el.querySelector('.button-submit').addEventListener('click', this.onSubmit.bind(this));
 	},
@@ -30,21 +32,18 @@ App.Component.Setlang = {
 		if (this.isDisplayed) {
 			return;
 		}
+		this.elLangGui.innerHTML = '';
 		this.elLangStudy.innerHTML = '';
 		for (let lang in App.appEnv.languages) {
-
 			let newElLangGui = this.elLangStudyTplOptions.cloneNode(true);
-			newElLangGui.classList.remove('tpl');
 			newElLangGui.value = lang;
 			newElLangGui.innerHTML = App.appEnv.languages[lang];
 			this.elLangGui.appendChild(newElLangGui);
 
 			let newElLangStudy = this.elLangStudyTplOptions.cloneNode(true);
-			newElLangStudy.classList.remove('tpl');
 			newElLangStudy.value = lang;
 			newElLangStudy.innerHTML = App.appEnv.languages[lang];
 			this.elLangStudy.appendChild(newElLangStudy);
-
 		}
 		this.elLangGui.value = App.langGui;
 		this.elLangStudy.value = App.langStudy;

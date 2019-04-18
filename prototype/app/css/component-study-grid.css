@@ -17,8 +17,6 @@
 }
 
 #study tbody>tr:not(.empty):hover {
-    --background-color: rgba(255, 232, 41, 0.18);
-    --background-color: rgba(53, 186, 246, 0.3);
     background-color: #35baf6;
 }
 #study tr.empty{

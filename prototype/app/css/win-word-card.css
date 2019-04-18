@@ -1,5 +1,5 @@
 #win-word-card {
-    z-index: 99999;
+    z-index: 20000;
     position: fixed;
     left: 0;
     right: 0;
@@ -12,14 +12,10 @@
     padding: 1rem 0;
 }
 
-/*
-#win-word-card .win-word-card-answer {
-    box-sizing: border-box;
-}
-*/
 #win-word-card .win-word-card-answer{
     border: 1px solid transparent;
     transition: background-color 0.5s;
+    height: 1.5rem;
 }
 #win-word-card .win-word-card-answer:hover {
     border: 1px solid coral;

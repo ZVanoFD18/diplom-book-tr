@@ -6,6 +6,7 @@ console.log('App.Component.Library.BooksList');
  */
 App.Component.Library.BooksList = {
 	el: undefined,
+	elTplItem : undefined,
 	/**
 	 * @type {Array}
 	 * @see App.Idb.Books.Struct
@@ -15,6 +16,8 @@ App.Component.Library.BooksList = {
 	init() {
 		this.el = App.Component.Library.el.querySelector('.library-books-list');
 		this.el.addEventListener('click', this.onListClick.bind(this))
+		this.elTplItem = this.el.querySelector('.tpl.library-books-item');
+		this.elTplItem.classList.remove('tpl');
 	},
 	_load() {
 		return new Promise((resolve, reject) => {
@@ -33,10 +36,8 @@ App.Component.Library.BooksList = {
 	},
 	display() {
 		this.clean();
-		let elTplItem = this.el.querySelector('.tpl.library-books-item');
 		this.books.forEach((book) => {
-			let newItem = elTplItem.cloneNode(true);
-			newItem.classList.remove('tpl');
+			let newItem = this.elTplItem.cloneNode(true);
 			newItem.querySelector('.library-books-hash').innerHTML = book.hash;
 			newItem.querySelector('.library-books-lang-value').innerHTML = book.lang;
 			newItem.querySelector('.library-books-title').innerHTML = book.title.concat('<br>');
@@ -48,7 +49,7 @@ App.Component.Library.BooksList = {
 		});
 	},
 	clean() {
-		let elList = this.el.querySelectorAll('.library-books-item:not(.tpl)');
+		let elList = this.el.querySelectorAll('.library-books-item');
 		elList.forEach((el) => {
 			this.el.removeChild(el);
 		})

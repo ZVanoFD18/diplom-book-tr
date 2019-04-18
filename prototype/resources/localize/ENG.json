@@ -56,5 +56,6 @@
   "Не удалось записать сессию в БД.": "Could not write session to DB.",
   "Ошибка при поиске книги по хешу." : "Error when searching for the book by hash.",
   "Изучение слов с целевого языка на родной" : "Learning words from target language to native",
-  "Все слова изучены" : "All words learned"
+  "Все слова изучены" : "All words learned",
+  "Отмена" : "Cancel"
 }

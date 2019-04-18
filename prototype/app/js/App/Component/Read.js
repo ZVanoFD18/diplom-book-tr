@@ -8,11 +8,11 @@ App.Component.Read = {
 	/**
 	 * @see: '#read'
 	 */
-	el : undefined,
-	init(){
+	el: undefined,
+	init() {
 		this.el = document.getElementById('read');
 		this.el.addEventListener('click', this.onTextClick.bind(this));
-		document.getElementById('winWordActions').addEventListener('click', this.onWordActionClick.bind(this));
+		App.Component.WinWordActions.init();
 	},
 	displayBook(book) {
 		return new Promise((resolve, reject) => {
@@ -96,28 +96,42 @@ App.Component.Read = {
 	 * @constructor
 	 */
 	onTextClick(e) {
-		let elDialog = document.getElementById('winWordActions');
 		if (!e.target.classList.contains('read-word')) {
-			elDialog.classList.add('wa-hidden');
 			return;
 		}
-		elDialog.querySelector('.wa-word').innerHTML = e.target.innerHTML;
-		elDialog.querySelector('.wa-translate').innerHTML = '...';
-		elDialog.classList.remove('wa-hidden');
+		let word = e.target.innerHTML;
 		App.Component.Loadmask.show(App.localize('Загрузка перевода...'));
-		App.getWordTranslate(e.target.innerHTML).then((translate) => {
+		App.getWordTranslate(word).then((translate) => {
 			App.Component.Loadmask.hide();
-			elDialog.querySelector('.wa-translate').innerHTML = translate;
+			App.Component.WinWordActions.show({
+				word: word,
+				translate: translate,
+				onStudy :()=>{
+					App.wordStudyAdd(word);
+					this.wordsMark(word, App.WORD_STATE.WORD_STATE_STUDY);
+				},
+				onStudied : ()=>{
+					App.WordStudyedAdd(word);
+					this.wordsMark(word, App.WORD_STATE.WORD_STATE_STUDYED);
+				}
+			});
 		}).catch((e) => {
-			elDialog.querySelector('.wa-translate').innerHTML = '???';
+			elDialog.querySelector('.translate').innerHTML = '???';
 			Helper.Log.addDebug(e);
-			elDialog.classList.add('wa-hidden');
+			elDialog.classList.add('hidden');
 			App.Component.WinMsg.show({
 				title: App.localize('Ошибка!'),
 				message: e instanceof Error ? e.message : App.localize('Не удалось получить перевод слова')
 			});
 			App.Component.Loadmask.hide();
-		})
+		});
+
+		let elDialog = document.getElementById('win-word-actions');
+		elDialog.classList.add('hidden');
+		elDialog.querySelector('.word').innerHTML = e.target.innerHTML;
+		elDialog.querySelector('.translate').innerHTML = '...';
+		elDialog.classList.remove('hidden');
+
 	},
 
 	wordElMark(elWord, state) {
@@ -137,27 +151,11 @@ App.Component.Read = {
 		}
 	},
 
-	onWordActionClick(e) {
-		let word = undefined,
-			elWord = undefined;
-		if (e.target.classList.contains('wa-btn-studied')) {
-			document.getElementById('winWordActions').classList.add('wa-hidden');
-			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
-			App.WordStudyedAdd(word);
-			this.wordsMark(word, App.WORD_STATE.WORD_STATE_STUDYED);
-		} else if (e.target.classList.contains('wa-btn-study')) {
-			document.getElementById('winWordActions').classList.add('wa-hidden');
-			word = e.target.closest('#winWordActions').querySelector('.wa-word').innerHTML;
-			App.wordStudyAdd(word);
-			this.wordsMark(word, App.WORD_STATE.WORD_STATE_STUDY);
-		}
-	},
-
 	wordsMark(words, state) {
-		if (!Helper.isArray(words)){
+		if (!Helper.isArray(words)) {
 			words = [words];
 		}
-		words.forEach((word)=>{
+		words.forEach((word) => {
 			let classWordHash = 'word-hash-' + App.getWordHash(word);
 			let words = this.el.querySelectorAll('.' + classWordHash);
 			words.forEach((elWord) => {

@@ -6,6 +6,7 @@ console.log('App.Component.WinWordCard');
  */
 App.Component.WinWordCard = {
 	correctAnswer: undefined,
+	elTplAnswer : undefined,
 	defaults: {
 		title: 'Изучение слова'
 	},
@@ -59,10 +60,12 @@ App.Component.WinWordCard = {
 			}
 		};
 		this.getEl().classList.remove('hidden');
+		document.querySelector('#modal-background').classList.remove('hidden');
 		return this;
 	},
 	hide() {
 		this.getEl().classList.add('hidden');
+		document.querySelector('#modal-background').classList.add('hidden');
 		return this;
 	},
 	/**
@@ -85,20 +88,20 @@ App.Component.WinWordCard = {
 			this.throwError('update/Не передан параметр "correctAnswer"');
 		}
 		this.correctAnswer = options.correctAnswer;
-		let elAnsvers = this.getEl().querySelector('.win-word-card-answers'),
-			elTplAnswer = this.getEl().querySelector('.tpl.win-word-card-answer');
+		let elAnsvers = this.getEl().querySelector('.win-word-card-answers');
+		if (!this.elTplAnswer){
+			this.elTplAnswer = this.getEl().querySelector('.tpl.win-word-card-answer').cloneNode(true);
+			this.getEl().querySelector('.tpl.win-word-card-answer').remove();
+			this.elTplAnswer.classList.remove('tpl');
+		}
 		this.getEl().querySelector('.win-word-card-title').innerHTML = options.title || App.localize(this.defaults.title);
 		this.getEl().querySelector('.win-word-card-word').innerHTML = options.word;
 		elAnsvers.innerHTML = '';
 		options.answers.forEach((answer) => {
-			let newElAnswer = elTplAnswer.cloneNode(true);
-			newElAnswer.classList.remove('tpl');
+			let newElAnswer = this.elTplAnswer.cloneNode(true);
 			newElAnswer.innerHTML = answer;
 			elAnsvers.appendChild(newElAnswer);
 		});
 		return this;
-	},
-	throwError(text) {
-		throw new Error('WinWordCard/' + text);
 	}
 };

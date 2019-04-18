@@ -5,7 +5,8 @@
 
 #setlang>.wrap{
     display: inline-block;
-    background-color: #35baf6;
+    --background-color: #35baf6;
+    background-color: rgba(142, 185, 203, 1);
     padding: 1rem;
     margin: 1rem;
     border-radius: 1rem;
