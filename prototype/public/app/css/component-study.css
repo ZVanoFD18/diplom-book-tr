@@ -19,3 +19,6 @@
 #study .study-panel-start{
     padding: 1rem;
 }
+#study .study-panel-start>input[name="cntToStudy"]{
+    width: 3rem;
+}

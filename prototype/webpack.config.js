@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 module.exports = function (env, argv) {
 	let config = {
-		context: __dirname + '/prototype',
+		context: __dirname + '/public',
 		/*
 			entry : {
 				main : './app/js/App.js'
@@ -18,7 +18,7 @@ module.exports = function (env, argv) {
 		devServer: {
 			host: 'localhost',
 			port: '8088',
-			contentBase: __dirname + '/prototype'
+			contentBase: __dirname + '/public'
 		}
 	};
 	return config;
