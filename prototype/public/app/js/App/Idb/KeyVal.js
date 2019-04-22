@@ -1,11 +1,14 @@
 'use strict';
-console.log('App.Idb.KeyVal');
 
+// app/js/App/Idb/KeyVal/LastSession.js
 App.Idb.KeyVal = {
 	/**
 	 * Ключи, которыми помечаются записи в таблице.
 	 */
 	KEYS :{
+		/**
+		 * Элемент хранит информацию о последней сессии пользователя
+		 */
 		LAST_SESSION : 'KEY_LAST_SESSION'
 	},
 	get(key) {

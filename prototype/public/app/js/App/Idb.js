@@ -1,6 +1,10 @@
 'use strict';
-console.log('App.Idb');
-
+// app/js/App/Idb.js
+/**
+ *
+ * Адаптер БД приложения.
+ * @type {Object}
+ */
 App.Idb = {
 	TRUE: 1,
 	FALSE: 0,
@@ -143,7 +147,7 @@ App.Idb = {
 					keyPath: ['langFrom', 'langTo', 'word'],
 					autoIncrement: false
 				});
-				// Поиска всех слов по языку
+				// Поиск всех слов по языку
 				tmpObjStore.createIndex('i-langFrom', ['langFrom'],);
 				// Поиск всех переводов с основного языка на дополнительный
 				tmpObjStore.createIndex('i-langFrom-langTo', ['langFrom', 'langTo']);

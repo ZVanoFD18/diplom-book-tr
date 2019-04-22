@@ -1,17 +1,49 @@
 'use strict';
-console.log('App.Idb.WordsTranslate');
+// app/js/App/Idb/WordsTranslate.js
 /**
  * Объект, предоставляющий интерфейс к таблице "Перевод слов".
  * @type {Object}}
  */
 App.Idb.WordsTranslate = {
+	/**
+	 * Структура, описывающая перевод слова.
+	 */
 	Struct: {
+		/**
+		 * Версия структуры на момент записи информации.
+		 * @type {Number}
+		 */
 		version: 1,
+		/**
+		 * Для какого языка перевод слова (Напр. "ENG" или "RUS")
+		 * @type {String}
+		 */
 		langFrom: undefined,
+		/**
+		 * На какой язык перевод слова (Напр. "ENG" или "RUS")
+		 * @type {String}
+		 */
 		langTo: undefined,
+		/**
+		 * Нормализованный текст слова (Напр. "dog" или "яблоко")
+		 * @type {String}
+		 */
 		word: undefined,
+		/**
+		 * Нормализованный перевод слова (Напр. "собака" или "apple")
+		 * @type {String}
+		 */
 		translate: undefined,
+		/**
+		 * Частота употребления слова.
+		 * Дробное от 0 до 1. 1 = 100% означает, что слово имеет единствее значение.
+		 * @type {Number}
+		 */
 		score : undefined,
+		/**
+		 * Время последней записи слова в таблицу (формат timestamp).
+		 * @type {Number}
+		 */
 		insertAt: 0
 	},
 	getStruct() {

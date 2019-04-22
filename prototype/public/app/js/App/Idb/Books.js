@@ -1,13 +1,39 @@
 'use strict';
-console.log('App.Idb.Books');
 
+// app/js/App/Idb/Books.js
 App.Idb.Books = {
+	/**
+	 * Структура, описывающая хранимую книгу
+	 */
 	Struct: {
+		/**
+		 * Версия структуры на момент записи книги
+		 * @type {Number}
+		 */
 		version: 1,
+		/**
+		 * Язык книги (Напр. "ENG" или "RUS")
+		 * @type {String}
+		 */
 		lang: undefined,
+		/**
+		 * Заглавие книги на языке книги.
+		 */
 		title: undefined,
+		/**
+		 * BASE64-кодированное изображение титульной страницы.
+		 * @type {String}
+		 */
 		image: undefined,
+		/**
+		 * MD5-хеш контента книги
+		 * @type {String}
+		 */
 		hash: undefined,
+		/**
+		 * Контент FB2-книги
+		 * @type {String}
+		 */
 		content: undefined
 	},
 	/**

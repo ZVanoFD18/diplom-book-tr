@@ -1,12 +1,35 @@
 'use strict';
-console.log('App.Idb.KeyVal.LastSession');
 
+// app/js/App/Idb/KeyVal/LastSession.js
 App.Idb.KeyVal.LastSession = {
+	/**
+	 * Структура, описывающая последнюю сессию пользователя.
+	 */
 	Struct: {
+		/**
+		 * Версия структуры на момент записи информации.
+		 * @type {Number}
+		 */
 		version: 1,
+		/**
+		 * Язык пользовательского интерфейса (Напр. "ENG" или "RUS")
+		 * @type {String}
+		 */
 		langGui: undefined,
+		/**
+		 * Изучаемый язык (Напр. "ENG" или "RUS")
+		 * @type {String}
+		 */
 		langStudy: undefined,
+		/**
+		 * Идентификатор читаемой книги
+		 * @type {String}
+		 */
 		bookHash: undefined,
+		/**
+		 * Позиция читаемой книги, на которой остановился пользователь
+		 * @type {Number}
+		 */
 		bookPosition: undefined
 	},
 	get() {
