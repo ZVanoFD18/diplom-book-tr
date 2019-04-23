@@ -286,7 +286,7 @@ App.Component.Study = {
 						doExam.call(this, resolve, reject);
 					},
 					onCancel: () => {
-						reject(new App.Errors.User.PressCancel(App.localize('Пользователь отменил изучение')))
+						reject(new App.Errors.User.PressCancel(App.localize('Пользователь отменил изучение')));
 					},
 					onAnswerCorrect: () => {
 						++this.wordsStudyProgress.algLang2ToLang1[currentSet.wordIndex].cntCorrect;
