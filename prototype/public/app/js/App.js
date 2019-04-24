@@ -242,7 +242,6 @@ let App = {
 						App.appEnv.google.languages[App.langGui],
 						word
 					).then((result) => {
-						console.log(word, result);
 						if (!Helper.isObject(result)) {
 							reject();
 							return;
