@@ -7,6 +7,8 @@
 > webpack
 . Либо
 > npm run build
+.. Дополнительные аргументы
+> webpack --display-modules
 
 Запуск в режиме ожидания изменений
 > npm run build-watch
@@ -45,3 +47,12 @@ $ sudo npm install i -g --save-dev webpack
 > npm install --save-dev clean-webpack-plugin
 
 > npm install -D "clean-webpack-plugin"
+
+> npm install --save-dev mini-css-extract-plugin
+> npm install --save-dev css-loader
+> npm install --save-dev style-loader
+
+
+
+@TODO: посмотреть библиотеку с флагами. Возможно, стоит прикрутить.
+> npm install --save-dev flag-icon-css

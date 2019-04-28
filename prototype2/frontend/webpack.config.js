@@ -3,6 +3,7 @@ const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 let config = {
 	mode: 'development',
@@ -20,9 +21,9 @@ let config = {
 	},
 	module: {
 		rules: [{
-			test: /\.js$/,
-			exclude: /(node_modules|fonts)/,
-			include: path.resolve(__dirname, 'src/js'),
+			test: /.src\/js\/\.*\.js$/,
+			exclude: /(node_modules)/,
+			// include: path.resolve(__dirname, 'src/js'),
 			use: {
 				loader: 'babel-loader',
 				options: {
@@ -30,7 +31,23 @@ let config = {
 					plugins: ['@babel/plugin-proposal-object-rest-spread']
 				}
 			}
-		}]
+		}
+			// , {
+			// 	test: /\.css$/,
+			// 	loader: 'css-loader',
+			// 	options: {
+			// 		sourceMap: true,
+			// 	}
+			// }
+			,
+			{
+				test: /\.css$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					"css-loader"
+				]
+			}
+		]
 	},
 	plugins: [
 		new CleanWebpackPlugin({
@@ -39,23 +56,31 @@ let config = {
 		// new MiniCssExtractPlugin({
 		// 	filename: "./css/style.bundle.css"
 		// }),
-		new CopyWebpackPlugin([{
-			from: "./src/fonts",
-			to: "./fonts"
-		}, {
-			from: "./src/favicon.ico",
-			to: "./favicon.ico"
-		}, {
-			from: "./src/img",
-			to: "./img"
-		}, {
-			from: "./src/data",
-			to: "./data"
-		}]),
+
+		new MiniCssExtractPlugin({
+			filename: "[name].css"
+			//chunkFilename: "[id].css"
+		}),
+
+		new CopyWebpackPlugin([
+			{
+				from: "./src/fonts",
+				to: "./fonts"
+			},
+			{
+				from: "./src/favicon.ico",
+				to: "./favicon.ico"
+			}, {
+				from: "./src/img",
+				to: "./img"
+			}, {
+				from: "./src/data",
+				to: "./data"
+			}]),
 		new HtmlWebpackPlugin({
 			inject: false,
 			hash: true,
-			template: './src/index.html',
+			template: './src/index.tpl.html',
 			filename: 'index.html'
 		})
 	]

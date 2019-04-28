@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title class="need-translate">Читалка с изучением слов</title>
+    <link rel="stylesheet" href="main.css">
+    <link href="/fonts/fontawesome-free-5.8.1-web/css/all.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="toppanel">
+    <section id="statistic">
+        <h2 class="need-translate">Статистика слов</h2>
+        <div class="statistic-data">
+            <span class="need-translate">на изучении:</span><span class="stat-words-study"></span>
+            <span class="need-translate">изучено:</span><span class="stat-words-studied"></span>
+        </div>
+    </section>
+    <div class="nav-icon">
+        <i class="fas fa-list-ul"></i>
+    </div>
+    <nav class="nav hidden">
+        <ul>
+            <li><a href="#setlang" class="need-translate">Язык</a></li>
+            <li><a href="#library" class="need-translate">Библиотека</a></li>
+            <li><a href="#read" class="need-translate">Чтение</a></li>
+            <li><a href="#study" class="need-translate">Изучение слов</a></li>
+        </ul>
+    </nav>
+</div>
+
+
+<div id="content">
+
+    <section id="setlang" class="hidden">
+        <div class="wrap">
+            <h2 class="setlang-header need-translate">Выбор языка</h2>
+            <form action="">
+                <label for="lang-gui">
+                    <span class="need-translate">Основной</span>
+                    <select name="lang-gui" id="lang-gui">
+                        <option value="" class="tpl"></option>
+                    </select>
+                </label>
+                <label for="lang-study">
+                    <span class="need-translate">Изучаемый</span>
+                    <select name="lang-study" id="lang-study">
+                        <option value="" class="tpl"></option>
+                    </select>
+                </label>
+                <div class="panel-buttons">
+                    <button type="submit" class="button-submit need-translate">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section id="library" class="hidden">
+        <h2 class="library-header need-translate">Библиотека</h2>
+        <div class="library-loadfromfile">
+            <div class="library-loadfromfile-wrapper">
+                <button class="library-loadfromfile-button need-translate">Добавить книгу из файла</button>
+                <input class="library-loadfromfile-input hidden" name="inpFile" type="file">
+            </div>
+        </div>
+        <div class="library-books-list">
+            <div class="tpl library-books-item">
+                <div class="library-books-hash hidden"></div>
+                <div class="library-books-lang">
+                    <div class="library-books-lang-label need-translate">Язык</div>
+                    <div class="library-books-lang-value"></div>
+                </div>
+                <div class="library-books-title"></div>
+                <div class="library-books-image">
+                    <img src="/img/book.png" alt="Empty book">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="read" class="hidden">
+        <div id="text" class="text">text</div>
+    </section>
+
+    <section id="study" class="hidden study">
+        <div class="wrap">
+            <h2 class="header need-translate">Изучение слов</h2>
+
+            <div class="study-panel-start">
+                <span class="need-translate">Кол-во слов для изучения</span>
+                <input type="number" name="cntToStudy">
+                <button class="study-button-start need-translate">Начать изучение</button>
+            </div>
+
+            <div class="study-words-grid">
+                <table class="study-table">
+                    <thead>
+                    <tr>
+                        <th class="need-translate">№пп</th>
+                        <th class="need-translate">Изучается</th>
+                        <th class="need-translate">Слово</th>
+                        <th class="need-translate">Перевод</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="tpl study-tr">
+                        <td class="study-td-index"></td>
+                        <td class="study-td-is-study" data-value=""><i class=""></i></td>
+                        <td class="study-td-word"></td>
+                        <td class="study-td-translate"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="study-bbar">
+                    <span class="study-bbar-page-label need-translate">Страница</span>
+                    <span class="study-bbar-page-value">0</span>
+                    <span class="study-bbar-page-total-label need-translate">из</span>
+                    <span class="study-bbar-page-total-value">0</span>
+                    <span class="study-bbar-btn-prev component-button need-translate">Назад</span>
+                    <span class="study-bbar-btn-next component-button need-translate">Вперед</span>
+                    <span class="study-bbar-gotopage">
+                    <input class="study-bbar-gotopage-value" type="number" name="gotopage">
+                    <span class="study-bbar-gotopage-button component-button need-translate">Перейти</span>
+                </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div id="widgets">
+    <div id="modal-background" class="modal-background background-color-lock-shaded hidden"></div>
+
+    <!--Виджет "Маска загрузки"-->
+    <div id="loadmask" class="background-color-lock-shaded">
+        <div class="wrap">
+            <div class="loadmask-message color3 need-translate">Загрузка...</div>
+            <div class="img"></div>
+        </div>
+    </div>
+
+    <!--Компонент общего назначения "Вывести пользователю текст"-->
+    <div id="win-msg" class="hidden background-color-lock-transparent">
+        <div class="win-msg-window win">
+            <div class="win-msg-title win-title need-translate">Сообщение</div>
+            <div class="win-msg-body win-body ">
+                <div class="win-msg-text">...</div>
+            </div>
+            <div class="win-msg-buttons win-buttons">
+                <button class="button win-msg-button-close need-translate">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!--Виджет "Что делать с выбранным словом?"-->
+    <div id="win-word-actions" class="win hidden">
+        <div class="win-body ">
+            <p class="word need-translate">Слово</p>
+            <p class="translate need-translate">Перевод</p>
+        </div>
+        <div class="win-buttons">
+            <button class="btn-studied button need-translate">Знаю</button>
+            <button class="btn-study button need-translate">Изучить</button>
+            <button class="btn-cancel button need-translate">Отмена</button>
+        </div>
+    </div>
+
+    <!--Виджет "Карточка слова". Позволяет изучать слова в прямом и обратном направлении.-->
+    <div id="win-word-card" class="hidden background-color-lock-transparent">
+        <div class="win-word-card-window win">
+            <div class="win-word-card-title win-title need-translate">Изучение слова</div>
+            <div class="win-word-card-body win-body">
+                <div class="win-word-card-word">???</div>
+                <div class="tpl win-word-card-answer">???</div>
+                <div class="win-word-card-answers"></div>
+            </div>
+            <div class="win-word-card-buttons win-buttons">
+                <button class="win-word-card-btn-memorized button need-translate">Знаю</button>
+                <button class="win-word-card-btn-cancel button need-translate">Прервать изучение</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="main.js"></script>
+</html>

@@ -1,6 +1,8 @@
+import './css/reset.css';
+
 // Импорт корневых модулей
-import Helper from './js/Helper';
-import App from './js/App';
+import Helper from './main/Helper';
+import App from './main/App';
 
 /**
  * Финт ушами - ранее суперглобальные переменные в webpack становятся локальными.
