@@ -1,0 +1,82 @@
+#toppanel{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 4rem;
+    background-color: #8eb9cb;
+    --background-color: rgba(142, 185, 203, 1);
+    padding: 0.3rem;
+}
+
+#content{
+    margin-top: 4rem;
+}
+
+.component-button{
+    box-sizing: border-box;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    border-radius: 0.3rem;
+    margin: 0.2rem;
+    padding: 0.2rem;
+    box-shadow: 3px 3px 5px rgba(0,0,0,0.9);
+    transition:  box-shadow 1s;
+}
+.component-button:hover{
+    color: coral;
+    background-color: #35baf6;
+}
+.component-button:active{
+    box-shadow: inset 3px 3px 5px rgba(0,0,0,0.9);
+}
+
+.win {
+    max-width: 50%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    transform: translateY(-50%) translateX(-50%);
+    text-align: center;
+    border-radius: 1.5rem;
+    box-shadow: 0.1rem 0.1rem 0.1rem silver;
+    background-color: rgb(142, 185, 203);
+}
+
+.win-title {
+    --height: 2rem;
+    text-align: center;
+    font-size: 1.3rem;
+    border-radius: 1.7rem 0 ;
+    padding: 0.5rem 1rem;
+    background-color: rgb(53, 186, 246);
+}
+
+.win-body {
+    padding: 0.5rem;
+}
+
+.win-buttons {
+    width: 100%;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.win-buttons .button {
+    cursor: pointer;
+    margin: 0.1rem 0.5rem;
+    flex: auto;
+}
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.75);/*.background-color-lock-shaded*/
+    z-index: 10000;
+}

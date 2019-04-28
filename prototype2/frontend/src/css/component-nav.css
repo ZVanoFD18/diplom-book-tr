@@ -1,0 +1,51 @@
+.nav{
+    display: inline-block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 0.5em 0.5em;
+    z-index: 110;
+    opacity: 0;
+    background-color: lightgray;
+    border-radius: 50%;
+    transition-property: all;
+    transition-duration: 1s;
+    transform : scale(0,0);;
+}
+.nav:not(.hidden){
+    opacity: 1;
+    right: 4.2rem;
+    top: 0.3rem;
+    background-color: #35baf6;
+    transform : scale(1,1) rotate(360deg);
+    border-radius: 0.3rem;
+}
+
+.nav ul{
+    list-style-type: none;
+}
+.nav a{
+    text-decoration: none;
+    font-weight: bold;
+}
+.nav a:hover{
+    color: coral;
+}
+
+.nav-icon{
+    font-size: 2rem;
+    position: absolute;
+    right: 1.5rem;
+    top: 0.3rem;
+    color: coral;
+    background-color: #59c2ce;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    opacity: 0.7;
+}
+.nav-icon:hover{
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #35baf6;
+    opacity: 1;
+}

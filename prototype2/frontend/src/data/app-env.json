@@ -1,0 +1,29 @@
+{
+  "defaults": {
+    "langGui": "RUS",
+    "langStudy": "ENG"
+  },
+  "languages": {
+    "RUS": "Русский",
+    "ENG": "English",
+    "UKR": "Українська"
+  },
+  "fb2": {
+    "languages": {
+      "ru": "RUS",
+      "en": "ENG",
+      "ua": "UKR"
+    }
+  },
+  "google" : {
+    "languages" : {
+      "RUS" : "ru",
+      "ENG" : "en",
+      "UKR" : "ua"
+    }
+  },
+  "study" : {
+    "cntWordForStudy" : 6,
+    "cntCorrectForPass" : 3
+  }
+}

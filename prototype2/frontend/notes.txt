@@ -1,0 +1,47 @@
+-------------------------------------------------
+- Запуск и сборка склонированного приложения
+---
+Ручная сборка приложения
+. Соберет файлы в "dist". Долго, но можно посмотреть что генерируетя
+. Если проект на флешке, использовать с опаской т.к. перезапись убивает ресурс.
+> webpack
+. Либо
+> npm run build
+
+Запуск в режиме ожидания изменений
+> npm run build-watch
+
+Запуск dev-сервера, который будет следить за изменениями
+. Долгий первый запуск. Затем при изменениях быстро пересобирает.
+. Сборка в памяти - посмотреть что сгенерировано не получится.
+> npm start
+. Либо
+> webpack-dev-server
+. Либо
+> webpack-dev-server --open
+
+Ищем на каком порту сервер
+> netstat -banto | find "LIST"
+> netstat -banto
+ [phpstorm64.exe]
+  TCP    127.0.0.1:8080         0.0.0.0:0              LISTENING       4820
+-------------------------------------------------
+- Установка зависимостей
+---
+! Важно !!!
+!! Для начинающих нужно устанавливать "webpack"  и "webpack-cli" глобально.
+!! Иначе не работает прямой вызов из консоли т.к. оболочка не видит локально установленных бинарников.
+!! Если этого не сделать, то придется проаисывать команды в секцию "scripts" файла "package.json"
+!
+$ sudo npm install i -g --save-dev webpack
+> npm install i -g --save-dev webpack
+> npm install i -g --save-dev webpack-cli
+
+-- Текущая версия Babel 7.4.0
+-- @babel.* - 7.*,
+-- babel-*  - 6.*,
+> npm install -D babel-loader @babel/core @babel/preset-env
+> npm install --save-dev babel-core babel-loader babel-preset-env
+> npm install --save-dev clean-webpack-plugin
+
+> npm install -D "clean-webpack-plugin"

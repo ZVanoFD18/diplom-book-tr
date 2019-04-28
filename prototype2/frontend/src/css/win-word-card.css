@@ -1,0 +1,31 @@
+#win-word-card {
+    z-index: 20000;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#win-word-card .win-word-card-word {
+    font-weight: bold;
+    padding: 1rem 0;
+}
+
+#win-word-card .win-word-card-answer{
+    border: 1px solid transparent;
+    transition: background-color 0.5s;
+    height: 1.5rem;
+}
+#win-word-card .win-word-card-answer:hover {
+    border: 1px solid coral;
+    border-radius: 0.2rem;
+    cursor: pointer;
+}
+#win-word-card .win-word-card-answer.wrong{
+    background-color: red;
+    font-weight: bold;
+}
+#win-word-card .win-word-card-answer.correct{
+    background-color: green;
+}

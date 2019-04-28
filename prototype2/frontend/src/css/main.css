@@ -1,0 +1,67 @@
+* {
+    box-sizing: border-box;
+}
+body{
+    /*Цвет папируса*/
+    --background-color: rgb(227, 203, 157);
+    /*Цвет пергамента*/
+    background-color: rgb(245, 238, 209);
+    /*Цвет старой бумаги*/
+    --background-color: rgb(214, 201, 169);
+}
+
+/*Элемент является скрытым*/
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+button
+, input
+, select
+{
+    border-radius: 0.3em;
+}
+button{
+    padding: 0.3rem 1rem;
+}
+button:hover{
+    color: coral;
+}
+
+.color1 {
+    color: rgb(132, 205, 194);
+}
+
+.color2 {
+    --color: rgb(51, 132, 205);
+    color: black;
+}
+
+.color3 {
+    --color: rgb(48, 205, 88);
+    color: green;
+}
+
+.background-color1 {
+    --background-color: rgb(132, 205, 194);
+    background-color: #59c2ce;
+}
+
+.background-color2 {
+    background-color: #35baf6;
+    /*Такой же цвет, но в RGBA*/
+    --background-color: rgba(53, 186, 246, 1);
+}
+
+.background-color3 {
+    background-color: goldenrod;
+}
+
+.background-color-lock-transparent {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.background-color-lock-shaded {
+    background-color: rgba(255, 255, 255, 0.75);
+}

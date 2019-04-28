@@ -102,3 +102,14 @@ https://fontawesome.com/icons
 https://fontawesome.com/icons?d=gallery&m=free
 https://fontawesome.com/how-to-use/on-the-web/setup/hosting-font-awesome-yourself
 --------------------------------------------------------------------------------
+WebPack
+
+Простой статический сайт на Webpack 4
+https://habr.com/ru/post/350886/
+
+Webpack 4: практические рекомендации по настройке
+https://tproger.ru/translations/configure-webpack4/
+. Оригинал
+. https://hackernoon.com/a-tale-of-webpack-4-and-how-to-finally-configure-it-in-the-right-way-4e94c8e7e5c1
+. https://github.com/marharyta/webpack-boilerplate
+--------------------------------------------------------------------------------
