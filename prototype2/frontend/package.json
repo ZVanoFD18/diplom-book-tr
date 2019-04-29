@@ -15,17 +15,17 @@
     "build-dev": "webpack --mode development",
     "build-watch": "webpack --watch --progress"
   },
-  "browserslist": [
-    "> 1%",
-    "last 3 version"
-  ],
   "devDependencies": {
-    "@babel/core": "^7.4.3",
+    "@babel/core": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
+    "@babel/register": "^7.4.4",
+    "@fortawesome/fontawesome-free": "^5.8.1",
     "autoprefixer": "^9.5.1",
     "babel-loader": "^8.0.5",
     "clean-webpack-plugin": "^2.0.1",
     "copy-webpack-plugin": "^5.0.3",
+    "core-js": "^3.0.1",
     "css-loader": "^2.1.1",
     "cssnano": "^4.1.10",
     "flag-icon-css": "^3.3.0",

@@ -27,7 +27,7 @@
 > netstat -banto
  [phpstorm64.exe]
   TCP    127.0.0.1:8080         0.0.0.0:0              LISTENING       4820
--------------------------------------------------
+-------------------------------------------------------------------------------
 - Установка зависимостей
 ---
 ! Важно !!!
@@ -39,17 +39,70 @@ $ sudo npm install i -g --save-dev webpack
 > npm install i -g --save-dev webpack
 > npm install i -g --save-dev webpack-cli
 
-. "babel*" - преобразование ES6 в код младшей версии.
--- Текущая версия Babel 7.4.0
--- @babel.* - 7.*,
--- babel-*  - 6.*,
-> npm install -D babel-loader @babel/core @babel/preset-env
-> npm install --save-dev babel-core babel-loader babel-preset-env
 
+-------------------------------------------------------------------------------
+- Установка зависимостей/Общего назначения
+---
 . Очистка папки "dist" перед сборкой
 > npm install --save-dev clean-webpack-plugin
 
-> npm install -D "clean-webpack-plugin"
+
+. Тянем шрифт, как пакет npm.
+. Так удобнее, чем копировать отдельно.
+. https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers#installing-free
+. https://stackoverflow.com/questions/52376720/how-to-make-font-awesome-5-work-with-webpack
+> npm install --save-dev @fortawesome/fontawesome-free
+
+. Этот пакет нужен для корректной работы babel7
+. Без него не происходит магия компиляции ES6 в младший код для IE11.
+> npm install --save-dev core-js@3
+
+-------------------------------------------------------------------------------
+- Установка зависимостей/Обработка JavaScript
+---
+
+. "babel*" - преобразование ES6 в код младшей версии.
+-- Текущая версия Babel 7.4.0
+
+--------------------
+-- babel-*  - 6.*
+-- Не используем.
+---
+> npm install --save-dev babel-core
+> npm install --save-dev babel-loader
+> npm install --save-dev babel-preset-env
+
+--------------------
+-- @babel.* - 7.*
+-- Используем.
+---
+. "babel-loader"
+. Интеграция babel с webpack. Без этого модуля работа даже не начнется.
+> npm install --save-dev babel-loader
+
+. "@babel/core"
+. Здесь код, выполняющий компиляцию и вывод переобразованного JS.
+. По умолчанию он использует локальную конфигурацию (?непонятно, NodeJS что ли?).
+> npm install --save-dev @babel/core
+
+. "@babel/register"
+. Этот пакет устанавливаем, если хотим чтобы конфиг "webpack.config.js" можно было писать в ES6.
+. Не обязателен. Есть особенности использования.
+> npm install --save-dev @babel/register
+
+. @babel/preset-env
+. Тут хранится информация о том, какой браузер поддерживает какие функции.
+. Вы говорите Babel: «Мне нужна поддержка этих браузеров», и она преобразует ваш javascript,
+. чтобы он работал в списке, который вы предоставляете.
+> npm install --save-dev @babel/preset-env
+
+. @babel/polyfill
+. Полифилы от babel. Например, поддержка Promise для старых браузеров.
+> npm install --save-dev  @babel/polyfill
+
+-------------------------------------------------------------------------------
+- Установка зависимостей/Обработка CSS
+---
 
 . Отделяет CSS от JS.
 > npm install --save-dev mini-css-extract-plugin

@@ -23,18 +23,25 @@ let config = {
 		aggregateTimeout: 300,
 		poll: 1000
 	},
+	// entry: './src/index.js',
+	entry: {
+		main : [
+			"@babel/polyfill",
+			'./src/index.js'
+		]
+	},
+	output: {
+		filename: 'main.js',
+		path: path.resolve(__dirname, 'dist')
+	},
 	module: {
 		rules: [
 			{
-				test: /.src\/js\/\.*\.js$/,
-				exclude: /(node_modules)/,
-				// include: path.resolve(__dirname, 'src/js'),
+				test: /\.js$/,
+				exclude: /node_modules/,
+				//include: path.resolve(__dirname, 'src/js'),
 				use: {
 					loader: 'babel-loader',
-					options: {
-						presets: ['@babel/preset-env'],
-						plugins: ['@babel/plugin-proposal-object-rest-spread']
-					}
 				}
 			}
 			,
@@ -80,11 +87,11 @@ let config = {
 		})
 		,
 		new CopyWebpackPlugin([
-			{
-				from: "./src/fonts",
-				to: "./fonts"
-			}
-			,
+			// {
+			// 	from: "./src/fonts",
+			// 	to: "./fonts"
+			// }
+			// ,
 			{
 				from: "./src/favicon.ico",
 				to: "./favicon.ico"
