@@ -39,18 +39,40 @@ $ sudo npm install i -g --save-dev webpack
 > npm install i -g --save-dev webpack
 > npm install i -g --save-dev webpack-cli
 
+. "babel*" - преобразование ES6 в код младшей версии.
 -- Текущая версия Babel 7.4.0
 -- @babel.* - 7.*,
 -- babel-*  - 6.*,
 > npm install -D babel-loader @babel/core @babel/preset-env
 > npm install --save-dev babel-core babel-loader babel-preset-env
+
+. Очистка папки "dist" перед сборкой
 > npm install --save-dev clean-webpack-plugin
 
 > npm install -D "clean-webpack-plugin"
 
+. Отделяет CSS от JS.
 > npm install --save-dev mini-css-extract-plugin
+?
 > npm install --save-dev css-loader
+?
 > npm install --save-dev style-loader
+. Минимизация CSS
+. https://cssnano.co/
+> npm install --save-dev cssnano
+. ?
+. https://postcss.org/
+. https://github.com/postcss/postcss
+> npm install --save-dev postcss-loader
+.. ?
+> npm install --save-dev style-loader
+.. Добавляет префиксы к CSS-свойствам. Для поддержки старыз браузеров (package.json опция "browserslist").
+.. https://github.com/postcss/autoprefixer
+npm install --save-dev autoprefixer
+
+
+
+
 
 
 

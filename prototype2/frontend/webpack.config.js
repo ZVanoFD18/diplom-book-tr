@@ -7,10 +7,14 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 let config = {
 	mode: 'development',
-	// "devServer": {
-	// 	"contentBase": './dist',
-	// 	port: 8080
-	// },
+	"devServer": {
+		contentBase: './dist',
+		port: 8080,
+		overlay: {
+			warnings: true,
+			errors: true
+		}
+	},
 	devtool: 'source-map',
 	//devtool: '(none)',
 	context: path.resolve(__dirname),
@@ -20,69 +24,83 @@ let config = {
 		poll: 1000
 	},
 	module: {
-		rules: [{
-			test: /.src\/js\/\.*\.js$/,
-			exclude: /(node_modules)/,
-			// include: path.resolve(__dirname, 'src/js'),
-			use: {
-				loader: 'babel-loader',
-				options: {
-					presets: ['@babel/preset-env'],
-					plugins: ['@babel/plugin-proposal-object-rest-spread']
+		rules: [
+			{
+				test: /.src\/js\/\.*\.js$/,
+				exclude: /(node_modules)/,
+				// include: path.resolve(__dirname, 'src/js'),
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env'],
+						plugins: ['@babel/plugin-proposal-object-rest-spread']
+					}
 				}
 			}
-		}
-			// , {
-			// 	test: /\.css$/,
-			// 	loader: 'css-loader',
-			// 	options: {
-			// 		sourceMap: true,
-			// 	}
-			// }
 			,
 			{
 				test: /\.css$/,
+				exclude: /node_modules/,
 				use: [
+					'style-loader',
 					MiniCssExtractPlugin.loader,
-					"css-loader"
+					{
+						loader: 'css-loader',
+						options: {
+							sourceMap: true
+						}
+					}, {
+						loader: 'postcss-loader',
+						options: {
+							sourceMap: true,
+							config: {
+								path: 'postcss.config.js'
+							}
+						}
+					}
 				]
 			}
 		]
 	},
 	plugins: [
 		new CleanWebpackPlugin({
-			verbose: true,
-		}),
-		// new MiniCssExtractPlugin({
-		// 	filename: "./css/style.bundle.css"
-		// }),
-
+			// verbose: true,
+		})
+		,
 		new MiniCssExtractPlugin({
 			filename: "[name].css"
 			//chunkFilename: "[id].css"
-		}),
-
-		new CopyWebpackPlugin([
-			{
-				from: "./src/fonts",
-				to: "./fonts"
-			},
-			{
-				from: "./src/favicon.ico",
-				to: "./favicon.ico"
-			}, {
-				from: "./src/img",
-				to: "./img"
-			}, {
-				from: "./src/data",
-				to: "./data"
-			}]),
+		})
+		,
 		new HtmlWebpackPlugin({
 			inject: false,
 			hash: true,
 			template: './src/index.tpl.html',
 			filename: 'index.html'
 		})
+		,
+		new CopyWebpackPlugin([
+			{
+				from: "./src/fonts",
+				to: "./fonts"
+			}
+			,
+			{
+				from: "./src/favicon.ico",
+				to: "./favicon.ico"
+			}
+			,
+			{
+				from: "./src/img",
+				to: "./img"
+			}
+			,
+			{
+				from: "./src/data",
+				to: "./data"
+			}
+		])
+
 	]
 };
 

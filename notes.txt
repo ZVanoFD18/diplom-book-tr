@@ -1,42 +1,30 @@
 Дипломный "Перевод книг".
 --------------------------------------------------------------------------------
--- Запуск DEV-сервера
+./prototype/ - ES5, код в старом стиле - сборщик не используется.
+./prototype/notes.txt - описание
 
-Ставим пакеты
--- Можно локально
-$ npm install --save-dev webpack-cli
-$ npm install --save-dev webpack-dev-server
--- Можно глобально.
-> npm i -g webpack
-> npm i -g webpack-dev-server
+./prototype2/ - Протопип версии 2. Улучшаем приложение.
+./prototype2/backend - @TODO: сделать backend API-сервер для дополнительной функциональности
+./prototype2/frontend - ES6 + webpack4 (собственно, "frontend" - миграция "./prototype")
 
-Конфигурируем
--- startg для глобально установленного "webpack-dev-server"
--- startl для локально  установленного "webpack-dev-server"
-package.json
-  "scripts": {
-    "startg": "webpack-dev-server --open",
-    "startl": "node_modules/.bin/webpack-dev-server --open --env development""
-  },
-webpack.config.js
-	devServer : {
-		host : 'localhost',
-		port : '8088',
-		contentBase : __dirname + '/prototype'
-	}
+--------------------------------------------------------------------------------
 
---Запуск DEV-сервера
----- Linux.
-$webpack-dev-server
----- Windows
------- Для локального  "webpack-dev-server"
->npm run startl
------- Для глобального "webpack-dev-server"
->npm run startg
-
-
-В браузере открываемnpm rsdfsdf
-http://localhost:8088/
+Таблицы совместимости:
+* ES5
+https://caniuse.com/#search=ES5
+http://kangax.github.io/compat-table/es5/
+* ES6
+https://caniuse.com/#search=ES6
+** Promise
+IE11 - No
+* indexedDb
+https://caniuse.com/#feat=indexeddb
+** IE >= 10      - Частичная поддержка (не поддерживает blob в WebWorkers - мы это не используем)
+** Firefox 4-9   - Частичная поддержка
+** Firefox >= 10 - Полная поддержка
+** Chrome 11-22  - Частичная поддержка
+** Chrome >= 23  - Полная поддержка
+** Opera  >= 15  - Полная поддержка
 
 --------------------------------------------------------------------------------
 
@@ -76,7 +64,17 @@ https://www.npmjs.com/package/po2json
 indexedDb
 Типы данных: Строки, Числа, Объекты(Массивы), Даты, Файлы.
 
-Спецификация = https://w3c.github.io/IndexedDB/
+Спецификация:
+* https://w3c.github.io/IndexedDB/
+Indexed Database API 3.0
+Editor’s Draft, 21 March 2019
+* https://www.w3.org/TR/IndexedDB/
+Indexed Database API 2.0
+W3C Recommendation, 30 January 2018
+
+Поддержка браузерами:
+* https://caniuse.com/#feat=indexeddb
+
 Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
 
 http://mdn.github.io/to-do-notifications/
