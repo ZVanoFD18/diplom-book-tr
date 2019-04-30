@@ -2,6 +2,7 @@
 
 import './App.css';
 
+import Helper from './Helper';
 import Component from './App/Component';
 import Errors from './App/Errors';
 import Idb from './App/Idb';
@@ -39,9 +40,9 @@ export default class App {
 	 * Внешние библиотеки
 	 */
 
-	// static get Helper() {
-	// 	return Helper;
-	// }
+	static get Helper() {
+		return Helper;
+	}
 
 	static get Component() {
 		return Component;
@@ -115,7 +116,7 @@ export default class App {
 		}).then((data) => {
 			// Раздел локализации приложения
 			return new Promise((resolve, reject) => {
-				if (document.Helper.isObject(data.lastSession)) {
+				if (Helper.isObject(data.lastSession)) {
 					App.langGui = data.lastSession.langGui;
 					App.langStudy = data.lastSession.langStudy;
 				} else {
@@ -130,7 +131,7 @@ export default class App {
 			return new Promise((resolve, reject) => {
 				App.Component.Loadmask.show(App.localize('Загрузка...'));
 				App.Component.Statistic.display().then(() => {
-					if (document.Helper.isObject(data.lastSession) && document.Helper.isString(data.lastSession.bookHash)) {
+					if (Helper.isObject(data.lastSession) && Helper.isString(data.lastSession.bookHash)) {
 						App.Idb.Books.getByHash(data.lastSession.bookHash).then((lastBook) => {
 							data.lastBook = lastBook;
 							resolve(data);
@@ -140,6 +141,9 @@ export default class App {
 					} else {
 						resolve(data);
 					}
+				}).catch((e)=>{
+					Helper.Log.addDebug('Не удалось обновить статистику изучения слов');
+					resolve(data);
 				});
 			});
 		}).then((data) => {
@@ -168,7 +172,7 @@ export default class App {
 				App.Component.Nav.go2section('setlang');
 			}
 		}).catch((e) => {
-			document.Helper.Log.addDebug(e);
+			Helper.Log.addDebug(e);
 			if (e instanceof ErrorUser) {
 				App.Component.WinMsg.show({
 					title: App.localize('Уведомление.'),
@@ -189,7 +193,7 @@ export default class App {
 			 *
 			 * @type {XMLHttpRequest}
 			 */
-			let xhr = document.Helper.Ajax.getXhr();
+			let xhr = Helper.Ajax.getXhr();
 			xhr.open('GET', '/data/app-env.json');
 			xhr.send();
 			xhr.addEventListener('readystatechange', () => {
@@ -228,9 +232,9 @@ export default class App {
 
 	static bookToRead(text, isAdd) {
 		return new Promise((resolve, reject) => {
-			isAdd = document.Helper.isDefined(isAdd) ? isAdd : true;
+			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
-			let book = document.Helper.Fb2.getBookFromText(text);
+			let book = Helper.Fb2.getBookFromText(text);
 			if (App.langStudy !== stat.appEnv.fb2.languages[book.lang]) {
 				reject(new ErrorUser(App.localize('Язык книги не соответствует изучаемому.')));
 				return;
@@ -255,7 +259,7 @@ export default class App {
 							resolve();
 						});
 					}).catch((e) => {
-						document.Helper.Log.addDebug(e);
+						Helper.Log.addDebug(e);
 						App.Component.WinMsg.show({
 							title: '<span style="color: red">' + App.localize('Ошибка!') + '</span>',
 							message: App.localize('Не удалось добавить книгу в библиотеку.')
@@ -282,23 +286,23 @@ export default class App {
 				App.langGui,
 				word
 			).then((translateStruct) => {
-				if (document.Helper.isObject(translateStruct)) {
+				if (Helper.isObject(translateStruct)) {
 					if (isReturnStruct) {
 						resolve(translateStruct);
 					} else {
 						resolve(translateStruct.translate);
 					}
 				} else {
-					document.Helper.Google.translate(
+					Helper.Google.translate(
 						stat.appEnv.google.languages[App.langGui],
 						word
 					).then((result) => {
-						if (!document.Helper.isObject(result)) {
+						if (!Helper.isObject(result)) {
 							reject();
 							return;
 						}
-						let struct = document.Helper.Google.getTranslateConverted(result);
-						if (document.Helper.isEmpty(struct.translate)) {
+						let struct = Helper.Google.getTranslateConverted(result);
+						if (Helper.isEmpty(struct.translate)) {
 							reject(new Error('Не удалось получить перевод от Google'))
 						} else {
 							if (!isReturnStruct) {
@@ -314,7 +318,7 @@ export default class App {
 								return App.Idb.WordsTranslate.get(App.langStudy, App.langGui, word);
 							}).then((translateStruct) => {
 								if (isReturnStruct) {
-									if (document.Helper.isObject(translateStruct)) {
+									if (Helper.isObject(translateStruct)) {
 										resolve(translateStruct);
 									} else {
 										reject(new Error('Неудалось извлечь слово из БД после сохранения'));
@@ -341,7 +345,7 @@ export default class App {
 			});
 			return promices;
 		})()).then((results) => {
-			if (!document.Helper.isArray(results)) {
+			if (!Helper.isArray(results)) {
 				return new Error('Не удалось получить перевод для списка слов');
 			}
 			return results;
@@ -354,7 +358,7 @@ export default class App {
 		}).then((rowId) => {
 			App.Component.Statistic.display();
 		}).catch((e) => {
-			document.Helper.Log.addDebug(e);
+			Helper.Log.addDebug(e);
 		});
 	}
 
@@ -364,12 +368,12 @@ export default class App {
 		}).then((isSuccess) => {
 			App.Component.Statistic.display();
 		}).catch((e) => {
-			document.Helper.Log.addDebug(e);
+			Helper.Log.addDebug(e);
 		});
 	}
 
 	static getWordHash(word) {
-		let result = document.Helper.Hash.hashCode(word.toLowerCase());
+		let result = Helper.Hash.hashCode(word.toLowerCase());
 		return result;
 	}
 
@@ -384,6 +388,7 @@ export default class App {
 
 	static localizeGui() {
 		let elList = document.querySelectorAll('.need-translate');
+		elList = [].slice.call(elList)
 		elList.forEach((elTranslate) => {
 			let key = elTranslate.getAttribute('data-localize-key');
 			key = key || elTranslate.innerHTML;

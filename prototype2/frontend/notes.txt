@@ -46,6 +46,16 @@ $ sudo npm install i -g --save-dev webpack
 . Очистка папки "dist" перед сборкой
 > npm install --save-dev clean-webpack-plugin
 
+. "detect-browser"
+. https://github.com/DamonOehlman/detect-browser
+. Пакет-помошник для определения версии браузера
+. Т.к. в основе IndexedDB v.2, то мы сильно ограничены в браузерах.
+> npm install --save-dev detect-browser
+
+. "semver"
+. https://github.com/npm/node-semver
+. Сравнение версий.
+npm install --save-dev semver
 
 . Тянем шрифт, как пакет npm.
 . Так удобнее, чем копировать отдельно.

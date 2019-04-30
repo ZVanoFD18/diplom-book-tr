@@ -3,6 +3,7 @@ import Fb2 from './Helper/Fb2';
 import Google from './Helper/Google';
 import Hash from './Helper/Hash';
 import Io from './Helper/Io';
+import Idb from './Helper/Idb';
 import Log from './Helper/Log';
 import Obj from './Helper/Obj';
 import Text from './Helper/Text';
@@ -30,6 +31,10 @@ class Helper {
 
 	static get Io() {
 		return Io;
+	}
+
+	static get Idb() {
+		return Idb;
 	}
 
 	static get Log() {

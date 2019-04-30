@@ -1,5 +1,8 @@
 'use strict';
 
+import App from '../../App';
+import Helper from '../../Helper';
+
 const stat = {
 	/**
 	 * Структура, описывающая изучаемое слово.
@@ -54,11 +57,11 @@ export default class WordsStudy {
 	}
 
 	static getStructFromData(data) {
-		if (!document.Helper.isDefined(data)) {
+		if (!Helper.isDefined(data)) {
 			return undefined;
 		}
 		let result = this.getStruct();
-		result = document.Helper.Obj.replaceMembers(result, data, false);
+		result = Helper.Obj.replaceMembers(result, data, false);
 		return result;
 	}
 
@@ -69,11 +72,11 @@ export default class WordsStudy {
 	 */
 	static get(lang, word) {
 		return new Promise((resolve, reject) => {
-			return document.App.Idb.getDb().then((db) => {
+			return App.Idb.getDb().then((db) => {
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				//let index = store.index('i-lang-word');
-				//let req = index.get([ document.App.Idb.getNormalizedLang(lang), document.App.Idb.getNormalizedWord(word)]);
-				let req = store.get([document.App.Idb.getNormalizedLang(lang), document.App.Idb.getNormalizedWord(word)]);
+				//let req = index.get([ App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
+				let req = store.get([App.Idb.getNormalizedLang(lang), App.Idb.getNormalizedWord(word)]);
 				req.onsuccess = (event) => {
 					resolve(this.getStructFromData(event.target.result));
 				};
@@ -85,18 +88,18 @@ export default class WordsStudy {
 	}
 
 	static getAllAsObject(lang, filters = {}) {
-		document.Helper.Obj.replaceMembers({
+		Helper.Obj.replaceMembers({
 			from: undefined,
 			to: undefined
 		}, filters);
 		return new Promise((resolve, reject) => {
 			let result = {};
 			let cnr = 0;
-			document.App.Idb.getDb().then((db) => {
-				const normalizedLang = document.App.Idb.getNormalizedLang(lang);
+			App.Idb.getDb().then((db) => {
+				const normalizedLang = App.Idb.getNormalizedLang(lang);
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				let index = store.index('i-lang');
-				const key = IDBKeyRange.only([document.App.Idb.getNormalizedLang(lang)]);
+				const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang)]);
 				let req = index.openCursor(key);
 				req.onsuccess = (event) => {
 					let cursor = req.result;
@@ -104,7 +107,7 @@ export default class WordsStudy {
 						resolve(result);
 						return;
 					}
-					if (document.Helper.isDefined(filters.from) && document.Helper.isDefined(filters.to)) {
+					if (Helper.isDefined(filters.from) && Helper.isDefined(filters.to)) {
 						if (cnr >= filters.from && cnr <= filters.to) {
 							result[cursor.value.word] = cursor.value;
 						}
@@ -132,10 +135,10 @@ export default class WordsStudy {
 		word = word || data.word;
 		let db, key;
 		return new Promise((resolve, reject) => {
-			if (!document.Helper.isString(lang) || !document.Helper.isString(word)) {
+			if (!Helper.isString(lang) || !Helper.isString(word)) {
 				throw new Error('lang не задан');
 			}
-			document.App.Idb.getDb().then((resDb) => {
+			App.Idb.getDb().then((resDb) => {
 				db = resDb;
 				return this.get(lang, word);
 			}).then((existsStruct) => {
@@ -143,12 +146,12 @@ export default class WordsStudy {
 					let newStruct = existsStruct;
 					if (!newStruct) {
 						newStruct = this.getStruct();
-						document.Helper.Obj.apply(newStruct, {
-							lang: document.App.Idb.getNormalizedLang(lang),
-							word: document.App.Idb.getNormalizedWord(word)
+						Helper.Obj.apply(newStruct, {
+							lang: App.Idb.getNormalizedLang(lang),
+							word: App.Idb.getNormalizedWord(word)
 						});
 					}
-					document.Helper.Obj.apply(newStruct, data);
+					Helper.Obj.apply(newStruct, data);
 					let transaction = db.transaction(['WordsStudy'], 'readwrite');
 					let store = transaction.objectStore('WordsStudy');
 					let req = store.put(newStruct);
@@ -170,13 +173,13 @@ export default class WordsStudy {
 	static getForStudy(lang, count) {
 		return new Promise((resolve, reject) => {
 			let result = [];
-			document.App.Idb.getDb().then((db) => {
+			App.Idb.getDb().then((db) => {
 				let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 				/**
 				 * @type {IDBIndex}
 				 */
 				let index = store.index('i-lang-isStudy');
-				const key = IDBKeyRange.only([document.App.Idb.getNormalizedLang(lang), document.App.Idb.TRUE]);
+				const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang), App.Idb.TRUE]);
 				let req = index.openCursor(key);
 				req.onsuccess = (event) => {
 					let cursor = req.result;
@@ -195,22 +198,23 @@ export default class WordsStudy {
 					reject('Не удалось получить слова по индексу.');
 				};
 			}).catch((e) => {
-				document.Helper.Log.addDebug(e);
+				Helper.Log.addDebug(e);
 				reject(e);
 			});
 		});
 	}
 
 	static getCountStudy(lang, isStudy) {
+		const normalizedLang = App.Idb.getNormalizedLang(lang);
 		return new Promise((resolve, reject) => {
-			document.App.Idb.getDb().then((db) => {
+			App.Idb.getDb().then((db) => {
 				return new Promise((resolve, reject) => {
 					let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 					/**
 					 * @type {IDBIndex}
 					 */
 					let index = store.index('i-lang-isStudy');
-					const key = IDBKeyRange.only([document.App.Idb.getNormalizedLang(lang), isStudy]);
+					const key = IDBKeyRange.only([normalizedLang, isStudy]);
 					let req = index.count(key);
 					req.onsuccess = (event) => {
 						return new Promise(() => {
@@ -235,14 +239,14 @@ export default class WordsStudy {
 			cntStudied: undefined
 		};
 		return new Promise((resolve, reject) => {
-			this.getCountStudy(lang, document.App.Idb.TRUE).then((cnt) => {
+			this.getCountStudy(lang, App.Idb.TRUE).then((cnt) => {
 				result.cntStudy = cnt;
-				return this.getCountStudy(lang, document.App.Idb.FALSE);
+				return this.getCountStudy(lang, App.Idb.FALSE);
 			}).then((cnt) => {
 				result.cntStudied = cnt;
 				resolve(result);
 			}).catch((e) => {
-				document.App.Log.addDebug(e);
+				Helper.Log.addDebug(e);
 				reject(e);
 			});
 		})
@@ -250,20 +254,20 @@ export default class WordsStudy {
 
 	static getCountForLang(lang) {
 		return new Promise((resolve, reject) => {
-			document.App.Idb.getDb().then((db) => {
+			App.Idb.getDb().then((db) => {
 				return new Promise((resolve, reject) => {
 					let store = db.transaction(['WordsStudy'], 'readonly').objectStore('WordsStudy');
 					/**
 					 * @type {IDBIndex}
 					 */
 					let index = store.index('i-lang');
-					const key = IDBKeyRange.only([document.App.Idb.getNormalizedLang(lang)]);
+					const key = IDBKeyRange.only([App.Idb.getNormalizedLang(lang)]);
 					let req = index.count(key);
 					req.onsuccess = (event) => {
 						resolve(req.result);
 					};
 					req.onerror = (event) => {
-						document.App.Log.addDebug(event);
+						Helper.Log.addDebug(event);
 						reject('Не удалось извлечь количество слов по индексу.');
 					};
 				});

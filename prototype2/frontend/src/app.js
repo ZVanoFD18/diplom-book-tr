@@ -1,17 +1,17 @@
-import './main/dev-tests';
-
+//import 'core-js';
+import 'core-js/features/promise';
+// import '@babel/polyfill';
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
 //import '@fortawesome/fontawesome-free/js/regular';
 //import '@fortawesome/fontawesome-free/js/brands';
 
-// import '@babel/polyfill';
 
 import './css/reset.css';
 
 // Импорт корневых модулей
-import Helper from './main/Helper';
-import App from './main/App';
+import Helper from './app/Helper';
+import App from './app/App';
 
 /**
  * Финт ушами - ранее суперглобальные переменные в webpack становятся локальными.

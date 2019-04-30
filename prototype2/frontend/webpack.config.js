@@ -23,23 +23,28 @@ let config = {
 		aggregateTimeout: 300,
 		poll: 1000
 	},
-	// entry: './src/index.js',
 	entry: {
-		main : [
+		bootstrap : [
+			"detect-browser",
+			"semver",
+			'./src/bootstrap.js'
+		],
+		app : [
 			"@babel/polyfill",
-			'./src/index.js'
+			'./src/app.js'
 		]
 	},
 	output: {
-		filename: 'main.js',
+		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist')
 	},
 	module: {
 		rules: [
 			{
 				test: /\.js$/,
-				exclude: /node_modules/,
+				//exclude: /node_modules/,
 				//include: path.resolve(__dirname, 'src/js'),
+				include: path.resolve(__dirname, 'src'),
 				use: {
 					loader: 'babel-loader',
 				}

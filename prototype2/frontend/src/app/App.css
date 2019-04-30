@@ -1,7 +1,8 @@
 * {
     box-sizing: border-box;
 }
-body{
+
+body {
     /*Цвет папируса*/
     --background-color: rgb(227, 203, 157);
     /*Цвет пергамента*/
@@ -16,16 +17,15 @@ body{
     display: none;
 }
 
-button
-, input
-, select
-{
+button, input, select {
     border-radius: 0.3em;
 }
-button{
+
+button {
     padding: 0.3rem 1rem;
 }
-button:hover{
+
+button:hover {
     color: coral;
 }
 
@@ -64,4 +64,35 @@ button:hover{
 
 .background-color-lock-shaded {
     background-color: rgba(255, 255, 255, 0.75);
+}
+
+#bootstrap {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*right: 0;*/
+    background-color: rgb(245, 238, 209);
+}
+
+#bootstrap .bootstrap-loading{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/loading.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+    --background-size : 50%;
+    background-size : cover;
+}
+#bootstrap .bootstrap-fail {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }

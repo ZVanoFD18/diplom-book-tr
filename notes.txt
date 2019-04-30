@@ -18,13 +18,22 @@ https://caniuse.com/#search=ES6
 ** Promise
 IE11 - No
 * indexedDb
+** indexedDb 1
 https://caniuse.com/#feat=indexeddb
-** IE >= 10      - Частичная поддержка (не поддерживает blob в WebWorkers - мы это не используем)
-** Firefox 4-9   - Частичная поддержка
-** Firefox >= 10 - Полная поддержка
-** Chrome 11-22  - Частичная поддержка
-** Chrome >= 23  - Полная поддержка
-** Opera  >= 15  - Полная поддержка
+*** IE >= 10      - Частичная поддержка (не поддерживает blob в WebWorkers - мы это не используем)
+*** Edge 18       - Частичная поддержка (не поддерживает blob в WebWorkers - мы это не используем)
+*** Firefox 4-9   - Частичная поддержка
+*** Firefox >= 10 - Полная поддержка
+*** Chrome 11-22  - Частичная поддержка
+*** Chrome >= 23  - Полная поддержка
+*** Opera  >= 15  - Полная поддержка
+** IndexedDB 2.0
+https://caniuse.com/#feat=indexeddb2
+*** IE11          - Не поддерживает
+*** Edge          - Не поддерживает
+*** Firefox >= 51 - Полная поддержка
+*** Chrome >= 58  - Полная поддержка
+*** Opera >= 45   - Полная поддержка
 
 --------------------------------------------------------------------------------
 
@@ -64,6 +73,11 @@ https://www.npmjs.com/package/po2json
 indexedDb
 Типы данных: Строки, Числа, Объекты(Массивы), Даты, Файлы.
 
+; Удалить БД
+indexedDB.deleteDatabase('main');
+; Проверить существует ли БД (!IE11)
+document.Helper.Idb.isDbExists('main').then(function(){console.log('Exists')}).catch(function(){console.log('Not exists')});
+
 Спецификация:
 * https://w3c.github.io/IndexedDB/
 Indexed Database API 3.0
@@ -78,6 +92,7 @@ W3C Recommendation, 30 January 2018
 Краткое, но исчерпывающее руководство по IndexedDB = https://proglib.io/p/indexeddb-guide/
 
 http://mdn.github.io/to-do-notifications/
+https://developer.mozilla.org/en-US/docs/Web/API/IDBFactory
 https://developer.mozilla.org/en-US/docs/Web/API/IDBObjectStore/put
 https://developer.mozilla.org/en-US/docs/Web/API/IDBRequest/transaction
 https://developer.mozilla.org/en-US/docs/Web/API/IDBKeyRange

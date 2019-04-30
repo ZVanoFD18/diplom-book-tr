@@ -52,7 +52,9 @@ export default class Nav {
 	static go2section(sectionId) {
 		document.App.Component.Loadmask.show(document.App.localize('Навигация...'));
 		setTimeout(() => {
-			document.getElementById('content').querySelectorAll('section').forEach((elSection) => {
+			let sections = document.getElementById('content').querySelectorAll('section');
+			sections = [].slice.call(sections);
+			sections.forEach((elSection) => {
 				elSection.classList.add('hidden');
 			});
 			document.getElementById(sectionId).classList.remove('hidden');
