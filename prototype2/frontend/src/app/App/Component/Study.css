@@ -9,7 +9,6 @@
 
 #study>.wrap {
     display: inline-block;
-    --background-color: #35baf6;
     background-color: #8eb9cb;
     padding: 1rem;
     margin: 1rem;
@@ -21,4 +20,7 @@
 }
 #study .study-panel-start>input[name="cntToStudy"]{
     width: 3rem;
+}
+#study label{
+    display: block;
 }

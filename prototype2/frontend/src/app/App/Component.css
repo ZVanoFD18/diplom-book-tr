@@ -80,3 +80,6 @@
     background-color: rgba(255, 255, 255, 0.75);/*.background-color-lock-shaded*/
     z-index: 10000;
 }
+.panel-help{
+    padding: 0.5rem;
+}

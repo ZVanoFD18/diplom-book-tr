@@ -1,5 +1,7 @@
+
 #study .study-words-grid {
     width: 100%;
+    min-width: 30rem;
     border: 1px solid green;
     box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
     --margin: 1rem;

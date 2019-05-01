@@ -6,9 +6,14 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 let config = {
-	mode: 'development',
+	//mode: 'development',
+	mode: 'production',
+	performance: {
+		hints: false
+	},
 	"devServer": {
 		contentBase: './dist',
+		host : '0.0.0.0',
 		port: 8080,
 		overlay: {
 			warnings: true,
@@ -27,11 +32,19 @@ let config = {
 		bootstrap : [
 			"detect-browser",
 			"semver",
-			'./src/bootstrap.js'
+			'./src/entry-bootstrap.js'
 		],
 		app : [
+			'./src/entry-app.js'
+		],
+		polyfill : [
+			"core-js",
 			"@babel/polyfill",
-			'./src/app.js'
+			'./src/entry-polyfill.js'
+		],
+		fonts : [
+			"@fortawesome/fontawesome-free",
+			'./src/entry-fonts.js'
 		]
 	},
 	output: {
@@ -43,8 +56,8 @@ let config = {
 			{
 				test: /\.js$/,
 				//exclude: /node_modules/,
-				//include: path.resolve(__dirname, 'src/js'),
-				include: path.resolve(__dirname, 'src'),
+				include: path.resolve(__dirname, 'src/app'),
+				//include: path.resolve(__dirname, 'src'),
 				use: {
 					loader: 'babel-loader',
 				}
@@ -75,10 +88,10 @@ let config = {
 		]
 	},
 	plugins: [
-		new CleanWebpackPlugin({
-			// verbose: true,
-		})
-		,
+		// new CleanWebpackPlugin({
+		// 	// verbose: true,
+		// })
+		// ,
 		new MiniCssExtractPlugin({
 			filename: "[name].css"
 			//chunkFilename: "[id].css"
@@ -92,11 +105,6 @@ let config = {
 		})
 		,
 		new CopyWebpackPlugin([
-			// {
-			// 	from: "./src/fonts",
-			// 	to: "./fonts"
-			// }
-			// ,
 			{
 				from: "./src/favicon.ico",
 				to: "./favicon.ico"
@@ -110,6 +118,11 @@ let config = {
 			{
 				from: "./src/data",
 				to: "./data"
+			}
+			,
+			{
+				from: "./src/books",
+				to: "./books"
 			}
 		])
 

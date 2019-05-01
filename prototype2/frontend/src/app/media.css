@@ -1,0 +1,26 @@
+
+@media screen and (max-width: 992px) {
+    html{
+        font-size: 100%;
+    }
+    body{
+        border-bottom: 3px solid green;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    html{
+        font-size: 80%;
+    }
+    body{
+        border-bottom: 3px solid yellow;
+    }
+}
+@media screen and (max-width: 500px) {
+    html{
+        font-size: 70%;
+    }
+    body{
+        border-bottom: 3px solid red;
+    }
+}

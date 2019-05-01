@@ -7,7 +7,7 @@
 > webpack
 . Либо
 > npm run build
-.. Дополнительные аргументы
+.. Показать какие модули тянутся по зависимостям. Так можно узнать почему сборка жирная.
 > webpack --display-modules
 
 Запуск в режиме ожидания изменений
@@ -23,8 +23,9 @@
 > webpack-dev-server --open
 
 Ищем на каком порту сервер
-> netstat -banto | find "LIST"
-> netstat -banto
+> netstat -banto | find "LIST"netstat -banto
+> netstat -anto | find "8080"
+>
  [phpstorm64.exe]
   TCP    127.0.0.1:8080         0.0.0.0:0              LISTENING       4820
 -------------------------------------------------------------------------------
