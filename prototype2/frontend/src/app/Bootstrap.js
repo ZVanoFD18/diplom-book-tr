@@ -72,6 +72,7 @@ export default () => {
 		elScript.src = 'app.js';
 		elScript.onload = function () {
 			document.getElementById('bootstrap').remove();
+			document.getElementById('gui').style = '';
 		};
 		elScript.onlerror = function () {
 			alert('app not loaded');

@@ -60,5 +60,6 @@ export default class Localize {
 			stat._unknownTranslates[lang] = {};
 		}
 		stat._unknownTranslates[lang][text] = "";
+		console.log('translateMe/' + lang + '/', text);
 	}
 };

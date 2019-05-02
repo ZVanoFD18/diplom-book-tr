@@ -88,6 +88,11 @@ let config = {
 		]
 	},
 	plugins: [
+		/**
+		 * CleanWebpackPlugin - не используем, пока не найдем способ избежать
+		 * очистки при запуске webpack-dev-server.
+		 *
+		 */
 		// new CleanWebpackPlugin({
 		// 	// verbose: true,
 		// })
