@@ -57,5 +57,7 @@
   "Ошибка при поиске книги по хешу." : "Error when searching for the book by hash.",
   "Изучение слов с целевого языка на родной" : "Learning words from target language to native",
   "Все слова изучены" : "All words learned",
-  "Отмена" : "Cancel"
+  "Отмена" : "Cancel",
+  "Помощь" : "Help",
+  "html-library-help" : "Only FB2 format on codepage UTF8. <a href=\"/books\">Samples of books</a>"
 }
