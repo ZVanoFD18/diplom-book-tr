@@ -30,7 +30,8 @@ export default class Nav {
 	 * @param event
 	 */
 	static onNavIconClick(event) {
-		elNav.classList.toggle('hidden');
+		elNav.classList.remove('hidden');
+		elNav.classList.toggle('opened');
 	}
 	/**
 	 * Обработчик нажатия на элемент навигации.
@@ -43,7 +44,7 @@ export default class Nav {
 			return;
 		}
 		this.go2section(href.substr(1));
-		elNav.classList.toggle('hidden');
+		elNav.classList.toggle('opened');
 	}
 	/**
 	 * Выполняет навигацию к указанной секции.

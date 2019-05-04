@@ -1,4 +1,4 @@
-#toppanel{
+#toppanel {
     position: fixed;
     top: 0;
     width: 100%;
@@ -8,26 +8,28 @@
     padding: 0.3rem;
 }
 
-#content{
+#content {
     margin-top: 4rem;
 }
 
-.component-button{
+.component-button {
     box-sizing: border-box;
     cursor: pointer;
     border: 1px solid lightgray;
     border-radius: 0.3rem;
     margin: 0.2rem;
     padding: 0.2rem;
-    box-shadow: 3px 3px 5px rgba(0,0,0,0.9);
-    transition:  box-shadow 1s;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.9);
+    transition: box-shadow 1s;
 }
-.component-button:hover{
+
+.component-button:hover {
     color: coral;
     background-color: #35baf6;
 }
-.component-button:active{
-    box-shadow: inset 3px 3px 5px rgba(0,0,0,0.9);
+
+.component-button:active {
+    box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.9);
 }
 
 .win {
@@ -47,7 +49,7 @@
     --height: 2rem;
     text-align: center;
     font-size: 1.3rem;
-    border-radius: 1.7rem 0 ;
+    border-radius: 1.7rem 0;
     padding: 0.5rem 1rem;
     background-color: rgb(53, 186, 246);
 }
@@ -77,9 +79,36 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.75);/*.background-color-lock-shaded*/
+    background-color: rgba(255, 255, 255, 0.75); /*.background-color-lock-shaded*/
     z-index: 10000;
 }
-.panel-help{
+
+.panel-help {
     padding: 0.5rem;
+}
+
+.menu{
+    padding: 0.5rem;
+    background-color: #35baf6;
+    border-radius: 0.3rem;
+}
+.menu-vertical .menu-item {
+    display: block;
+    margin: 0.3rem 0;
+}
+
+.menu-horisontal .menu-item {
+    display: inline-block;
+    margin: 0;
+}
+
+.menu-item {
+    font-size: 1.5rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    border: 0.2rem solid rgba(255, 255, 255, 0.4);
+}
+
+.menu-item:hover {
+    border: 0.2rem solid rgba(255, 255, 255, 0.8);
 }
