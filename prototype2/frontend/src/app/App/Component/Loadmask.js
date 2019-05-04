@@ -1,20 +1,67 @@
 'use strict';
 import './Loadmask.css';
 
+/**
+ * Хранилище псевдостатических свойств.
+ * @type {Object}
+ */
+const stat = {
+	/**
+	 * Время инициации последнено показа Loadmask.
+	 * @type {Number}
+	 */
+	showedAt: undefined,
+	/**
+	 * Минимальное время показа Loadmask.
+	 * Этим параметром избавляемся от моргания при выполнении быстрых операций.
+	 * Т.е. запрещаем скрытие маски раньше, чем showedAt + minTimeShow
+	 * @type {Number} - миллисекунды
+	 */
+	minTimeShow: 500,
+	/**
+	 * Хендл таймера задержки скрытия  Loadmask
+	 * @type {Number}
+	 */
+	timerHide: undefined
+};
+
+/**
+ * Компонент "Маска загрузки".
+ * Предназначен для блокирования интерфейса и индикации при длительной фонофой операции (например, AJAX).
+ */
 export default class Loadmask {
 	static getEl() {
 		return document.getElementById('loadmask');
 	}
 
+	/**
+	 * Показать маску загрузки
+	 * @param text
+	 */
 	static show(text) {
+		if (stat.timerHide) {
+			clearTimeout(stat.timerHide);
+		}
+		stat.showedAt = Date.now();
 		if (text) {
 			this.setMessage(text);
 		}
 		this.getEl().classList.remove('hidden');
 	}
 
+	/**
+	 * Скрыть маску загрузки.
+	 */
 	static hide() {
-		this.getEl().classList.add('hidden');
+		if (Date.now() - stat.showedAt >= stat.minTimeShow) {
+			this.getEl().classList.add('hidden');
+			if (stat.timerHide) {
+				clearTimeout(stat.timerHide);
+			}
+		}
+		stat.timerHide = setTimeout(() => {
+			this.hide();
+		}, stat.minTimeShow - Date.now() - stat.showedAt);
 	}
 
 	static setMessage(text) {

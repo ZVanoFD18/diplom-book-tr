@@ -4,35 +4,40 @@ import './Nav.css';
 
 // import Component from '../Component';
 
-/**
- * Ссылка на DOM-элемент "Навигация"
- */
-let elNav = undefined;
+
+const stat = {
+	/**
+	 * Ссылка на DOM-элемент "Навигация"
+	 */
+	elNav: undefined,
 	/**
 	 * Ссылка на DOM-элемент "Иконка еавигации".
 	 */
-let elNavIcon = undefined;
-
+	elNavIcon: undefined
+};
 /**
  * Раздел секции "Статистика"
  */
 export default class Nav {
-	static init(){
-		elNav = document.querySelector('nav.nav');
-		elNavIcon = document.querySelector('.nav-icon');
+
+	static init() {
+		stat.elNav = document.querySelector('nav.nav');
+		stat.elNavIcon = document.querySelector('.nav-icon');
 		// Обработчики навигации
-		elNavIcon.addEventListener('click', this.onNavIconClick.bind(this));
-		elNav.addEventListener('click', this.onNavClick.bind(this));
+		stat.elNavIcon.addEventListener('click', this.onNavIconClick.bind(this));
+		stat.elNav.addEventListener('click', this.onNavClick.bind(this));
 	}
+
 	/**
 	 * Клик по иконке "Меню".
 	 * По этому действию нужно отобразить меню.
 	 * @param event
 	 */
 	static onNavIconClick(event) {
-		elNav.classList.remove('hidden');
-		elNav.classList.toggle('opened');
+		stat.elNav.classList.remove('hidden');
+		stat.elNav.classList.toggle('opened');
 	}
+
 	/**
 	 * Обработчик нажатия на элемент навигации.
 	 * Если кликнули на ссылку, то выполняет переход к выбранному блоку и скрывает меню.
@@ -44,8 +49,9 @@ export default class Nav {
 			return;
 		}
 		this.go2section(href.substr(1));
-		elNav.classList.toggle('opened');
+		stat.elNav.classList.toggle('opened');
 	}
+
 	/**
 	 * Выполняет навигацию к указанной секции.
 	 * @param sectionId
