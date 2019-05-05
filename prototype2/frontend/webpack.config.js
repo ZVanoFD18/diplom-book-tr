@@ -21,7 +21,7 @@ let config = {
 		}
 	},
 	devtool: 'source-map',
-	//devtool: '(none)',
+	// devtool: '(none)',
 	context: path.resolve(__dirname),
 	watch: false,
 	watchOptions: {

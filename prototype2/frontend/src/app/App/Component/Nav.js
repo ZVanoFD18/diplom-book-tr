@@ -1,5 +1,6 @@
 'use strict';
 
+import './Menu.css';
 import './Nav.css';
 
 // import Component from '../Component';

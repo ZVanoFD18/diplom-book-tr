@@ -1,0 +1,25 @@
+.menu{
+    padding: 0.5rem;
+    background-color: #35baf6;
+    border-radius: 0.3rem;
+}
+.menu-vertical .menu-item {
+    display: block;
+    margin: 0.3rem 0;
+}
+
+.menu-horisontal .menu-item {
+    display: inline-block;
+    margin: 0;
+}
+
+.menu-item {
+    font-size: 1.5rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.4rem;
+    border: 0.2rem solid rgba(255, 255, 255, 0.4);
+}
+
+.menu-item:hover {
+    border: 0.2rem solid rgba(255, 255, 255, 0.8);
+}

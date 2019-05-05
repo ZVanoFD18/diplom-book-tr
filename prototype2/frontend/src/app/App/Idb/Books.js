@@ -114,6 +114,28 @@ export default class Books {
 		})
 	}
 
+	static delete(bookHash){
+		return new Promise((resolve, reject)=>{
+			document.App.Idb.getDb().then((db) => {
+				return db;
+			}).then((db) => {
+				let transaction = db.transaction(['Books'], 'readwrite'); //readonly - для чтения
+				let store = transaction.objectStore('Books');
+				let req = store.delete(bookHash);
+				req.onsuccess = (event) => {
+					resolve(bookHash);
+				};
+				req.onerror = (event) => {
+					document.Helper.Log.addDebug(event);
+					reject(new ErrorUser(document.App.localize('Не удалось удалить книгу из БД.')));
+				};
+			}).catch((e) => {
+				document.Helper.Log.addDebug(event);
+				reject(e);
+			})
+		});
+	}
+
 	static getAll(options) {
 		options = options || {};
 		options.filter = options.filter || {};
