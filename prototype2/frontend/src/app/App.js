@@ -70,6 +70,7 @@ export default class App {
 	static get appEnv() {
 		return stat.appEnv;
 	}
+
 	//
 	// static set appEnv(newValue) {
 	// 	stat.appEnv = newValue;
@@ -141,7 +142,7 @@ export default class App {
 					} else {
 						resolve(data);
 					}
-				}).catch((e)=>{
+				}).catch((e) => {
 					Helper.Log.addDebug('Не удалось обновить статистику изучения слов');
 					resolve(data);
 				});
@@ -187,6 +188,10 @@ export default class App {
 		});
 	}
 
+	/**
+	 * Загружает переменные окружения для приложения (справочник языков, языки по умолчанию и т.д.).
+	 * @return {Promise<any>}
+	 */
 	static loadEnv() {
 		return new Promise((resolve, reject) => {
 			/**
@@ -207,6 +212,11 @@ export default class App {
 		});
 	}
 
+	/**
+	 * Находит по хешу книгу в библиотеке и переправляет ее в секцию чтения.
+	 * @param hash
+	 * @return {Promise<any>}
+	 */
 	static bookToReadByHash(hash) {
 		App.Component.Loadmask.show(App.localize('Извлечение книги...'));
 		let book;
@@ -230,12 +240,25 @@ export default class App {
 		});
 	}
 
+	/**
+	 * Загрузить текст книги в область чтения.
+	 * @param text
+	 * @param isAdd
+	 * @return {Promise<any>}
+	 */
 	static bookToRead(text, isAdd) {
 		return new Promise((resolve, reject) => {
 			isAdd = Helper.isDefined(isAdd) ? isAdd : true;
 			App.Component.Loadmask.show(App.localize('Конвертация книги...'));
-			let book = Helper.Fb2.getBookFromText(text);
+			let book;
+			try {
+				book = Helper.Fb2.getBookFromText(text);
+			} catch (e) {
+				Helper.Log.addDebug(e);
+				reject(new App.Errors.User(App.localize('Не удалось преобразовать книгу')));
+			}
 			if (App.langStudy !== stat.appEnv.fb2.languages[book.lang]) {
+				App.Component.Loadmask.hide();
 				reject(new ErrorUser(App.localize('Язык книги не соответствует изучаемому.')));
 				return;
 			}
@@ -251,7 +274,6 @@ export default class App {
 						book.image,
 						text
 					).then((result) => {
-						// @TODO: Разобраться почему "result" разной структуры для новой книги, и для попытки добавить ту же книгу.
 						App.Idb.KeyVal.LastSession.put({
 							bookHash: result.hash,
 							bookPosition: 0
@@ -259,6 +281,7 @@ export default class App {
 							resolve();
 						});
 					}).catch((e) => {
+						App.Component.Loadmask.hide();
 						Helper.Log.addDebug(e);
 						App.Component.WinMsg.show({
 							title: '<span style="color: red">' + App.localize('Ошибка!') + '</span>',
@@ -268,6 +291,7 @@ export default class App {
 					});
 				}
 			}).catch((e) => {
+				App.Component.Loadmask.hide();
 				reject(e);
 			});
 		});

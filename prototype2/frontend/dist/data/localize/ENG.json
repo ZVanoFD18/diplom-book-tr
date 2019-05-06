@@ -64,5 +64,6 @@
   "Удалить" : "Delete",
   "Удаление..." : "Deleting...",
   "Не удалось удалить книгу из БД.": "Could not remove the book from the database.",
-  "Не удалось удалить книгу из библиотеки": "Could not remove book from library"
+  "Не удалось удалить книгу из библиотеки": "Could not remove book from library",
+  "Не удалось преобразовать книгу" : "Failed to convert book"
 }

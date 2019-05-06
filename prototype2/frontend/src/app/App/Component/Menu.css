@@ -3,6 +3,9 @@
     background-color: #35baf6;
     border-radius: 0.3rem;
 }
+.menu a{
+    text-decoration: none;
+}
 .menu-vertical .menu-item {
     display: block;
     margin: 0.3rem 0;

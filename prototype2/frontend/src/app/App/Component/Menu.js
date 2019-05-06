@@ -13,7 +13,7 @@ export default class Menu {
 		}
 		this.callbackOnClick = callbackOnClick;
 		this.elContext = elContext || undefined;
-		this.el = [];
+		this.el = undefined;
 		if (Helper.isString(selector)) {
 			let elements = document.querySelectorAll(el);
 			if (elements.length < 1) {

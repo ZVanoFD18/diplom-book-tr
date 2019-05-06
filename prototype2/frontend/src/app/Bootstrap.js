@@ -2,7 +2,6 @@ export default () => {
 	const {detect} = require('detect-browser');
 	const semver = require('semver');
 
-
 	const SUPPORT_STATUS = {
 		SUPPORTED: 'SUPPORTED',
 		NOT_SUPPORTED: 'NOT_SUPPORTED',
@@ -67,17 +66,34 @@ export default () => {
 		return navigator.language.indexOf(locale) >= 0;
 	}
 
-	function Launch() {
+	function LoadScript(url, callback){
 		let elScript = document.createElement('script');
-		elScript.src = 'app.js';
+		elScript.src = url;
 		elScript.onload = function () {
-			document.getElementById('bootstrap').remove();
-			document.getElementById('gui').style = '';
+			callback(true);
 		};
 		elScript.onlerror = function () {
-			alert('app not loaded');
+			callback(false);
 		};
 		document.head.appendChild(elScript);
+	}
+
+	function Launch() {
+		let elScript = document.createElement('script');
+		LoadScript('polyfill.js', function (isSuccess) {
+			if (!isSuccess){
+				alert('app not loaded');
+				return;
+			}
+			LoadScript('app.js', function (isSuccess) {
+				if (!isSuccess){
+					alert('app not loaded');
+					return;
+				}
+				document.getElementById('bootstrap').remove();
+				document.getElementById('gui').style = '';
+			});
+		});
 	}
 
 	function Unlaunch() {

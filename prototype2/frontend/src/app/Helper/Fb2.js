@@ -22,6 +22,10 @@ export default class Fb2 {
 		book.title = [];
 		book.sections = [];
 		let xml = Helper.Xml.getXMLFromString(text);
+		const encoding = xml.xmlEncoding.toLowerCase();
+		if (encoding !== 'utf-8') {
+			throw new Error('Кодировка книги не поддерживается.');
+		}
 		// console.log(xml);
 		book.lang = xml.querySelector('description>title-info>lang').innerHTML;
 
