@@ -53,15 +53,22 @@ export default class Loadmask {
 	 * Скрыть маску загрузки.
 	 */
 	static hide() {
-		if (Date.now() - stat.showedAt >= stat.minTimeShow) {
+		/**
+		 * Количество миллисекунд, прошедшее со времени показа маски
+		 * @type {number}
+		 */
+		const timeLeftMs = Date.now() - stat.showedAt;
+		if (timeLeftMs >= stat.minTimeShow) {
 			this.getEl().classList.add('hidden');
 			if (stat.timerHide) {
 				clearTimeout(stat.timerHide);
 			}
+		} else {
+			const timeShedule = stat.minTimeShow - timeLeftMs;
+			stat.timerHide = setTimeout(() => {
+				this.hide();
+			}, timeShedule > 0 ? timeShedule : 50);
 		}
-		stat.timerHide = setTimeout(() => {
-			this.hide();
-		}, stat.minTimeShow - Date.now() - stat.showedAt);
 	}
 
 	static setMessage(text) {
