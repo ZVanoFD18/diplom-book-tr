@@ -1,36 +1,51 @@
 'use strict';
-
+/**
+ * Помошник для работы с XML.
+ */
 export default class Xml {
+	/**
+	 * Выполняет XSLT-преобразование и возвращает результат в виде строки текста.
+	 * @param source
+	 * @param style
+	 * @return {String|null}
+	 */
 	static transformXslt(source, style) {
+		let result = null;
 		if (window.ActiveXObject) {
-			return source.transformNode(style);
+			result  = source.transformNode(style);
 		} else if (window.XSLTProcessor) {
 			let xsltProcessor = new XSLTProcessor();
 			xsltProcessor.importStylesheet(style);
 			let resultDocument = xsltProcessor.transformToDocument(source);
 			let xmls = new XMLSerializer();
-			return xmls.serializeToString(resultDocument);
+			result = xmls.serializeToString(resultDocument);
 		} else {
 			alert("XML-transform not supported");
-			return null;
 		}
+		return result;
 	}
 
+	/**
+	 * Возвращает XMLDocument из XML-текста.
+	 * @param {String} s - XML-текст
+	 * @return {Document|null}
+	 */
 	static getXMLFromString (s) {
+		let result = null;
 		if (window.ActiveXObject) {
 			let xml;
 			xml = new ActiveXObject("Microsoft.XMLDOM");
 			xml.async = false;
 			xml.loadXML(s);
-			return xml;
+			result = xml;
 		}
 		else if (window.DOMParser) {
 			let parser = new DOMParser();
-			return parser.parseFromString(s, 'text/xml');
+			result = parser.parseFromString(s, 'text/xml');
 		} else {
 			alert("XML load not supported");
-			return null;
 		}
+		return result;
 	}
 };
 

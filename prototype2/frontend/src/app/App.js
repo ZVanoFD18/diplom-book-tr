@@ -100,6 +100,7 @@ export default class App {
 				resolve();
 			}).catch((e) => {
 				reject(e);
+				return;
 			});
 		})).then(() => {
 			// Раздел чтения последней сессии пользователя из БД
@@ -156,9 +157,11 @@ export default class App {
 						resolve(data);
 					}).catch((e) => {
 						reject(e);
+						return;
 					});
 				} else {
 					resolve(data);
+					return;
 				}
 			});
 		}).then((data) => {
@@ -236,6 +239,7 @@ export default class App {
 				});
 			}).catch((e) => {
 				reject(e);
+				return;
 			});
 		});
 	}
@@ -256,6 +260,7 @@ export default class App {
 			} catch (e) {
 				Helper.Log.addDebug(e);
 				reject(new App.Errors.User(App.localize('Не удалось преобразовать книгу')));
+				return;
 			}
 			if (App.langStudy !== stat.appEnv.fb2.languages[book.lang]) {
 				App.Component.Loadmask.hide();
@@ -288,11 +293,13 @@ export default class App {
 							message: App.localize('Не удалось добавить книгу в библиотеку.')
 						});
 						reject();
+						return;
 					});
 				}
 			}).catch((e) => {
 				App.Component.Loadmask.hide();
 				reject(e);
+				return;
 			});
 		});
 	}
@@ -327,7 +334,8 @@ export default class App {
 						}
 						let struct = Helper.Google.getTranslateConverted(result);
 						if (Helper.isEmpty(struct.translate)) {
-							reject(new Error('Не удалось получить перевод от Google'))
+							reject(new Error('Не удалось получить перевод от Google'));
+							return;
 						} else {
 							if (!isReturnStruct) {
 								resolve(struct.translate);
@@ -346,6 +354,7 @@ export default class App {
 										resolve(translateStruct);
 									} else {
 										reject(new Error('Неудалось извлечь слово из БД после сохранения'));
+										return;
 									}
 								}
 							});

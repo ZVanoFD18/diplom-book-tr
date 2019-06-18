@@ -126,6 +126,7 @@ export default class Idb {
 				})
 				.catch((result) => {
 					reject(result);
+					return;
 				})
 			// }
 		})
@@ -162,6 +163,7 @@ export default class Idb {
 				document.Helper.Log.addDebug('Ошибка! Проблема при открытии БД.');
 				alert('Ошибка! Не могу открыть БД.');
 				reject();
+				return;
 			};
 		});
 	}
